@@ -48,3 +48,18 @@ Key chunk names in the captured web bundle (grep `assets/` for the rest):
 ## Output style
 
 Markdown, dense, tables where it helps, mermaid for flows. Lead with a one-paragraph "what this proves" summary. Then the contract (routes, endpoints, payload shapes, state machines, copy). Then the T3 mapping section (how this concept would map onto T3's environment/project/thread/turn model — proposals, clearly marked as proposals). Then an evidence appendix with citations. Aim for exactness over prose.
+
+## Context discipline (MANDATORY — the first pass of agents died from ignoring this)
+
+Five agents each hit the ~160k-token context ceiling and crashed before writing anything. Your context is a budget of roughly 100k tokens of tool output. Rules:
+
+1. **Never `Read` more than 120 lines at once, and never `Read` an `app-initial-*.js` chunk.** Use `rg -n` with `-A/-B` ≤ 8, or `sed -n 'START,ENDp'` with ranges ≤ 120 lines. The formatted bundles are hundreds of thousands of lines; you locate, you do not browse.
+2. **Resolve imports by symbol, not by reading the module.** `rg -n 'as SYMBOL\b' file.js` to find the import line, then `rg -n 'function TARGET\(|TARGET = ' ../formatted/app-initial-*.js | head` and `sed -n` the ~40 lines around the hit.
+3. **Write findings to disk as you go.** After every 3–5 tool calls, append what you learned (with citations) to `_work/<track>/NOTES-<yourtask>.md`. If you crash, the next agent continues from the notes. Read that file first if it already exists — do not redo its work.
+4. **Pipe long outputs through `head`/`wc`/`cut -c1-200`.** Minified lines are kilobytes long; `grep -o -E '.{0,200}PATTERN.{0,200}'` instead of printing whole lines.
+5. **Stop investigating at ~60% of your budget and write the deliverable.** A complete document with a few REMOTE/UNKNOWN gaps beats a crash with nothing. If you are unsure how much you've used, count tool calls: after ~35 tool calls, start writing.
+6. Your task is deliberately narrow. Do not expand into neighbouring tracks; note the pointer in NOTES and move on.
+
+## Output discipline (MANDATORY — second-pass agents died from this)
+
+The API gateway times out on any single model response longer than a few thousand tokens. A one-shot `Write` of a long document kills you. Write every deliverable in chunks: an initial `Write` with header + first section (≤150 lines), then append each further section with a Bash `cat >> "<file>" <<'EOF' ... EOF` heredoc of ≤150 lines. Same for long CSS/HTML. Keep your own prose messages short.
