@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T3 Code — app shell template</title>
+<link rel="stylesheet" href="t3-tokens.css">
+<style>
+  /* Template-only: theme toggle affordance in the top bar. Task B may drop it. */
+  .theme-toggle { margin-left: auto; }
+</style>
+</head>
+<body>
+<!-- Inline SVG sprite: lucide icon paths used by the shell (search, folder, plus, settings, git-pull-request, bar-chart, chevron-down, circle-dashed, circle-check, message-circle-question, git-branch, pin, alarm-clock). -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-folder-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10v6"/><path d="M9 13h6"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-pr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" x2="6" y1="9" y2="21"/></symbol>
+    <symbol id="i-usage" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-running" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.1 2.18a9.93 9.93 0 0 1 3.8 0"/><path d="M17.6 3.71a9.95 9.95 0 0 1 2.69 2.7"/><path d="M21.82 10.1a9.93 9.93 0 0 1 0 3.8"/><path d="M20.29 17.6a9.95 9.95 0 0 1-2.7 2.69"/><path d="M13.9 21.82a9.94 9.94 0 0 1-3.8 0"/><path d="M6.4 20.29a9.95 9.95 0 0 1-2.69-2.7"/><path d="M2.18 13.9a9.93 9.93 0 0 1 0-3.8"/><path d="M3.71 6.4a9.95 9.95 0 0 1 2.7-2.69"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-question" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="i-alarm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+  </defs>
+</svg>
+
+<div class="t3-app">
+  <!-- LEFT SIDEBAR — AppSidebarLayout.tsx:243-247 / Sidebar.tsx ThreadSidebar -->
+  <aside class="t3-sidebar" data-app-sidebar>
+    <!-- SidebarChrome.tsx:50-75 -->
+    <header class="t3-sidebar-header">
+      <a class="t3-sidebar-brand" href="#" aria-label="Go to threads"><span class="wordmark">T3</span><span class="suffix">Code</span></a>
+      <span class="t3-badge sm pill neutral t3-env-pill">macbook-pro</span>
+    </header>
+
+    <!-- SidebarThreadHeader.tsx:82-145 -->
+    <div class="t3-sidebar-toolbar">
+      <button class="t3-sidebar-search" type="button" aria-label="Search threads"><svg width="16" height="16"><use href="#i-search"/></svg><span>Search</span></button>
+      <div class="t3-sidebar-actions">
+        <button class="t3-icon-btn" type="button" aria-label="Filter threads by project"><svg><use href="#i-folder"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="New project"><svg><use href="#i-folder-plus"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="New thread"><svg><use href="#i-plus"/></svg></button>
+      </div>
+    </div>
+
+    <!-- Sidebar.tsx:3384-3398 list order: pinned → active → Snoozed shelf → Settled shelf -->
+    <nav class="t3-sidebar-content" aria-label="Threads">
+      <!-- SLOT: top-level nav items go here (see 01-sidebar-automations-tab.html) -->
+      <ul class="t3-sidebar-list">
+        <li class="t3-thread-row is-selected"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><svg width="12" height="12" style="color:var(--sidebar-muted-foreground);opacity:.65"><use href="#i-pin"/></svg><span class="t3-status-slot running" title="Working"><svg><use href="#i-running"/></svg></span></div>
+          <div class="t3-thread-title">Reconcile native change labels against pinned commits</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">fix/ci-native-labels</span><span class="add">+128</span><span class="del">−41</span></div>
+        </a></li>
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><span class="t3-status-slot attention" title="Needs your input"><svg><use href="#i-question"/></svg></span></div>
+          <div class="t3-thread-title">Strip Alchemy progress before parsing relay state</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">fix/release-relay-progress</span><span class="add">+22</span><span class="del">−9</span></div>
+        </a></li>
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.6 0.16 150)">MK</span><span class="name">marketing-site</span><span class="t3-status-slot running"><svg><use href="#i-running"/></svg></span></div>
+          <div class="t3-thread-title">Rewrite the pricing FAQ copy and add a comparison table</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">content/pricing-faq</span></div>
+        </a></li>
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.62 0.18 30)">AP</span><span class="name">acme-api</span><span class="t3-status-slot">2m</span></div>
+          <div class="t3-thread-title">Investigate flaky webhook retry test in CI</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">main</span></div>
+        </a></li>
+
+        <!-- Snoozed shelf — Sidebar.tsx:4877-4893 -->
+        <li><button class="t3-shelf snoozed t3-shelf-spacer" type="button" aria-expanded="true"><span>Snoozed</span><span class="line"></span><svg style="rotate:180deg"><use href="#i-chevron"/></svg></button></li>
+        <li class="t3-thread-row is-receded"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><span class="t3-status-slot" style="color:var(--snooze-fg)"><svg><use href="#i-alarm"/></svg>&nbsp;Mon</span></div>
+          <div class="t3-thread-title">Mobile composer route transition polish</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">mobile/composer-transition</span></div>
+        </a></li>
+
+        <!-- Settled shelf — Sidebar.tsx:4895-4912 -->
+        <li><button class="t3-shelf" type="button" aria-expanded="false"><span>Settled (14)</span><span class="line"></span><svg><use href="#i-chevron"/></svg></button></li>
+        <li class="t3-thread-row is-receded"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><span class="t3-status-slot done"><svg><use href="#i-check"/></svg></span></div>
+          <div class="t3-thread-title">Accept SDK elicitation requests in ACP adapter</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">acp/elicitation</span><span class="add">+310</span><span class="del">−12</span></div>
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- SidebarChrome.tsx:187-227 -->
+    <footer class="t3-sidebar-footer">
+      <div class="menu">
+        <button class="t3-icon-btn" type="button" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="Pull Requests"><svg><use href="#i-pr"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="Usage"><svg><use href="#i-usage"/></svg></button>
+        <span class="t3-update-pill">Update 1.4.2</span>
+      </div>
+    </footer>
+  </aside>
+
+  <!-- MAIN COLUMN -->
+  <main class="t3-main">
+    <div class="t3-topbar">
+      <span class="crumb">t3-code</span><span class="crumb">/</span><h1>Reconcile native change labels against pinned commits</h1>
+      <button class="t3-btn ghost sm icon theme-toggle" type="button" id="theme-toggle" aria-label="Toggle theme"><svg><use href="#i-sun"/></svg></button>
+    </div>
+    <div class="t3-body">
+      <section class="t3-page">
+        <!-- SLOT: page content. Task B replaces this block. -->
+        <div class="t3-empty">
+          <span class="icon"><svg><use href="#i-zap"/></svg></span>
+          <div><p class="title">Main content slot</p><p class="desc">Task B swaps this for the Automations list, editor, and run detail pages. Sidebar and details slot stay as-is.</p></div>
+          <div class="actions"><button class="t3-btn primary" type="button">Primary</button><button class="t3-btn" type="button">Secondary</button><button class="t3-btn ghost" type="button">Ghost</button></div>
+        </div>
+      </section>
+      <aside class="t3-details" aria-label="Details">
+        <!-- SLOT: right-hand details panel -->
+        <h2>Details</h2>
+        <dl>
+          <dt>Project</dt><dd>t3-code</dd>
+          <dt>Branch</dt><dd class="t3-mono">fix/ci-native-labels</dd>
+          <dt>Status</dt><dd><span class="t3-badge running"><span class="t3-dot running"></span>Working</span></dd>
+          <dt>Provider</dt><dd>Claude Code</dd>
+        </dl>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Optional tiny theme toggle. Cycles: system → dark → light → system.
+  (function () {
+    var html = document.documentElement, btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      if (html.classList.contains('dark')) { html.classList.remove('dark'); html.classList.add('light'); }
+      else if (html.classList.contains('light')) { html.classList.remove('light'); }
+      else { html.classList.add('dark'); }
+    });
+  })();
+</script>
+</body>
+</html>
