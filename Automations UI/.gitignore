@@ -7,3 +7,5 @@ _work/formatted-desktop/
 _work/*/formatted/
 _work/*/*.vscdb*
 _work/*/acp-*
+_work/*/acp/
+_work/*/*-strings.txt
