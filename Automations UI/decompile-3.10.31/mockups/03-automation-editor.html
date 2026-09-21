@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en" class="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T3 Code — Edit automation</title>
+<link rel="stylesheet" href="t3-tokens.css">
+<style>
+  /* Page-local mockup styles (prefix am-). Everything token-based; no animations. */
+  .theme-toggle { margin-left: auto; }
+  .am-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+  .am-head h2 { margin: 0; font-size: 17px; font-weight: 500; line-height: 24px; }
+  .am-head .sub { margin: 2px 0 0; font-size: 13px; color: var(--muted-foreground); }
+  .am-head .actions { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .am-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .am-toolbar .t3-input { width: 220px; }
+  .am-toolbar .t3-select { width: auto; min-width: 140px; }
+  .am-menu .t3-menu-item { white-space: nowrap; }
+  .am-split { display: inline-flex; }
+  .am-split .t3-btn:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+  .am-split .t3-btn:last-child { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: -1px; width: 28px; padding: 0; }
+  .am-name { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .am-name .title { font-size: 13px; font-weight: 500; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .am-name .meta { font-size: 12px; color: var(--muted-foreground); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .am-name a { color: inherit; text-decoration: none; }
+  .am-trig { display: inline-flex; align-items: center; gap: 6px; color: var(--secondary-foreground); white-space: nowrap; }
+  .am-trig svg { width: 14px; height: 14px; color: var(--muted-foreground); }
+  .am-repo { display: inline-flex; align-items: center; gap: 6px; }
+  .am-spark { display: block; width: 91px; height: 20px; }
+  .am-spark .line { fill: none; stroke: var(--info); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+  .am-spark .flat { stroke: var(--muted-foreground); opacity: .5; }
+  .am-row-dim td:not(.am-actions) { opacity: .55; }
+  .am-actions { text-align: right; white-space: nowrap; }
+  .am-status { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .am-status .when { color: var(--muted-foreground); }
+  .am-entry { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+  .am-entry .t3-card { padding: 14px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+  .am-entry .t3-card.hot { border-color: color-mix(in srgb, var(--info) 45%, var(--border)); background: color-mix(in srgb, var(--info) 6%, var(--card)); }
+  .am-entry .tile { width: 28px; height: 28px; border-radius: var(--radius-md); background: var(--secondary); display: inline-flex; align-items: center; justify-content: center; }
+  .am-entry .tile svg { width: 14px; height: 14px; }
+  .am-entry .title { font-size: 13px; font-weight: 500; }
+  .am-entry .desc { font-size: 12px; color: var(--muted-foreground); }
+  .am-entry .foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--muted-foreground); }
+  .am-entry .foot svg { width: 14px; height: 14px; }
+  .am-templates { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .am-templates .t3-card { padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; }
+  .am-templates .title { font-size: 13px; font-weight: 500; }
+  .am-templates .desc { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+  .am-section-title { display: flex; align-items: center; gap: 8px; margin: 24px 0 10px; font-size: 13px; font-weight: 500; }
+  .am-section-title .t3-help { font-weight: 400; }
+  .am-menu { position: absolute; right: 0; top: 100%; margin-top: 4px; min-width: 176px; padding: 4px; z-index: 5; }
+  .am-anchor { position: relative; display: inline-block; }
+  .am-variant { border-top: 1px dashed var(--border); margin-top: 32px; padding-top: 16px; }
+  .am-variant-label { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted-foreground); margin-bottom: 12px; }
+  /* Editor */
+  .am-form { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; padding-bottom: 72px; }
+  .am-form .name { height: 38px; font-size: 17px; font-weight: 500; }
+  .am-sec { display: flex; flex-direction: column; gap: 10px; }
+  .am-sec > .hd { display: flex; align-items: center; gap: 8px; }
+  .am-sec > .hd h3 { margin: 0; font-size: 14px; font-weight: 500; }
+  .am-sec > .hd .t3-help { flex: 1; }
+  .am-sec .t3-card > .body { display: flex; flex-direction: column; gap: 12px; }
+  .am-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .am-grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .am-inline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .am-inline .t3-select, .am-inline .t3-input { width: auto; }
+  .am-days { display: inline-flex; gap: 2px; }
+  .am-days button { width: 30px; height: 26px; border: 1px solid var(--input); background: var(--background); color: var(--secondary-foreground); border-radius: var(--radius-sm); font-size: 12px; font-family: inherit; cursor: pointer; }
+  .am-days button.on { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+  .am-code { font-family: var(--font-mono); font-size: 12px; background: var(--code-background); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 12px; white-space: pre-wrap; word-break: break-all; line-height: 1.5; color: var(--foreground); }
+  .am-code.secret { display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; }
+  .am-code.secret .v { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+  .am-cond-group { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; display: flex; flex-direction: column; gap: 8px; background: var(--background); }
+  .am-cond { display: grid; grid-template-columns: 1fr 140px 1fr 28px; gap: 8px; align-items: center; }
+  .am-op { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .06em; }
+  .am-op .line { flex: 1; height: 1px; background: var(--border); }
+  .am-prompt { position: relative; }
+  .am-prompt .t3-textarea { min-height: 150px; font-size: 13px; padding-bottom: 36px; }
+  .am-prompt .bar { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted-foreground); }
+  .am-mention { display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 6px; border-radius: 5px; font-size: 12px; background: color-mix(in srgb, var(--info) 12%, transparent); color: var(--info); font-family: var(--font-mono); }
+  .am-mention.pb { background: color-mix(in srgb, var(--primary) 8%, transparent); color: var(--foreground); }
+  .am-toggle-row { display: flex; align-items: center; gap: 12px; }
+  .am-toggle-row .t3-grow .t3-label { display: block; } .am-toggle-row .t3-grow .t3-help { display: block; margin-top: 2px; }
+  .am-sticky { position: sticky; bottom: 0; margin: 0 -24px -20px; padding: 12px 24px; background: color-mix(in srgb, var(--background) 92%, transparent); backdrop-filter: blur(8px); border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+  .am-sticky .status { margin-right: auto; font-size: 12px; color: var(--muted-foreground); align-self: center; }
+  .am-warn { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: var(--radius-md); background: var(--warning-surface); color: var(--warning-foreground); font-size: 12px; }
+  .am-warn svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+  /* Detail */
+  .am-dhead { display: flex; align-items: flex-start; gap: 16px; }
+  .am-dhead .t { min-width: 0; }
+  .am-dhead h2 { margin: 0; font-size: 17px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+  .am-dhead .origin { font-size: 12px; color: var(--muted-foreground); margin-top: 4px; }
+  .am-kv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+  .am-kv .t3-panel { padding: 12px 14px; }
+  .am-kv .k { font-size: 11px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .04em; }
+  .am-kv .v { font-size: 14px; font-weight: 500; margin-top: 4px; display: flex; align-items: center; gap: 8px; }
+  .am-chart { height: 120px; display: flex; align-items: flex-end; gap: 4px; padding: 0 2px; }
+  .am-chart .b { flex: 1; display: flex; flex-direction: column-reverse; gap: 1px; }
+  .am-chart .s { background: var(--success); opacity: .8; } .am-chart .f { background: var(--error); } .am-chart .k { background: var(--muted-foreground); opacity: .35; } .am-chart .r { background: var(--update); }
+  .am-chart .b > span:last-child { border-radius: 2px 2px 0 0; }
+  .am-legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted-foreground); }
+  .am-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .am-legend i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+  .am-log { font-family: var(--font-mono); font-size: 11.5px; background: var(--code-background); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; white-space: pre-wrap; line-height: 1.5; max-height: 220px; overflow: auto; }
+  .am-log .ok { color: var(--success-foreground); } .am-log .err { color: var(--error-foreground); } .am-log .dim { color: var(--muted-foreground); }
+  .am-thread { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card); text-decoration: none; color: inherit; }
+  .am-thread .ti { font-size: 13px; font-weight: 500; } .am-thread .tm { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; display: flex; gap: 8px; align-items: center; }
+  .am-thread .tm svg { width: 12px; height: 12px; }
+  .am-overlay { position: absolute; inset: 0; background: color-mix(in srgb, var(--color-black) 35%, transparent); display: flex; align-items: center; justify-content: center; z-index: 20; }
+  .am-dialog { width: 440px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .am-dialog h3 { margin: 0; font-size: 15px; font-weight: 500; }
+  .am-dialog p { margin: 0; font-size: 13px; color: var(--muted-foreground); }
+  .am-dialog .foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+  .t3-table td.t3-tabular { white-space: nowrap; }
+  .t3-details .sec { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+</style>
+</head>
+<body>
+<!-- Inline SVG sprite: lucide icon paths used by the shell (search, folder, plus, settings, git-pull-request, bar-chart, chevron-down, circle-dashed, circle-check, message-circle-question, git-branch, pin, alarm-clock). -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-folder-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10v6"/><path d="M9 13h6"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-pr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" x2="6" y1="9" y2="21"/></symbol>
+    <symbol id="i-usage" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-running" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.1 2.18a9.93 9.93 0 0 1 3.8 0"/><path d="M17.6 3.71a9.95 9.95 0 0 1 2.69 2.7"/><path d="M21.82 10.1a9.93 9.93 0 0 1 0 3.8"/><path d="M20.29 17.6a9.95 9.95 0 0 1-2.7 2.69"/><path d="M13.9 21.82a9.94 9.94 0 0 1-3.8 0"/><path d="M6.4 20.29a9.95 9.95 0 0 1-2.69-2.7"/><path d="M2.18 13.9a9.93 9.93 0 0 1 0-3.8"/><path d="M3.71 6.4a9.95 9.95 0 0 1 2.7-2.69"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-question" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="i-alarm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-webhook" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v2"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.94 14.34 9 17l-.94-2.66a4 4 0 0 0-2.4-2.4L3 11l2.66-.94a4 4 0 0 0 2.4-2.4L9 5l.94 2.66a4 4 0 0 0 2.4 2.4L15 11l-2.66.94a4 4 0 0 0-2.4 2.4Z"/><path d="M19 3v4"/><path d="M21 5h-4"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+    <symbol id="i-skip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></symbol>
+    <symbol id="i-xcircle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
+    <symbol id="i-layout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.17 6.83a2.83 2.83 0 0 0-4-4L4 16v4h4Z"/><path d="m15 5 4 4"/></symbol>
+  </defs>
+</svg>
+
+<div class="t3-app">
+  <!-- LEFT SIDEBAR — AppSidebarLayout.tsx:243-247 / Sidebar.tsx ThreadSidebar -->
+  <aside class="t3-sidebar" data-app-sidebar>
+    <!-- SidebarChrome.tsx:50-75 -->
+    <header class="t3-sidebar-header">
+      <a class="t3-sidebar-brand" href="#" aria-label="Go to threads"><span class="wordmark">T3</span><span class="suffix">Code</span></a>
+      <span class="t3-badge sm pill neutral t3-env-pill">macbook-pro</span>
+    </header>
+
+    <!-- SidebarThreadHeader.tsx:82-145 -->
+    <div class="t3-sidebar-toolbar">
+      <button class="t3-sidebar-search" type="button" aria-label="Search threads"><svg width="16" height="16"><use href="#i-search"/></svg><span>Search</span></button>
+      <div class="t3-sidebar-actions">
+        <button class="t3-icon-btn" type="button" aria-label="Filter threads by project"><svg><use href="#i-folder"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="New project"><svg><use href="#i-folder-plus"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="New thread"><svg><use href="#i-plus"/></svg></button>
+      </div>
+    </div>
+
+    <!-- Sidebar.tsx:3384-3398 list order: pinned → active → Snoozed shelf → Settled shelf -->
+    <nav class="t3-sidebar-content" aria-label="Threads">
+      <!-- Automations nav item — active state (01-sidebar-automations-tab.html:288-291) -->
+      <a class="t3-nav-item is-active has-indicator" href="02-automations-list.html" aria-label="Automations, selected, 1 failed">
+        <svg><use href="#i-zap"/></svg><span class="t3-grow t3-truncate">Automations</span><span class="t3-nav-badge" style="background:var(--error-surface);color:var(--error-foreground)">1 failed</span>
+      </a>
+      <div style="height:6px"></div>
+      <ul class="t3-sidebar-list">
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><svg width="12" height="12" style="color:var(--sidebar-muted-foreground);opacity:.65"><use href="#i-pin"/></svg><span class="t3-status-slot running" title="Working"><svg><use href="#i-running"/></svg></span></div>
+          <div class="t3-thread-title">Reconcile native change labels against pinned commits</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">fix/ci-native-labels</span><span class="add">+128</span><span class="del">−41</span></div>
+        </a></li>
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><span class="t3-status-slot attention" title="Needs your input"><svg><use href="#i-question"/></svg></span></div>
+          <div class="t3-thread-title">Strip Alchemy progress before parsing relay state</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">fix/release-relay-progress</span><span class="add">+22</span><span class="del">−9</span></div>
+        </a></li>
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.6 0.16 150)">MK</span><span class="name">marketing-site</span><span class="t3-status-slot running"><svg><use href="#i-running"/></svg></span></div>
+          <div class="t3-thread-title">Rewrite the pricing FAQ copy and add a comparison table</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">content/pricing-faq</span></div>
+        </a></li>
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.62 0.18 30)">AP</span><span class="name">acme-api</span><span class="t3-status-slot">2m</span></div>
+          <div class="t3-thread-title">Investigate flaky webhook retry test in CI</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">main</span></div>
+        </a></li>
+
+        <!-- Snoozed shelf — Sidebar.tsx:4877-4893 -->
+        <li><button class="t3-shelf snoozed t3-shelf-spacer" type="button" aria-expanded="true"><span>Snoozed</span><span class="line"></span><svg style="rotate:180deg"><use href="#i-chevron"/></svg></button></li>
+        <li class="t3-thread-row is-receded"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><span class="t3-status-slot" style="color:var(--snooze-fg)"><svg><use href="#i-alarm"/></svg>&nbsp;Mon</span></div>
+          <div class="t3-thread-title">Mobile composer route transition polish</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">mobile/composer-transition</span></div>
+        </a></li>
+
+        <!-- Settled shelf — Sidebar.tsx:4895-4912 -->
+        <li><button class="t3-shelf" type="button" aria-expanded="false"><span>Settled (14)</span><span class="line"></span><svg><use href="#i-chevron"/></svg></button></li>
+        <li class="t3-thread-row is-receded"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><span class="t3-status-slot done"><svg><use href="#i-check"/></svg></span></div>
+          <div class="t3-thread-title">Accept SDK elicitation requests in ACP adapter</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">acp/elicitation</span><span class="add">+310</span><span class="del">−12</span></div>
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- SidebarChrome.tsx:187-227 -->
+    <footer class="t3-sidebar-footer">
+      <div class="menu">
+        <button class="t3-icon-btn" type="button" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="Pull Requests"><svg><use href="#i-pr"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="Usage"><svg><use href="#i-usage"/></svg></button>
+        <span class="t3-update-pill">Update 1.4.2</span>
+      </div>
+    </footer>
+  </aside>
+
+  <!-- MAIN COLUMN -->
+  <main class="t3-main">
+    <div class="t3-topbar">
+      <span class="crumb">macbook-pro</span><span class="crumb">/</span><a class="crumb" href="02-automations-list.html" style="text-decoration:none">Automations</a><span class="crumb">/</span><h1>Edit automation</h1>
+      <button class="t3-btn ghost sm icon theme-toggle" type="button" id="theme-toggle" aria-label="Toggle theme"><svg><use href="#i-sun"/></svg></button>
+    </div>
+    <div class="t3-body">
+      <section class="t3-page" style="position:relative">
+        <!-- Devin editor frame: centered max-w-[800px], sticky Cancel + Create/Update, gap-6; section order Name → Triggers → Agent definition → Notifications → Advanced (spec §8.1-8.2). -->
+        <form class="am-form" aria-busy="false">
+          <!-- 1. Name — h-[38px], 17px medium (spec §8.2) -->
+          <input class="t3-input name" type="text" value="Nightly dependency audit" aria-label="Automation name" placeholder="Untitled automation">
+
+          <!-- 2. Triggers — Devin has an "Add trigger" picker with many sources (§9.1). v1 = exactly one of Schedule / Webhook / Manual, so a segmented control replaces the picker. -->
+          <div class="am-sec">
+            <div class="hd"><h3>Trigger</h3><span class="t3-help">When should this automation run?</span></div>
+            <div class="t3-card">
+              <div class="head" style="justify-content:space-between">
+                <div class="t3-tabs" role="tablist" aria-label="Trigger type">
+                  <button class="t3-tab is-active" type="button" role="tab" aria-selected="true"><svg width="14" height="14" style="vertical-align:-2px;margin-right:6px"><use href="#i-clock"/></svg>Schedule</button>
+                  <button class="t3-tab" type="button" role="tab" aria-selected="false"><svg width="14" height="14" style="vertical-align:-2px;margin-right:6px"><use href="#i-webhook"/></svg>Webhook</button>
+                  <button class="t3-tab" type="button" role="tab" aria-selected="false"><svg width="14" height="14" style="vertical-align:-2px;margin-right:6px"><use href="#i-hand"/></svg>Manual</button>
+                </div>
+                <span class="t3-help">Every trigger type can also be run manually.</span>
+              </div>
+              <!-- Schedule pane — presets hourly/daily/weekly/custom/one-time; hours 00–23, minutes in 5-min steps; IANA timezone (spec §9.4) -->
+              <div class="body" role="tabpanel" aria-label="Schedule">
+                <div class="am-inline">
+                  <label class="t3-label" for="preset">Repeat</label>
+                  <select class="t3-select" id="preset"><option>Hourly</option><option selected>Daily</option><option>Weekly</option><option>One time</option><option>Custom (RRULE)</option></select>
+                  <span class="t3-help">at</span>
+                  <select class="t3-select" aria-label="Hour"><option>00</option><option>01</option><option selected>02</option><option>03</option><option>09</option></select>
+                  <span class="t3-help">:</span>
+                  <select class="t3-select" aria-label="Minute"><option selected>00</option><option>05</option><option>15</option><option>30</option><option>45</option></select>
+                  <select class="t3-select" aria-label="Time zone" style="max-width:320px"><option selected>(GMT+02:00) Central European Summer Time - Berlin</option></select>
+                </div>
+                <div class="am-inline">
+                  <span class="t3-label">On</span>
+                  <div class="am-days" role="group" aria-label="Weekdays"><button type="button" class="on">Mo</button><button type="button" class="on">Tu</button><button type="button" class="on">We</button><button type="button" class="on">Th</button><button type="button" class="on">Fr</button><button type="button" class="on">Sa</button><button type="button" class="on">Su</button></div>
+                  <span class="t3-help">Weekday toggles never allow zero selected.</span>
+                </div>
+                <!-- Custom RRULE mode — 3-row monospace textarea, placeholder, UTC hint, Apply (spec §9.4) -->
+                <div class="t3-field">
+                  <div class="am-inline" style="justify-content:space-between"><label class="t3-label" for="rrule">Custom RRULE</label><div class="t3-tabs"><button class="t3-tab" type="button">Visual</button><button class="t3-tab is-active" type="button">RRULE</button></div></div>
+                  <textarea class="t3-textarea t3-mono" id="rrule" rows="3" placeholder="FREQ=WEEKLY;BYDAY=MO;BYHOUR=9;BYMINUTE=0" style="min-height:0;font-size:12px">FREQ=DAILY;BYHOUR=2;BYMINUTE=0</textarea>
+                  <div class="am-inline" style="justify-content:space-between"><span class="t3-help">Times are interpreted in the selected time zone (Devin shows a UTC hint).</span><button class="t3-btn sm" type="button">Apply</button></div>
+                </div>
+                <div class="t3-help">Next runs: <span class="t3-tabular">Sep 21 02:00</span> · <span class="t3-tabular">Sep 22 02:00</span> · <span class="t3-tabular">Sep 23 02:00</span></div>
+              </div>
+            </div>
+
+            <!-- Webhook pane shown as a second card for the mockup (would replace the Schedule pane when the tab is selected). Spec §9.5: credentials minted on add; plaintext secret shown once; URL /api/webhooks/automations/<org>/<id>; header X-Webhook-Secret / Authorization: Bearer / ?secret= ; optional _webhook_body_regex "Payload filter". -->
+            <div class="t3-card" aria-label="Webhook trigger (inactive tab, shown for reference)" style="border-style:dashed">
+              <div class="head"><svg width="14" height="14"><use href="#i-webhook"/></svg><strong style="font-size:13px">Webhook</strong><span class="t3-help">— pane when the Webhook tab is active</span></div>
+              <div class="body">
+                <div class="t3-field">
+                  <span class="t3-label">Endpoint</span>
+                  <div class="am-code secret"><span class="v">https://macbook-pro.connect.t3.codes/api/automations/webhooks/wh_7Kq2mZ9tRb4x</span><button class="t3-btn ghost sm icon" type="button" aria-label="Copy URL"><svg><use href="#i-copy"/></svg></button></div>
+                </div>
+                <div class="t3-field">
+                  <span class="t3-label">Secret <span class="t3-badge sm warning" style="margin-left:6px">Shown once</span></span>
+                  <div class="am-code secret"><span class="v">whs_3f9a1c7e4b2d8e6f0a5c9b1d7e3f2a4c6b8d0e1f</span><button class="t3-btn ghost sm icon" type="button" aria-label="Copy secret"><svg><use href="#i-copy"/></svg></button></div>
+                  <span class="t3-help">Send it as <code>X-Webhook-Secret</code>, <code>Authorization: Bearer</code>, or the <code>secret</code> query parameter. Only a hash is stored. <a href="#">Regenerate secret</a></span>
+                </div>
+                <div class="t3-field">
+                  <span class="t3-label">Test it</span>
+                  <div class="am-code">curl -X POST 'https://macbook-pro.connect.t3.codes/api/automations/webhooks/wh_7Kq2mZ9tRb4x' \
+  -H 'X-Webhook-Secret: whs_3f9a…' \
+  -H 'Content-Type: application/json' \
+  -d '{"event":"deploy.finished","service":"acme-api"}'</div>
+                </div>
+                <div class="t3-field">
+                  <label class="t3-label" for="regex">Payload filter <span class="t3-help">(optional regex, matched against the raw body)</span></label>
+                  <input class="t3-input t3-mono" id="regex" type="text" placeholder='"level":\s*"(error|fatal)"'>
+                </div>
+                <div class="am-warn"><svg><use href="#i-alert"/></svg><span>Webhooks reach this environment only while it is online. Through T3 Connect the tunnel must forward this unauthenticated POST — open question in the mapping proposal §4.3.</span></div>
+              </div>
+            </div>
+
+            <!-- Manual pane — Devin has no "manual" trigger type; run-now is POST /automations/<id>/trigger (§17.3-17.4). v1 makes it a first-class trigger kind. -->
+            <div class="t3-card" aria-label="Manual trigger (inactive tab, shown for reference)" style="border-style:dashed">
+              <div class="head"><svg width="14" height="14"><use href="#i-hand"/></svg><strong style="font-size:13px">Manual</strong><span class="t3-help">— pane when the Manual tab is active</span></div>
+              <div class="body"><p class="t3-help" style="margin:0">Runs only when you press <strong>Run automation</strong> on the detail page or in the command palette. You can add extra context to each run.</p></div>
+            </div>
+
+            <!-- Conditions — Devin: OR-of-ANDs Condition{field,operator,value} groups per trigger card (§9.3). Deferred in the v1 proposal; shown so the shape is settled. -->
+            <div class="t3-card">
+              <div class="head"><strong style="font-size:13px">Conditions</strong><span class="t3-help">Run only when any group matches. Fields come from the trigger payload.</span><span class="t3-badge sm neutral" style="margin-left:auto">optional · deferred in v1</span></div>
+              <div class="body">
+                <div class="am-cond-group">
+                  <div class="am-cond"><select class="t3-select sm"><option>event</option><option>service</option><option>level</option></select><select class="t3-select sm"><option selected>equals</option><option>contains</option><option>matches</option><option>not equals</option></select><input class="t3-input sm" value="deploy.finished"><button class="t3-btn ghost sm icon" type="button" aria-label="Remove condition"><svg><use href="#i-x"/></svg></button></div>
+                  <div class="am-op"><span>and</span></div>
+                  <div class="am-cond"><select class="t3-select sm"><option selected>service</option></select><select class="t3-select sm"><option selected>equals</option></select><input class="t3-input sm" value="acme-api"><button class="t3-btn ghost sm icon" type="button" aria-label="Remove condition"><svg><use href="#i-x"/></svg></button></div>
+                  <button class="t3-btn ghost sm" type="button" style="align-self:flex-start"><svg><use href="#i-plus"/></svg>Add condition</button>
+                </div>
+                <div class="am-op"><span class="line"></span><span>or</span><span class="line"></span></div>
+                <div class="am-cond-group">
+                  <div class="am-cond"><select class="t3-select sm"><option selected>level</option></select><select class="t3-select sm"><option selected>matches</option></select><input class="t3-input sm t3-mono" value="^(error|fatal)$"><button class="t3-btn ghost sm icon" type="button" aria-label="Remove condition"><svg><use href="#i-x"/></svg></button></div>
+                  <button class="t3-btn ghost sm" type="button" style="align-self:flex-start"><svg><use href="#i-plus"/></svg>Add condition</button>
+                </div>
+                <button class="t3-btn sm" type="button" style="align-self:flex-start">Add group</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Action — Devin "Agent definition" start_session{prompt, repos, playbook_id}; prompt editor with mention hydration (§10.3). v1: one action = thread.turn.start with bootstrap.createThread. -->
+          <div class="am-sec">
+            <div class="hd"><h3>Action</h3><span class="t3-help">Each run starts a new thread with this prompt.</span></div>
+            <div class="t3-card"><div class="body">
+              <div class="t3-field">
+                <label class="t3-label" for="prompt">Prompt</label>
+                <div class="am-prompt">
+                  <textarea class="t3-textarea" id="prompt">Audit dependencies in @t3-code for known vulnerabilities and outdated majors. Follow @playbook:dependency-bumps. Open one PR per safe bump group; skip anything with breaking changes and list it in the summary instead.</textarea>
+                  <div class="bar"><span class="am-mention">@t3-code</span><span class="am-mention pb">@playbook:dependency-bumps</span><span style="margin-left:auto">Type <span class="t3-kbd">@</span> to mention a project or playbook</span></div>
+                </div>
+              </div>
+              <div class="am-grid2">
+                <div class="t3-field">
+                  <label class="t3-label" for="project">Target project</label>
+                  <select class="t3-select" id="project"><option selected>t3-code — ~/a3-code</option><option>marketing-site</option><option>acme-api</option></select>
+                  <span class="t3-help">One project per automation in v1 (Devin allows several repos per session).</span>
+                </div>
+                <div class="t3-field">
+                  <label class="t3-label" for="provider">Provider &amp; model</label>
+                  <select class="t3-select" id="provider"><option selected>Claude Code · default model</option><option>Codex</option><option>Cursor</option><option>OpenCode</option></select>
+                  <span class="t3-help">Copied onto every thread this automation creates.</span>
+                </div>
+              </div>
+              <div class="am-grid2">
+                <div class="t3-field">
+                  <label class="t3-label" for="worktree">Workspace</label>
+                  <select class="t3-select" id="worktree"><option selected>New worktree per run</option><option>Project root (shared)</option></select>
+                </div>
+                <div class="t3-field">
+                  <label class="t3-label" for="mode">Approval policy</label>
+                  <select class="t3-select" id="mode"><option selected>Never ask (unattended)</option><option>Ask for risky actions</option><option>Ask for everything</option></select>
+                  <span class="t3-help" style="color:var(--warning-foreground)">Interactive policies stall headless runs until someone opens the thread.</span>
+                </div>
+              </div>
+              <!-- Child sessions — Devin Advanced §13.1, exact copy kept -->
+              <div class="am-toggle-row">
+                <div class="t3-grow"><span class="t3-label">Child sessions</span><span class="t3-help">Sessions can spawn child sessions automatically without your approval</span></div>
+                <button class="t3-switch on" type="button" role="switch" aria-checked="true" aria-label="Allow child sessions"><span class="thumb"></span></button>
+              </div>
+            </div></div>
+          </div>
+
+          <!-- 4. Notifications — "Alert when the automation run completes"; email when ∈ always|failure|success (Always / On failure / On success) + Remove; Slack destination (§12) -->
+          <div class="am-sec">
+            <div class="hd"><h3>Notifications</h3><span class="t3-help">Alert when the automation run completes</span><button class="t3-btn sm" type="button"><svg><use href="#i-plus"/></svg>Add notification</button></div>
+            <div class="t3-card"><div class="body">
+              <div class="am-inline">
+                <span class="t3-label" style="min-width:120px">Desktop / mobile push</span>
+                <select class="t3-select"><option>Always</option><option selected>On failure</option><option>On success</option></select>
+                <button class="t3-btn ghost sm" type="button">Remove</button>
+                <span class="t3-help">Reuses T3's turn-completion notifications.</span>
+              </div>
+              <div class="am-inline">
+                <span class="t3-label" style="min-width:120px">Email</span>
+                <select class="t3-select"><option selected>Always</option><option>On failure</option><option>On success</option></select>
+                <input class="t3-input" type="email" value="irene@example.com" style="width:220px">
+                <button class="t3-btn ghost sm" type="button">Remove</button>
+              </div>
+              <div class="am-inline">
+                <span class="t3-label" style="min-width:120px">Slack</span>
+                <select class="t3-select"><option selected>#eng-automation</option><option>#alerts</option></select>
+                <select class="t3-select"><option selected>Post agent response to channel</option><option>Post session updates to channel</option></select>
+                <span class="t3-badge sm neutral">needs Connections</span>
+              </div>
+            </div></div>
+          </div>
+
+          <!-- 5. Advanced — accordion starts open in Devin create (§8.2). Preflight code step §13.5, Limits §13.7, Queueing §13.8. -->
+          <div class="am-sec">
+            <div class="hd"><h3>Advanced</h3><span class="t3-help"></span><button class="t3-btn ghost sm" type="button" aria-expanded="true">Collapse <svg style="rotate:180deg"><use href="#i-chevron"/></svg></button></div>
+
+            <!-- Preflight — script receives the trigger event before threads are created and decides run / skip / fan out. v1 maps this onto the project setup script (mapping §1), so the card is a stub with the Devin contract kept. -->
+            <div class="t3-card">
+              <div class="head"><svg width="14" height="14"><use href="#i-code"/></svg><strong style="font-size:13px">Preflight check</strong><span class="t3-help">A script that receives the trigger event before threads are created and decides to run, skip, or fan out items.</span><button class="t3-switch on" type="button" role="switch" aria-checked="true" aria-label="Enable preflight" style="margin-left:auto"><span class="thumb"></span></button></div>
+              <div class="body">
+                <div class="am-grid3">
+                  <div class="t3-field"><label class="t3-label" for="rt">Runtime</label><select class="t3-select" id="rt"><option>Python</option><option selected>Node</option><option>Bash</option></select></div>
+                  <div class="t3-field"><label class="t3-label" for="to">Timeout (s)</label><input class="t3-input" id="to" type="number" min="1" max="300" value="60"></div>
+                  <div class="t3-field"><label class="t3-label" for="env">Environment</label><select class="t3-select" id="env"><option selected>Minimal</option><option>Project worktree</option></select></div>
+                </div>
+                <div class="am-code" style="max-height:150px;overflow:auto">// $EVENT_FILE, $STATE_FILE, $LAST_RUN_FILE are readable; write the decision to $OUTPUT_FILE
+const fs = require("node:fs");
+const event = JSON.parse(fs.readFileSync(process.env.EVENT_FILE, "utf8"));
+const state = JSON.parse(fs.readFileSync(process.env.STATE_FILE, "utf8") || "{}");
+const out = event.advisories.length ? { run: true } : { run: false, reason: "no new advisories" };
+fs.writeFileSync(process.env.OUTPUT_FILE, JSON.stringify(out));</div>
+                <div class="am-inline" style="justify-content:space-between">
+                  <span class="t3-help">Output is one of <code>{run:true}</code>, <code>{run:false,reason}</code>, or <code>{items:[…]}</code>. State cap 64KB · at most 10 new items start per run, 50 tracked.</span>
+                  <span class="am-inline"><button class="t3-btn sm" type="button"><svg><use href="#i-pencil"/></svg>Edit script</button><button class="t3-btn ghost sm" type="button">Clear State</button></span>
+                </div>
+                <span class="t3-help">State 1.2 KB · 14 handled items · secrets: <span class="t3-badge sm neutral">GITHUB_TOKEN</span></span>
+              </div>
+            </div>
+
+            <!-- Limits + Queueing -->
+            <div class="t3-card"><div class="body">
+              <div class="am-toggle-row">
+                <div class="t3-grow"><span class="t3-label">Limits</span><span class="t3-help">Cap how often this automation may fire.</span></div>
+                <button class="t3-switch on" type="button" role="switch" aria-checked="true" aria-label="Enable limits"><span class="thumb"></span></button>
+              </div>
+              <div class="am-inline">
+                <span class="t3-label" style="min-width:120px">Rate limit</span>
+                <input class="t3-input" type="number" min="1" value="10" style="width:80px"><span class="t3-help">per</span>
+                <select class="t3-select"><option>15 minutes</option><option selected>1 hour</option><option>6 hours</option><option>12 hours</option><option>24 hours</option><option>7 days</option></select>
+              </div>
+              <div class="am-inline"><span class="t3-label" style="min-width:120px">Per-run spend</span><span class="t3-help">Not applicable — bring-your-own subscription, no metering (Devin: ACU limit).</span></div>
+              <div class="t3-separator"></div>
+              <div class="am-toggle-row">
+                <div class="t3-grow"><span class="t3-label">Queueing</span><span class="t3-help">Extra events wait when the concurrency limit is reached and are dropped after the queue depth.</span></div>
+                <button class="t3-switch on" type="button" role="switch" aria-checked="true" aria-label="Enable queueing"><span class="thumb"></span></button>
+              </div>
+              <div class="am-grid2">
+                <div class="t3-field"><label class="t3-label" for="cc">Concurrent runs</label><input class="t3-input" id="cc" type="number" min="1" value="1"><span class="t3-help">v1 proposal: no queue — overflow is recorded as a skipped run.</span></div>
+                <div class="t3-field"><label class="t3-label" for="qd">Queue depth</label><input class="t3-input" id="qd" type="number" min="0" placeholder="No limit" disabled><span class="t3-help">Disabled when concurrency is unlimited.</span></div>
+              </div>
+            </div></div>
+          </div>
+        </form>
+
+        <!-- Sticky action bar — Cancel + primary Create/Update; Update disabled without a meaningful diff (§8.3) -->
+        <div class="am-sticky">
+          <span class="status"><span class="t3-dot warning" style="display:inline-block;vertical-align:middle;margin-right:6px"></span>Unsaved changes · leaving asks “Discard unsaved changes?”</span>
+          <a class="t3-btn" href="04-automation-detail-runs.html">Cancel</a>
+          <button class="t3-btn primary" type="submit">Update automation</button>
+        </div>
+      </section>
+
+      <aside class="t3-details" aria-label="Details">
+        <h2>Summary</h2>
+        <dl>
+          <dt>Trigger</dt><dd>Daily at 02:00 (Berlin)</dd>
+          <dt>Next run</dt><dd>Sep 21, 02:00</dd>
+          <dt>Project</dt><dd>t3-code</dd>
+          <dt>Provider</dt><dd>Claude Code</dd>
+          <dt>Workspace</dt><dd>New worktree per run</dd>
+          <dt>Approval</dt><dd>Never ask</dd>
+          <dt>Preflight</dt><dd>Node · 60s</dd>
+          <dt>Limit</dt><dd>10 / hour · 1 concurrent</dd>
+        </dl>
+        <div class="sec" style="margin-top:18px">
+          <h2>Validation</h2>
+          <span class="t3-help" style="display:flex;gap:6px;align-items:center"><svg width="12" height="12" style="color:var(--success-foreground)"><use href="#i-check"/></svg>Name, trigger and prompt are set</span>
+          <span class="t3-help" style="display:flex;gap:6px;align-items:center"><svg width="12" height="12" style="color:var(--success-foreground)"><use href="#i-check"/></svg>RRULE parses; next run computed</span>
+          <span class="t3-help" style="display:flex;gap:6px;align-items:center"><svg width="12" height="12" style="color:var(--warning-foreground)"><use href="#i-alert"/></svg>Slack destination needs a Connection</span>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Theme toggle: light ⇄ dark via the `.dark` class on <html> (t3-tokens.css mechanism). Default light.
+  (function () {
+    var html = document.documentElement, btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var dark = html.classList.toggle('dark');
+      html.classList.toggle('light', !dark);
+    });
+  })();
+</script>
+</body>
+</html>

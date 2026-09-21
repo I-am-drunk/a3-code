@@ -1,0 +1,24 @@
+# NOTES-taskB — Automations list / editor / detail mockups
+
+## Grounding read (done)
+- BRIEF.md fully; README-tokens.md fully; t3-tokens.css header (stable classes) + class index; t3-shell.html fully (sidebar, sprite ids: i-search i-folder i-folder-plus i-plus i-settings i-pr i-usage i-chevron i-running i-check i-question i-branch i-pin i-alarm i-zap i-sun; theme toggle script).
+- Active Automations nav item markup: `01-sidebar-automations-tab.html:288-291` (`.t3-nav-item.is-active.has-indicator` + `.t3-nav-badge` error-tinted "1 failed").
+- Mapping proposal §1, §4, §5 (`B-t3-code-mapping-proposal.md:5-40, 195-252`): v1 triggers schedule/webhook/manual; runs = threads (status from `latestTurn.state`); one project per automation; Preflight = project setup script; webhook route `/api/automations/webhooks/:token`; reverse states table §5.
+- Devin spec: §6 list (`DEVIN_AUTOMATIONS_DECOMPILED_SPEC.md:379-465`), §8 editor lifecycle (521-580), §9.4 schedule / §9.5 webhook (669-687), §12 notifications (840-852), §13.1/13.5/13.7/13.8 (856-958), §17.2-17.6 detail header/run dialog/overflow (1160-1264), §18.1-18.3 history (1278-1340).
+
+## Devin copy to use (from spec; PROVEN there)
+- List header: "Automations" / "Bring Devin into your recurring and event-driven workflows"; tabs "All <n>", "Created by you <n>"; "Create automation" split: "Generate with Devin", "Manual", "Template"; badges "Disabled", "Personal"; columns Name / Last 30 days / Last triggered; empty: "No automations yet", "No automations match these filters" + Clear all; entry cards "Most popular"/"Less common"; "No metadata yet".
+- Editor: sticky Cancel + Create/Update; sections Name → Triggers ("Add trigger") → Agent definition → Notifications ("Alert when the automation run completes", "Add notification"; Always / On failure / On success; Remove) → Advanced; child sessions "Sessions can spawn child sessions automatically without your approval"; RRULE placeholder `FREQ=WEEKLY;BYDAY=MO;BYHOUR=9;BYMINUTE=0` + UTC hint + Apply; webhook secret via `X-Webhook-Secret`, `Authorization: Bearer`, or `secret` query param; "Payload filter:"; Limits: Concurrent runs / Queue depth; windows 15 minutes…7 days; discard dialog "Discard unsaved changes?" / Discard / Cancel; Preflight: `$EVENT_FILE $STATE_FILE $LAST_RUN_FILE $OUTPUT_FILE`, output `{run:true}` / `{run:false,reason}` / `{items:[...]}`, runtime Python/Node/Bash, timeout 1..300 default 60, Clear State (type `clear`).
+- Detail: Edit (secondary), "Improve with Devin" (secondary), "Run automation" (primary), overflow: View sessions, View errors, Enable/Disable, Duplicate, Delete; status "Active"/"Inactive"; "Untitled automation"; "Last updated by …"; Triggers / Instructions headings; tabs Events / Consumption; range "Last 4 weeks"; "{{count}} events", "{{rate}}% success rate"; statuses Queued Running Succeeded Failed Skipped Canceled; run dialog: "Manually run automation now. Please provide context that will be included as additional context for this run." placeholder "i.e. provide context for this run", Cancel/Run; schedule variant "This will start a new Devin session using the automation's configured prompt."; success "Automation triggered" / "A new run will start shortly and appear in the events history." / Close; delete: "Delete automation" / "Are you sure you want to delete “{{name}}”? This action cannot be undone."
+
+## Plan
+- Common: copy shell head + sprite (add icons: clock, webhook, hand/play, more-horizontal, copy, trash, x, alert, arrow-right, chevron-right, code), sidebar with active Automations nav item, `.t3-page` + `.t3-details`. Extra page-local CSS in a `<style>` block, prefixed `.am-`.
+- 02: header + tabs + search + Create split; table rows (6) w/ sparkline placeholders (static inline SVG polyline), toggle, last-run badge; empty variant + 3 entry cards; templates strip. Dark shown via toggle only (default light).
+- 03: form sections in order; trigger segmented tabs Schedule|Webhook|Manual (all three panes shown stacked with the tab state; Schedule active); conditions groups; prompt w/ mention chips; notifications; advanced (Preflight card, Limits, Queueing); sticky bar.
+- 04: header, trigger summary, chart placeholder, runs table with selected row → `.t3-details` run pane; Run dialog rendered as overlay in the page (static).
+- Verify: python html.parser tag balance; headless Chrome PNG each; Read PNG once.
+
+## Done (2026-09-20)
+- Built via `_work/mockups/build.sh <out> <title> <body>` from frag-sprite/frag-sidebar/frag-style/frag-script + body-02/03/04.html.
+- Deliverables written: decompile-3.10.31/mockups/02-automations-list.html (432 lines), 03-automation-editor.html (503), 04-automation-detail-runs.html (434), README.md (67).
+- check.py tag balance: all OK. PNGs at _work/mockups/0{2,3,4}-*.png reviewed once; fixes: toolbar select auto width, menu nowrap, table td nowrap, overlay excludes details slot.

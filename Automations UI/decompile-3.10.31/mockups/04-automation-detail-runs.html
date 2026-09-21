@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en" class="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T3 Code — Nightly dependency audit</title>
+<link rel="stylesheet" href="t3-tokens.css">
+<style>
+  /* Page-local mockup styles (prefix am-). Everything token-based; no animations. */
+  .theme-toggle { margin-left: auto; }
+  .am-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+  .am-head h2 { margin: 0; font-size: 17px; font-weight: 500; line-height: 24px; }
+  .am-head .sub { margin: 2px 0 0; font-size: 13px; color: var(--muted-foreground); }
+  .am-head .actions { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .am-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .am-toolbar .t3-input { width: 220px; }
+  .am-toolbar .t3-select { width: auto; min-width: 140px; }
+  .am-menu .t3-menu-item { white-space: nowrap; }
+  .am-split { display: inline-flex; }
+  .am-split .t3-btn:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+  .am-split .t3-btn:last-child { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: -1px; width: 28px; padding: 0; }
+  .am-name { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .am-name .title { font-size: 13px; font-weight: 500; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .am-name .meta { font-size: 12px; color: var(--muted-foreground); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .am-name a { color: inherit; text-decoration: none; }
+  .am-trig { display: inline-flex; align-items: center; gap: 6px; color: var(--secondary-foreground); white-space: nowrap; }
+  .am-trig svg { width: 14px; height: 14px; color: var(--muted-foreground); }
+  .am-repo { display: inline-flex; align-items: center; gap: 6px; }
+  .am-spark { display: block; width: 91px; height: 20px; }
+  .am-spark .line { fill: none; stroke: var(--info); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+  .am-spark .flat { stroke: var(--muted-foreground); opacity: .5; }
+  .am-row-dim td:not(.am-actions) { opacity: .55; }
+  .am-actions { text-align: right; white-space: nowrap; }
+  .am-status { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .am-status .when { color: var(--muted-foreground); }
+  .am-entry { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+  .am-entry .t3-card { padding: 14px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+  .am-entry .t3-card.hot { border-color: color-mix(in srgb, var(--info) 45%, var(--border)); background: color-mix(in srgb, var(--info) 6%, var(--card)); }
+  .am-entry .tile { width: 28px; height: 28px; border-radius: var(--radius-md); background: var(--secondary); display: inline-flex; align-items: center; justify-content: center; }
+  .am-entry .tile svg { width: 14px; height: 14px; }
+  .am-entry .title { font-size: 13px; font-weight: 500; }
+  .am-entry .desc { font-size: 12px; color: var(--muted-foreground); }
+  .am-entry .foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--muted-foreground); }
+  .am-entry .foot svg { width: 14px; height: 14px; }
+  .am-templates { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .am-templates .t3-card { padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; }
+  .am-templates .title { font-size: 13px; font-weight: 500; }
+  .am-templates .desc { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+  .am-section-title { display: flex; align-items: center; gap: 8px; margin: 24px 0 10px; font-size: 13px; font-weight: 500; }
+  .am-section-title .t3-help { font-weight: 400; }
+  .am-menu { position: absolute; right: 0; top: 100%; margin-top: 4px; min-width: 176px; padding: 4px; z-index: 5; }
+  .am-anchor { position: relative; display: inline-block; }
+  .am-variant { border-top: 1px dashed var(--border); margin-top: 32px; padding-top: 16px; }
+  .am-variant-label { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted-foreground); margin-bottom: 12px; }
+  /* Editor */
+  .am-form { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; padding-bottom: 72px; }
+  .am-form .name { height: 38px; font-size: 17px; font-weight: 500; }
+  .am-sec { display: flex; flex-direction: column; gap: 10px; }
+  .am-sec > .hd { display: flex; align-items: center; gap: 8px; }
+  .am-sec > .hd h3 { margin: 0; font-size: 14px; font-weight: 500; }
+  .am-sec > .hd .t3-help { flex: 1; }
+  .am-sec .t3-card > .body { display: flex; flex-direction: column; gap: 12px; }
+  .am-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .am-grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .am-inline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .am-inline .t3-select, .am-inline .t3-input { width: auto; }
+  .am-days { display: inline-flex; gap: 2px; }
+  .am-days button { width: 30px; height: 26px; border: 1px solid var(--input); background: var(--background); color: var(--secondary-foreground); border-radius: var(--radius-sm); font-size: 12px; font-family: inherit; cursor: pointer; }
+  .am-days button.on { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+  .am-code { font-family: var(--font-mono); font-size: 12px; background: var(--code-background); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 12px; white-space: pre-wrap; word-break: break-all; line-height: 1.5; color: var(--foreground); }
+  .am-code.secret { display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; }
+  .am-code.secret .v { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+  .am-cond-group { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; display: flex; flex-direction: column; gap: 8px; background: var(--background); }
+  .am-cond { display: grid; grid-template-columns: 1fr 140px 1fr 28px; gap: 8px; align-items: center; }
+  .am-op { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .06em; }
+  .am-op .line { flex: 1; height: 1px; background: var(--border); }
+  .am-prompt { position: relative; }
+  .am-prompt .t3-textarea { min-height: 150px; font-size: 13px; padding-bottom: 36px; }
+  .am-prompt .bar { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted-foreground); }
+  .am-mention { display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 6px; border-radius: 5px; font-size: 12px; background: color-mix(in srgb, var(--info) 12%, transparent); color: var(--info); font-family: var(--font-mono); }
+  .am-mention.pb { background: color-mix(in srgb, var(--primary) 8%, transparent); color: var(--foreground); }
+  .am-toggle-row { display: flex; align-items: center; gap: 12px; }
+  .am-toggle-row .t3-grow .t3-label { display: block; } .am-toggle-row .t3-grow .t3-help { display: block; margin-top: 2px; }
+  .am-sticky { position: sticky; bottom: 0; margin: 0 -24px -20px; padding: 12px 24px; background: color-mix(in srgb, var(--background) 92%, transparent); backdrop-filter: blur(8px); border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+  .am-sticky .status { margin-right: auto; font-size: 12px; color: var(--muted-foreground); align-self: center; }
+  .am-warn { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: var(--radius-md); background: var(--warning-surface); color: var(--warning-foreground); font-size: 12px; }
+  .am-warn svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+  /* Detail */
+  .am-dhead { display: flex; align-items: flex-start; gap: 16px; }
+  .am-dhead .t { min-width: 0; }
+  .am-dhead h2 { margin: 0; font-size: 17px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+  .am-dhead .origin { font-size: 12px; color: var(--muted-foreground); margin-top: 4px; }
+  .am-kv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+  .am-kv .t3-panel { padding: 12px 14px; }
+  .am-kv .k { font-size: 11px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .04em; }
+  .am-kv .v { font-size: 14px; font-weight: 500; margin-top: 4px; display: flex; align-items: center; gap: 8px; }
+  .am-chart { height: 120px; display: flex; align-items: flex-end; gap: 4px; padding: 0 2px; }
+  .am-chart .b { flex: 1; display: flex; flex-direction: column-reverse; gap: 1px; }
+  .am-chart .s { background: var(--success); opacity: .8; } .am-chart .f { background: var(--error); } .am-chart .k { background: var(--muted-foreground); opacity: .35; } .am-chart .r { background: var(--update); }
+  .am-chart .b > span:last-child { border-radius: 2px 2px 0 0; }
+  .am-legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted-foreground); }
+  .am-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .am-legend i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+  .am-log { font-family: var(--font-mono); font-size: 11.5px; background: var(--code-background); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; white-space: pre-wrap; line-height: 1.5; max-height: 220px; overflow: auto; }
+  .am-log .ok { color: var(--success-foreground); } .am-log .err { color: var(--error-foreground); } .am-log .dim { color: var(--muted-foreground); }
+  .am-thread { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card); text-decoration: none; color: inherit; }
+  .am-thread .ti { font-size: 13px; font-weight: 500; } .am-thread .tm { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; display: flex; gap: 8px; align-items: center; }
+  .am-thread .tm svg { width: 12px; height: 12px; }
+  .am-overlay { position: absolute; inset: 0; background: color-mix(in srgb, var(--color-black) 35%, transparent); display: flex; align-items: center; justify-content: center; z-index: 20; }
+  .am-dialog { width: 440px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .am-dialog h3 { margin: 0; font-size: 15px; font-weight: 500; }
+  .am-dialog p { margin: 0; font-size: 13px; color: var(--muted-foreground); }
+  .am-dialog .foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+  .t3-table td.t3-tabular { white-space: nowrap; }
+  .t3-details .sec { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+</style>
+</head>
+<body>
+<!-- Inline SVG sprite: lucide icon paths used by the shell (search, folder, plus, settings, git-pull-request, bar-chart, chevron-down, circle-dashed, circle-check, message-circle-question, git-branch, pin, alarm-clock). -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-folder-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10v6"/><path d="M9 13h6"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-pr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" x2="6" y1="9" y2="21"/></symbol>
+    <symbol id="i-usage" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-running" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.1 2.18a9.93 9.93 0 0 1 3.8 0"/><path d="M17.6 3.71a9.95 9.95 0 0 1 2.69 2.7"/><path d="M21.82 10.1a9.93 9.93 0 0 1 0 3.8"/><path d="M20.29 17.6a9.95 9.95 0 0 1-2.7 2.69"/><path d="M13.9 21.82a9.94 9.94 0 0 1-3.8 0"/><path d="M6.4 20.29a9.95 9.95 0 0 1-2.69-2.7"/><path d="M2.18 13.9a9.93 9.93 0 0 1 0-3.8"/><path d="M3.71 6.4a9.95 9.95 0 0 1 2.7-2.69"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-question" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="i-alarm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-webhook" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v2"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.94 14.34 9 17l-.94-2.66a4 4 0 0 0-2.4-2.4L3 11l2.66-.94a4 4 0 0 0 2.4-2.4L9 5l.94 2.66a4 4 0 0 0 2.4 2.4L15 11l-2.66.94a4 4 0 0 0-2.4 2.4Z"/><path d="M19 3v4"/><path d="M21 5h-4"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+    <symbol id="i-skip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></symbol>
+    <symbol id="i-xcircle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
+    <symbol id="i-layout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.17 6.83a2.83 2.83 0 0 0-4-4L4 16v4h4Z"/><path d="m15 5 4 4"/></symbol>
+  </defs>
+</svg>
+
+<div class="t3-app">
+  <!-- LEFT SIDEBAR — AppSidebarLayout.tsx:243-247 / Sidebar.tsx ThreadSidebar -->
+  <aside class="t3-sidebar" data-app-sidebar>
+    <!-- SidebarChrome.tsx:50-75 -->
+    <header class="t3-sidebar-header">
+      <a class="t3-sidebar-brand" href="#" aria-label="Go to threads"><span class="wordmark">T3</span><span class="suffix">Code</span></a>
+      <span class="t3-badge sm pill neutral t3-env-pill">macbook-pro</span>
+    </header>
+
+    <!-- SidebarThreadHeader.tsx:82-145 -->
+    <div class="t3-sidebar-toolbar">
+      <button class="t3-sidebar-search" type="button" aria-label="Search threads"><svg width="16" height="16"><use href="#i-search"/></svg><span>Search</span></button>
+      <div class="t3-sidebar-actions">
+        <button class="t3-icon-btn" type="button" aria-label="Filter threads by project"><svg><use href="#i-folder"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="New project"><svg><use href="#i-folder-plus"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="New thread"><svg><use href="#i-plus"/></svg></button>
+      </div>
+    </div>
+
+    <!-- Sidebar.tsx:3384-3398 list order: pinned → active → Snoozed shelf → Settled shelf -->
+    <nav class="t3-sidebar-content" aria-label="Threads">
+      <!-- Automations nav item — active state (01-sidebar-automations-tab.html:288-291) -->
+      <a class="t3-nav-item is-active has-indicator" href="02-automations-list.html" aria-label="Automations, selected, 1 failed">
+        <svg><use href="#i-zap"/></svg><span class="t3-grow t3-truncate">Automations</span><span class="t3-nav-badge" style="background:var(--error-surface);color:var(--error-foreground)">1 failed</span>
+      </a>
+      <div style="height:6px"></div>
+      <ul class="t3-sidebar-list">
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><svg width="12" height="12" style="color:var(--sidebar-muted-foreground);opacity:.65"><use href="#i-pin"/></svg><span class="t3-status-slot running" title="Working"><svg><use href="#i-running"/></svg></span></div>
+          <div class="t3-thread-title">Reconcile native change labels against pinned commits</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">fix/ci-native-labels</span><span class="add">+128</span><span class="del">−41</span></div>
+        </a></li>
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><span class="t3-status-slot attention" title="Needs your input"><svg><use href="#i-question"/></svg></span></div>
+          <div class="t3-thread-title">Strip Alchemy progress before parsing relay state</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">fix/release-relay-progress</span><span class="add">+22</span><span class="del">−9</span></div>
+        </a></li>
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.6 0.16 150)">MK</span><span class="name">marketing-site</span><span class="t3-status-slot running"><svg><use href="#i-running"/></svg></span></div>
+          <div class="t3-thread-title">Rewrite the pricing FAQ copy and add a comparison table</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">content/pricing-faq</span></div>
+        </a></li>
+        <li class="t3-thread-row"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.62 0.18 30)">AP</span><span class="name">acme-api</span><span class="t3-status-slot">2m</span></div>
+          <div class="t3-thread-title">Investigate flaky webhook retry test in CI</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">main</span></div>
+        </a></li>
+
+        <!-- Snoozed shelf — Sidebar.tsx:4877-4893 -->
+        <li><button class="t3-shelf snoozed t3-shelf-spacer" type="button" aria-expanded="true"><span>Snoozed</span><span class="line"></span><svg style="rotate:180deg"><use href="#i-chevron"/></svg></button></li>
+        <li class="t3-thread-row is-receded"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><span class="t3-status-slot" style="color:var(--snooze-fg)"><svg><use href="#i-alarm"/></svg>&nbsp;Mon</span></div>
+          <div class="t3-thread-title">Mobile composer route transition polish</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">mobile/composer-transition</span></div>
+        </a></li>
+
+        <!-- Settled shelf — Sidebar.tsx:4895-4912 -->
+        <li><button class="t3-shelf" type="button" aria-expanded="false"><span>Settled (14)</span><span class="line"></span><svg><use href="#i-chevron"/></svg></button></li>
+        <li class="t3-thread-row is-receded"><a class="surface" href="#">
+          <div class="t3-thread-project"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span><span class="name">t3-code</span><span class="t3-status-slot done"><svg><use href="#i-check"/></svg></span></div>
+          <div class="t3-thread-title">Accept SDK elicitation requests in ACP adapter</div>
+          <div class="t3-thread-meta"><svg><use href="#i-branch"/></svg><span class="branch">acp/elicitation</span><span class="add">+310</span><span class="del">−12</span></div>
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- SidebarChrome.tsx:187-227 -->
+    <footer class="t3-sidebar-footer">
+      <div class="menu">
+        <button class="t3-icon-btn" type="button" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="Pull Requests"><svg><use href="#i-pr"/></svg></button>
+        <button class="t3-icon-btn" type="button" aria-label="Usage"><svg><use href="#i-usage"/></svg></button>
+        <span class="t3-update-pill">Update 1.4.2</span>
+      </div>
+    </footer>
+  </aside>
+
+  <!-- MAIN COLUMN -->
+  <main class="t3-main">
+    <div class="t3-topbar">
+      <span class="crumb">macbook-pro</span><span class="crumb">/</span><a class="crumb" href="02-automations-list.html" style="text-decoration:none">Automations</a><span class="crumb">/</span><h1>Nightly dependency audit</h1>
+      <button class="t3-btn ghost sm icon theme-toggle" type="button" id="theme-toggle" aria-label="Toggle theme"><svg><use href="#i-sun"/></svg></button>
+    </div>
+    <div class="t3-body" style="position:relative">
+      <section class="t3-page">
+        <!-- Header — Devin order: Edit (secondary) · Improve with Devin (secondary) · Run automation (primary) · overflow (spec §17.2). Status icon + Active/Inactive. -->
+        <div class="am-dhead">
+          <div class="t">
+            <h2><svg width="16" height="16" style="color:var(--muted-foreground)"><use href="#i-clock"/></svg>Nightly dependency audit <span class="t3-badge success"><span class="t3-dot success"></span>Active</span></h2>
+            <div class="origin">Created by you · Sep 2, 2026 · Last updated by you · Sep 18, 2026 · <span class="am-repo" style="vertical-align:middle"><span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span>t3-code</span></div>
+          </div>
+          <div class="am-head actions" style="margin:0 0 0 auto">
+            <a class="t3-btn secondary" href="03-automation-editor.html"><svg><use href="#i-pencil"/></svg>Edit</a>
+            <button class="t3-btn secondary" type="button" disabled title="Not in v1 — Devin: Improve with Devin"><svg><use href="#i-sparkles"/></svg>Improve</button>
+            <button class="t3-btn primary" type="button"><svg><use href="#i-play"/></svg>Run automation</button>
+            <div class="am-anchor">
+              <button class="t3-btn icon" type="button" aria-label="More actions" aria-expanded="true"><svg><use href="#i-more"/></svg></button>
+              <!-- Overflow §17.5: View sessions · View errors · Disable · Duplicate · Delete -->
+              <div class="t3-popup am-menu" role="menu">
+                <div class="t3-menu-item" role="menuitem"><svg width="14" height="14"><use href="#i-external"/></svg>View threads</div>
+                <div class="t3-menu-item" role="menuitem"><svg width="14" height="14"><use href="#i-alert"/></svg>View errors</div>
+                <div class="t3-menu-item" role="menuitem"><svg width="14" height="14"><use href="#i-x"/></svg>Disable</div>
+                <div class="t3-menu-item" role="menuitem"><svg width="14" height="14"><use href="#i-copy"/></svg>Duplicate</div>
+                <div class="t3-separator"></div>
+                <div class="t3-menu-item destructive" role="menuitem"><svg width="14" height="14"><use href="#i-trash"/></svg>Delete</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary tiles — v1 additions; Devin puts Triggers + Instructions read-only cards here (§17.6) -->
+        <div class="am-kv">
+          <div class="t3-panel"><div class="k">Trigger</div><div class="v"><svg width="14" height="14" style="color:var(--muted-foreground)"><use href="#i-clock"/></svg>Daily at 02:00</div><div class="t3-help">Europe/Berlin · FREQ=DAILY;BYHOUR=2</div></div>
+          <div class="t3-panel"><div class="k">Next run</div><div class="v">in 6h</div><div class="t3-help">Sep 21, 02:00</div></div>
+          <div class="t3-panel"><div class="k">Last 4 weeks</div><div class="v">27 events</div><div class="t3-help">93% success rate</div></div>
+          <div class="t3-panel"><div class="k">Limits</div><div class="v">1 concurrent</div><div class="t3-help">10 / hour · Preflight on</div></div>
+        </div>
+
+        <!-- Read-only Triggers + Instructions (§17.6): prompt shown verbatim, whitespace preserved, no markdown -->
+        <div class="am-grid2" style="margin-bottom:16px">
+          <div class="t3-card">
+            <div class="head"><strong style="font-size:13px">Trigger</strong></div>
+            <div class="body">
+              <div class="am-trig"><svg><use href="#i-clock"/></svg>Every day at 02:00 (GMT+02:00 Berlin)</div>
+              <div class="t3-help" style="margin-top:8px">Preflight: Node · 60s · decides run/skip from new advisories</div>
+              <div class="t3-help">Rate limit: 10 per hour · concurrency 1 · overflow is skipped</div>
+            </div>
+          </div>
+          <div class="t3-card">
+            <div class="head"><strong style="font-size:13px">Instructions</strong><span class="t3-help">— starts a thread in t3-code with Claude Code</span></div>
+            <div class="body"><div style="font-size:13px;white-space:pre-wrap;max-height:120px;overflow:auto;line-height:1.45">Audit dependencies in @t3-code for known vulnerabilities and outdated majors. Follow @playbook:dependency-bumps. Open one PR per safe bump group; skip anything with breaking changes and list it in the summary instead.</div></div>
+          </div>
+        </div>
+
+        <!-- History — Devin tabs Events / Consumption, range "Last 4 weeks", stacked chart (§18.1-18.2). Consumption dropped (no metering). -->
+        <div class="am-toolbar" style="justify-content:space-between">
+          <div class="t3-tabs" role="tablist"><button class="t3-tab is-active" role="tab" aria-selected="true">Runs</button><button class="t3-tab" role="tab" aria-selected="false">Errors</button></div>
+          <div class="am-inline">
+            <select class="t3-select sm" aria-label="Date range"><option>Last week</option><option selected>Last 4 weeks</option><option>Custom range</option></select>
+            <select class="t3-select sm" aria-label="Status filter"><option selected>All statuses</option><option>Queued</option><option>Running</option><option>Succeeded</option><option>Failed</option><option>Skipped</option><option>Canceled</option></select>
+            <input class="t3-input sm" type="search" placeholder="Search this page…" aria-label="Search runs on this page" style="width:170px">
+          </div>
+        </div>
+        <div class="t3-card" style="margin-bottom:12px"><div class="body" style="padding:14px 16px">
+          <div class="am-inline" style="justify-content:space-between;margin-bottom:10px"><strong style="font-size:13px">27 events <span class="t3-help" style="font-weight:400">· 93% success rate</span></strong>
+            <div class="am-legend"><span><i style="background:var(--success);opacity:.8"></i>Succeeded</span><span><i style="background:var(--error)"></i>Failed</span><span><i style="background:var(--muted-foreground);opacity:.35"></i>Skipped</span><span><i style="background:var(--update)"></i>In progress</span></div></div>
+          <!-- Static stacked bars, one per day, 29 buckets (spec: 4-week preset floors to 29 daily buckets). -->
+          <div class="am-chart" aria-label="Run activity, daily">
+            <div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span><span class="k" style="height:20px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="f" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div>
+            <div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="k" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div>
+            <div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span><span class="f" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"></div><div class="b"><span class="s" style="height:40px"></span></div>
+            <div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="k" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span><span class="s" style="height:40px"></span></div><div class="b"><span class="s" style="height:40px"></span></div><div class="b"><span class="r" style="height:40px"></span></div>
+          </div>
+          <div class="am-inline" style="justify-content:space-between;margin-top:6px"><span class="t3-help">Aug 23</span><span class="t3-help">Sep 20</span></div>
+        </div></div>
+
+        <!-- Runs table — Devin events table (§18.3): 50/page, status multi-select, current-page search. Each run IS a thread (mapping §1), so the thread link is the row's primary target. -->
+        <div class="t3-panel">
+        <table class="t3-table" aria-label="Run history">
+          <thead><tr><th>Status</th><th>Started</th><th>Duration</th><th>Trigger</th><th>Thread</th><th style="width:44px"></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="t3-badge running"><span class="t3-dot running"></span>Running</span></td>
+              <td class="t3-tabular">Sep 20, 02:00</td><td class="t3-tabular">—</td><td><span class="am-trig"><svg><use href="#i-clock"/></svg>Schedule</span></td>
+              <td><a href="#" class="t3-row" style="color:inherit;text-decoration:none"><svg width="12" height="12"><use href="#i-branch"/></svg><span class="t3-truncate">Dependency audit 2026-09-20</span></a></td>
+              <td class="am-actions"><button class="t3-btn ghost sm icon" type="button" aria-label="More"><svg><use href="#i-more"/></svg></button></td>
+            </tr>
+            <tr class="is-selected" aria-selected="true">
+              <td><span class="t3-badge error"><svg width="12" height="12"><use href="#i-xcircle"/></svg>Failed</span></td>
+              <td class="t3-tabular">Sep 19, 02:00</td><td class="t3-tabular">14m 02s</td><td><span class="am-trig"><svg><use href="#i-clock"/></svg>Schedule</span></td>
+              <td><a href="#" class="t3-row" style="color:inherit;text-decoration:none"><svg width="12" height="12"><use href="#i-branch"/></svg><span class="t3-truncate">Dependency audit 2026-09-19</span></a></td>
+              <td class="am-actions"><button class="t3-btn ghost sm icon" type="button" aria-label="More"><svg><use href="#i-more"/></svg></button></td>
+            </tr>
+            <tr>
+              <td><span class="t3-badge success"><svg width="12" height="12"><use href="#i-check"/></svg>Succeeded</span></td>
+              <td class="t3-tabular">Sep 18, 14:22</td><td class="t3-tabular">9m 40s</td><td><span class="am-trig"><svg><use href="#i-hand"/></svg>Manual · you</span></td>
+              <td><a href="#" class="t3-row" style="color:inherit;text-decoration:none"><svg width="12" height="12"><use href="#i-branch"/></svg><span class="t3-truncate">Dependency audit (manual) — focus on esbuild advisory</span></a></td>
+              <td class="am-actions"><button class="t3-btn ghost sm icon" type="button" aria-label="More"><svg><use href="#i-more"/></svg></button></td>
+            </tr>
+            <tr>
+              <td><span class="t3-badge success"><svg width="12" height="12"><use href="#i-check"/></svg>Succeeded</span></td>
+              <td class="t3-tabular">Sep 18, 02:00</td><td class="t3-tabular">11m 18s</td><td><span class="am-trig"><svg><use href="#i-clock"/></svg>Schedule</span></td>
+              <td><a href="#" class="t3-row" style="color:inherit;text-decoration:none"><svg width="12" height="12"><use href="#i-branch"/></svg><span class="t3-truncate">Dependency audit 2026-09-18</span> <span class="t3-badge sm success" style="margin-left:6px">PR #12530</span></a></td>
+              <td class="am-actions"><button class="t3-btn ghost sm icon" type="button" aria-label="More"><svg><use href="#i-more"/></svg></button></td>
+            </tr>
+            <tr>
+              <td><span class="t3-badge neutral"><svg width="12" height="12"><use href="#i-skip"/></svg>Skipped</span></td>
+              <td class="t3-tabular">Sep 17, 02:00</td><td class="t3-tabular">0.8s</td><td><span class="am-trig"><svg><use href="#i-clock"/></svg>Schedule</span></td>
+              <td><span class="t3-help">No thread · preflight returned <code>{run:false, reason:"no new advisories"}</code></span></td>
+              <td class="am-actions"><button class="t3-btn ghost sm icon" type="button" aria-label="More"><svg><use href="#i-more"/></svg></button></td>
+            </tr>
+            <tr>
+              <td><span class="t3-badge neutral"><svg width="12" height="12"><use href="#i-clock"/></svg>Queued</span></td>
+              <td class="t3-tabular">Sep 16, 02:00</td><td class="t3-tabular">—</td><td><span class="am-trig"><svg><use href="#i-webhook"/></svg>Webhook</span></td>
+              <td><span class="t3-help">Waiting · concurrency limit 1 reached (v1 proposal records this as skipped instead)</span></td>
+              <td class="am-actions"><button class="t3-btn ghost sm icon" type="button" aria-label="More"><svg><use href="#i-more"/></svg></button></td>
+            </tr>
+            <tr>
+              <td><span class="t3-badge warning"><svg width="12" height="12"><use href="#i-xcircle"/></svg>Canceled</span></td>
+              <td class="t3-tabular">Sep 15, 02:00</td><td class="t3-tabular">2m 05s</td><td><span class="am-trig"><svg><use href="#i-clock"/></svg>Schedule</span></td>
+              <td><a href="#" class="t3-row" style="color:inherit;text-decoration:none"><svg width="12" height="12"><use href="#i-branch"/></svg><span class="t3-truncate">Dependency audit 2026-09-15</span> <span class="t3-help" style="margin-left:6px">interrupted by you</span></a></td>
+              <td class="am-actions"><button class="t3-btn ghost sm icon" type="button" aria-label="More"><svg><use href="#i-more"/></svg></button></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="am-inline" style="justify-content:space-between;margin-top:8px"><span class="t3-help">1–7 of 27</span><span class="am-inline"><button class="t3-btn sm" type="button" disabled>Previous</button><button class="t3-btn sm" type="button">Next</button></span></div>
+      </section>
+
+      <!-- Selected run in the details slot: thread link, preflight output, log tail. Devin: Preflight run modal (§18.4) + error-logs route; T3: the thread is the record. -->
+      <aside class="t3-details" aria-label="Run details">
+        <div class="sec">
+          <h2>Run · Sep 19, 02:00</h2>
+          <div class="am-inline"><span class="t3-badge error"><svg width="12" height="12"><use href="#i-xcircle"/></svg>Failed</span><span class="t3-help">14m 02s · schedule</span><button class="t3-btn ghost sm" type="button" style="margin-left:auto">Re-run</button></div>
+          <dl>
+            <dt>Thread</dt><dd><a href="#" style="color:inherit">Dependency audit 2026-09-19</a></dd>
+            <dt>Worktree</dt><dd class="t3-mono t3-xs">.t3/worktrees/auto-dep-0919</dd>
+            <dt>Provider</dt><dd>Claude Code</dd>
+            <dt>Turn state</dt><dd class="t3-mono t3-xs">error</dd>
+          </dl>
+        </div>
+        <div class="sec">
+          <h2>Linked thread</h2>
+          <a class="am-thread" href="#">
+            <span class="t3-favicon" style="--favicon-bg:oklch(0.55 0.15 264)">T3</span>
+            <div class="t3-grow"><div class="ti">Dependency audit 2026-09-19</div><div class="tm"><svg><use href="#i-branch"/></svg>auto/dep-audit-0919 <span class="add" style="color:var(--diff-addition-foreground)">+0</span><span style="color:var(--diff-deletion-foreground)">−0</span></div></div>
+            <svg width="14" height="14" style="color:var(--muted-foreground)"><use href="#i-chevron-right"/></svg>
+          </a>
+        </div>
+        <div class="sec">
+          <h2>Preflight output</h2>
+          <div class="am-log"><span class="dim">$ node preflight.js  (60s budget)</span>
+<span class="ok">✓</span> read $EVENT_FILE (2 advisories)
+<span class="ok">✓</span> wrote $OUTPUT_FILE → {"run":true}
+<span class="dim">exit 0 · 412ms</span></div>
+        </div>
+        <div class="sec">
+          <h2>Log</h2>
+          <div class="am-log"><span class="dim">02:00:03</span> thread created · worktree ready
+<span class="dim">02:00:09</span> setup script: vp i … ok (41s)
+<span class="dim">02:01:12</span> turn started (Claude Code)
+<span class="dim">02:13:48</span> <span class="err">provider exited 1: rate limit reached (429)</span>
+<span class="dim">02:14:02</span> turn state → error</div>
+          <button class="t3-btn sm" type="button" style="align-self:flex-start"><svg><use href="#i-external"/></svg>Open thread</button>
+        </div>
+      </aside>
+
+      <!-- Run dialog — §17.4. Non-schedule automations show the optional context textarea; schedule ones show only the sentence. Success state swaps to "Automation triggered". -->
+      <div class="am-overlay" role="presentation" style="right:var(--details-width)">
+        <div class="t3-popup am-dialog" role="dialog" aria-modal="true" aria-labelledby="run-title">
+          <h3 id="run-title">Run automation</h3>
+          <p>Manually run automation now. Please provide context that will be included as additional context for this run.</p>
+          <textarea class="t3-textarea" rows="4" placeholder="i.e. provide context for this run" aria-label="Additional context"></textarea>
+          <p class="t3-help">A new thread opens in <strong>t3-code</strong> using the automation's configured prompt.</p>
+          <div class="foot"><button class="t3-btn" type="button">Cancel</button><button class="t3-btn primary" type="button">Run</button></div>
+          <div class="t3-separator"></div>
+          <p class="t3-help"><strong>Success state:</strong> title “Automation triggered” · “A new run will start shortly and appear in the run history.” · Close</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Theme toggle: light ⇄ dark via the `.dark` class on <html> (t3-tokens.css mechanism). Default light.
+  (function () {
+    var html = document.documentElement, btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var dark = html.classList.toggle('dark');
+      html.classList.toggle('light', !dark);
+    });
+  })();
+</script>
+</body>
+</html>
