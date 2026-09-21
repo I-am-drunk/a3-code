@@ -1,0 +1,8 @@
+[
+ {"name":"V1-edit-auto01","url":"http://localhost:5177/automations/auto_01/edit","width":1280,"height":1500,"wait":3000},
+ {"name":"V2-edit-auto03","url":"http://localhost:5177/automations/auto_03/edit","width":1280,"height":1500,"wait":2500},
+ {"name":"V3-edit-auto05","url":"http://localhost:5177/automations/auto_05/edit","width":1280,"height":1500,"wait":2500},
+ {"name":"V4-create","url":"http://localhost:5177/automations/create","width":1280,"height":1500,"wait":2500},
+ {"name":"V5-security-create","url":"http://localhost:5177/security/automations/create","width":1280,"height":1500,"wait":2500},
+ {"name":"V6-edit-auto01-560","url":"http://localhost:5177/automations/auto_01/edit","width":560,"height":1400,"wait":2500}
+]

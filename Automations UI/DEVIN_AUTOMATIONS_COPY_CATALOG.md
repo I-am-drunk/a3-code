@@ -1,0 +1,1038 @@
+# Devin Automations UI copy catalog
+
+Source: `/Users/irene/Documents/Codex/2026-09-02/new-chat/work/evidence/web/assets/en-LsZoLY02.js`, identifier `m`, original byte range 9124–63424.
+
+Coverage: all 940 top-level Automations translation keys, flattened into 1,030 exact leaf-value rows so plural variants remain individually copyable.
+
+| Key | Exact English value |
+|---|---|
+| `aDevinSession` | a Devin session |
+| `actionTypeAutoTriage` | Auto-triage |
+| `actionTypeMessageSession` | Message session |
+| `actionTypeMonitorSession` | Triage Devin |
+| `actionTypeNotify` | Email notification |
+| `actionTypeRemediate` | Remediate |
+| `actionTypeScanNewCommits` | Scan new commits |
+| `actionTypeStartSession` | Start session |
+| `actions` | Actions |
+| `active` | Active |
+| `activityLoadError` | Couldn't load activity. |
+| `acuLimitPerSession` | ACU limit per session |
+| `acus` | ACUs |
+| `acusPerSession` | ACUs per session |
+| `acusValue` | {{acus}} ACUs |
+| `addAtLeastOneAction` | Add at least one action |
+| `addAtLeastOneTrigger` | Add at least one trigger |
+| `addAutomation` | Add automation |
+| `addCondition` | Add condition |
+| `addDomain` | Add domain |
+| `addInstruction` | Add instruction |
+| `addMetadata` | Add metadata |
+| `addNotification` | Add notification |
+| `addTrigger` | Add trigger |
+| `addTriggerPicker` | Add Trigger |
+| `advanced` | Advanced |
+| `agentDefinition` | Agent definition |
+| `agentDefinitionDescription` | Define what happens when triggers are activated |
+| `agentMode` | Agent mode |
+| `agentNumberSuffix` | · Agent {{number}} |
+| `agentType` | Agent type |
+| `agentTypeAutoTriage` | Auto-triage |
+| `agentTypeAutoTriageDescription` | Watch Slack channel and triage new messages automatically |
+| `agentTypeAutoTriageSlackOnly` | Auto-triage is currently only supported with Slack → Message triggers. |
+| `agentTypeAutoTriageV2Description` | Track, triage, and investigate issues per trigger |
+| `agentTypeDescription` | Decide what the agent should do on new events |
+| `agentTypeLocked` | Agent type can't be changed after creation. Duplicate the automation to change it. |
+| `agentTypeLongRunning` | Message existing session |
+| `agentTypeLongRunningDescription` | Send message to existing session per trigger |
+| `agentTypeNewSession` | Start new session |
+| `agentTypeNewSessionDescription` | Start a fresh session per trigger |
+| `agentTypeOnlyOneNewSession` | An automation can have only one New session agent |
+| `agentTypeOptionLocked` | Can't switch to this agent type after creation. Duplicate the automation to change it. |
+| `agentTypeRemediate` | Remediate |
+| `agentTypeRemediateDescription` | Investigate and create a PR for each finding |
+| `agentTypeWatchingSlackChannel` | This automation is watching a Slack channel. To use this agent type, remove the Watch channel trigger. |
+| `all` | All |
+| `allActionsMustHaveType` | All actions must have a type |
+| `allPublicChannels` | All public channels |
+| `allTemplates` | All templates |
+| `allTemplatesDescription` | Browse all automation templates to get started quickly. |
+| `allTriggersMustHaveType` | All triggers must have an event type |
+| `allowChildSessions` | Allow auto-start of child sessions |
+| `allowChildSessionsDescription` | Sessions can spawn child sessions automatically without your approval |
+| `analytics` | Analytics |
+| `and` | and |
+| `apply` | Apply |
+| `askAdminToUpdateChannelMappings` | Ask your enterprise admin to update the channel mappings for this org. |
+| `askEnterpriseAdminMapping` | Ask an enterprise admin to update the mapping. |
+| `attachedToTriggeringThread` | Attached to triggering Slack thread |
+| `autoCreateSessionOption` | Create new session |
+| `autoCreateSessionOptionDescription` | Creates long running destination session for automation |
+| `autoCreateSessionPending` | New session created on first trigger |
+| `autoStartChildSessions` | Auto-start child sessions |
+| `automation` | Automation |
+| `automationActions` | Automation actions |
+| `automationLinkLabel` | Automation |
+| `automationLoadError` | Couldn't load this automation. |
+| `automationName` | Automation name |
+| `automationNamePlaceholder` | Automation name |
+| `automationNotFound` | This automation does not exist or has been deleted. |
+| `automationsLoadError` | Couldn't load automations. |
+| `automationTitle` | Automation |
+| `automationTriggered` | Automation triggered |
+| `binaryFileNotPreviewable` | Binary files can't be previewed or edited. |
+| `blockedByProfile` | Blocked |
+| `blockedByProfileTooltip` | Not allowed by the governing security profile — sessions will not be able to reach this destination |
+| `booleanFalse` | false |
+| `booleanTrue` | true |
+| `browseFiles` | Browse files |
+| `builtIn` | Built-in |
+| `cancel` | Cancel |
+| `canceledCount_one` | {{count}} canceled |
+| `canceledCount_other` | {{count}} canceled |
+| `categoryCicdRelease` | CI/CD & Release |
+| `categoryMonitoringTriage` | Monitoring & Triage |
+| `categoryProjectManagement` | Project Management |
+| `categorySecurity` | Security |
+| `channel` | Channel |
+| `channelAlreadyMonitored` | This channel is already being monitored by another triage Devin |
+| `channelCountWithDms_one` | {{count}} channel + DMs |
+| `channelCountWithDms_other` | {{count}} channels + DMs |
+| `channelCount_one` | {{count}} channel |
+| `channelCount_other` | {{count}} channels |
+| `channelNoLongerMapped` | Channel no longer mapped |
+| `channelNoLongerMappedTooltip` | The channel this automation was watching is no longer mapped to this org. Ask your enterprise admin to update the channel mappings. |
+| `channelNotAvailableTooltip` | This channel is not available. Invite @Devin to the channel or select a different one. |
+| `characterCount_one` | {{formattedCount}} character |
+| `characterCount_other` | {{formattedCount}} characters |
+| `childSessionsAllowed` | Child sessions allowed without approval |
+| `childSessionsAllowedWithoutApproval` | Child sessions allowed without approval |
+| `clearAllFilters` | Clear all filters |
+| `clearChannel` | Clear channel |
+| `clearFilter` | Clear filter |
+| `close` | Close |
+| `closeSearch` | Close search |
+| `comingSoon` | Coming soon |
+| `configuration` | Configuration |
+| `configure` | Configure |
+| `configureChannelMappings` | Configure channel mappings |
+| `configureToUseTrigger` | Configure {{source}} to use this trigger. |
+| `connect` | Connect |
+| `connectDatadog` | Connect Datadog |
+| `connectIncidentIoToSelectTeam` | Connect incident.io to select a team |
+| `connectIntegrationBeforeSaving` | Connect the required integration before saving |
+| `connectMcpsBeforeSaving` | Connect the selected MCPs before saving |
+| `connectSlackEnterpriseGrid` | Connect Slack Enterprise Grid |
+| `connectToUseTrigger` | Connect {{source}} to use this trigger. |
+| `connecting` | Connecting… |
+| `consumption` | Consumption |
+| `consumptionLoadError` | Failed to load consumption data. |
+| `continue` | Continue |
+| `copied` | Copied |
+| `copiedLabel` | Copied {{label}} |
+| `copiedSecret` | Copied secret |
+| `copiedTestCommand` | Copied test command |
+| `copiedToClipboard` | Copied to clipboard |
+| `copy` | Copy |
+| `copyAllDomains` | Copy all domains |
+| `copyFailed` | Copy failed |
+| `copyLabel` | Copy {{label}} |
+| `copyMessage` | Copy message |
+| `copyOfName` | {{name}} (copy) |
+| `copySecret` | Copy secret |
+| `copyTestCommand` | Copy test command |
+| `couldntJoinChannelReconnect` | Devin couldn't join the channel. <reconnect>Reconnect Slack</reconnect> to grant permission to join channels. |
+| `couldntLoadScratchpadFolder` | Couldn't load the scratchpad folder. |
+| `create` | Create |
+| `createAutomation` | Create automation |
+| `createAutomationSubtitle` | Choose how you'd like to create your automation. |
+| `createAutomationTitle` | Create automation |
+| `createFileToGetStarted` | Create a file to get started. |
+| `createFromTemplate` | Create from template |
+| `createFromTemplateCardDescription` | Customize a preset automation to fit your needs |
+| `createManually` | Create manually |
+| `createManuallyCardDescription` | Configure automation triggers, actions, and limits yourself |
+| `createManuallyDescription` | Build an automation from scratch by configuring triggers, actions, and limits yourself. |
+| `createTriageDevin` | Create triage Devin |
+| `created` | Created |
+| `createdBy` | Created by {{name}} on {{date}} |
+| `createdByOn` | Created by {{name}} on {{date}} |
+| `createdByYou` | Created by you |
+| `customRange` | Custom range |
+| `customSchedule` | Custom schedule |
+| `datadogConnectDescription` | Connecting Datadog lets Devin debug production bugs with confidence. |
+| `datadogReauthDescription` | Your Datadog connection needs to be re-authorized. |
+| `datadogReauthorize` | Your Datadog connection needs to be re-authorized. |
+| `dayFriday` | Friday |
+| `dayInitialFriday` | F |
+| `dayInitialMonday` | M |
+| `dayInitialSaturday` | S |
+| `dayInitialSunday` | S |
+| `dayInitialThursday` | T |
+| `dayInitialTuesday` | T |
+| `dayInitialWednesday` | W |
+| `dayMonday` | Monday |
+| `dayOfMonth` | Day of month |
+| `daySaturday` | Saturday |
+| `daySunday` | Sunday |
+| `dayThursday` | Thursday |
+| `dayTuesday` | Tuesday |
+| `dayWednesday` | Wednesday |
+| `delete` | Delete |
+| `deleteAutomation` | Delete automation |
+| `deleteAutomationConfirmation` | Are you sure you want to delete “{{name}}”? This action cannot be undone. |
+| `deleteConfirmation` | Are you sure you want to delete “{{name}}”? This action cannot be undone. |
+| `destChannelNotAvailable` | Selected destination channel is not available. Invite @Devin to the channel first. |
+| `destChannelRequired` | A destination channel is required when using 'Post in new channel' mode |
+| `destinationChannelNotAvailable` | Selected destination channel is not available. Invite @Devin to the channel first. |
+| `destinationChannelRequired` | A destination channel is required when using 'Post in new channel' mode |
+| `destinationSession` | Destination session |
+| `destinationSessionDescription` | Select session to route trigger requests |
+| `destinationSessionRequired` | Select a destination session or choose 'Create new session' |
+| `devinIsInChannel` | Devin is in the channel |
+| `devinMode` | Agent mode |
+| `devinModeDescription` | Launch sessions using this agent mode |
+| `devinWillJoin` | Devin will join {{channel}} |
+| `devinWillJoinChannel` | Devin will join {{channel}} |
+| `directMessages` | Direct messages |
+| `directMessagesOrgMembersOnly` | Direct messages (org members only) |
+| `disable` | Disable |
+| `disableNetworkControlsDescription` | Disabling network controls removes protection against prompt injection data exfiltration. Sessions will be able to access any network destination. |
+| `disableNetworkControlsTitle` | Disable network controls? |
+| `disabled` | Disabled |
+| `discard` | Discard |
+| `discardDescription` | All your changes will be lost. |
+| `discardTitle` | Discard unsaved changes? |
+| `dmsOnly` | DMs only |
+| `dollarIncrementLimit` | Per-session limit must be in ${{increment}} increments |
+| `domainEntry` | entry |
+| `domainPlaceholder` | domain, IPv4, or IPv6 (e.g. *.github.com) |
+| `done` | Done |
+| `duplicate` | Duplicate |
+| `duplicateDomain` | Duplicate |
+| `duplicateRemovedOnSave` | This duplicate will be removed on save |
+| `edit` | Edit |
+| `editAutomationFile` | Edit automation file contents |
+| `editedBy` | Edited by {{name}} on {{date}} |
+| `editedByOn` | Edited by {{name}} on {{date}} |
+| `emptyDescription` | Run Devin automatically when something happens — on a schedule, a Slack message, a GitHub event, or an incoming webhook — so recurring work gets done without anyone kicking it off. |
+| `emptyHeading` | Get started by creating an automation |
+| `enable` | Enable |
+| `enableIssueTrackingBody` | Devin will group reports from this channel into tracked issues displayed on this page. With this update, Devin will reply directly, so you will no longer see the 'Devin Automation' bot in your interactions. |
+| `enableIssueTrackingBodyReadOnly` | Devin can group reports from this channel into tracked issues displayed on this page. Ask someone who manages automations to enable it. |
+| `enableIssueTrackingTitle` | Enable Issue Tracking |
+| `enterAPrompt` | Enter a prompt... |
+| `enterPromptPlaceholder` | Enter a prompt... |
+| `entriesBlockedByProfile_named_one` | {{count}} entry is not allowed by the security profile “{{name}}”. |
+| `entriesBlockedByProfile_named_other` | {{count}} entries are not allowed by the security profile “{{name}}”. |
+| `entriesBlockedByProfile_one` | {{count}} entry is not allowed by the governing security profile. |
+| `entriesBlockedByProfile_other` | {{count}} entries are not allowed by the governing security profile. |
+| `entriesBlockedContactAdmin_one` | To allow it, contact your admin to update the security profile. |
+| `entriesBlockedContactAdmin_other` | To allow them, contact your admin to update the security profile. |
+| `errorLogs` | Error logs |
+| `errorLogsDescription` | The {{count}} most recent failed runs for this automation. |
+| `errorLogsLoadError` | Couldn't load error logs. |
+| `eventType_code_scan_finding` | Code scan: finding |
+| `eventType_github_check_run` | GitHub: check run |
+| `eventType_github_issue_comment` | GitHub: issue comment |
+| `eventType_github_issues` | GitHub: issues |
+| `eventType_github_pull_request` | GitHub: pull request |
+| `eventType_github_pull_request_review` | GitHub: pull request review |
+| `eventType_github_pull_request_review_comment` | GitHub: pull request review comment |
+| `eventType_github_push` | GitHub: push |
+| `eventType_jira_assigned` | Jira: assigned |
+| `eventType_jira_issue_created` | Jira: issue created |
+| `eventType_jira_issue_updated` | Jira: issue updated |
+| `eventType_jira_label_added` | Jira: label added |
+| `eventType_jira_status_changed` | Jira: status changed |
+| `eventType_linear_assigned` | Linear: assigned |
+| `eventType_linear_create` | Linear: create |
+| `eventType_linear_label_added` | Linear: label added |
+| `eventType_linear_moved` | Linear: moved |
+| `eventType_linear_priority_changed` | Linear: priority changed |
+| `eventType_linear_status_changed` | Linear: status changed |
+| `eventType_pylon_issue_created` | Pylon: issue created |
+| `eventType_pylon_issue_status_changed` | Pylon: issue status changed |
+| `eventType_pylon_issue_tag_added` | Pylon: issue tag added |
+| `eventType_schedule_recurring` | Schedule: recurring |
+| `eventType_slack_message` | Slack: message |
+| `eventType_slack_reaction_added` | Slack: reaction added |
+| `eventType_snapshot_build_completed` | Snapshot build: completed |
+| `eventType_webhook_incoming` | Webhook: incoming |
+| `events` | Events |
+| `eventsCount_one` | {{count}} events |
+| `eventsCount_other` | {{count}} events |
+| `eventsLoadError` | Couldn't load events. |
+| `eventsRange` | {{from}}–{{to}} of {{total}} |
+| `eventsSearchPageMatches_one` | {{count}} match on this page |
+| `eventsSearchPageMatches_other` | {{count}} matches on this page |
+| `everyDay` | Every day |
+| `everyHour` | Every hour |
+| `everyWeek` | Every week |
+| `automationCreated` | Automation created successfully |
+| `automationDeleted` | Automation deleted successfully |
+| `automationUpdated` | Automation updated successfully |
+| `creatingAutomation` | Creating automation... |
+| `deletingAutomation` | Deleting automation... |
+| `failed` | {{count}} failed |
+| `failedRun` | Failed run |
+| `failedToConnectDatadog` | Failed to connect Datadog |
+| `failedToCopy` | Failed to copy {{label}} |
+| `failedToCreateAutomation` | Failed to create automation |
+| `failedToDeleteAutomation` | Failed to delete automation |
+| `failedToGenerate` | Failed to generate automation. Please try again. |
+| `failedToPrepareWebhookCredentials` | Failed to prepare webhook credentials |
+| `failedToRegenerateWebhookSecret` | Failed to regenerate webhook secret |
+| `failedToResetTriageDevin` | Failed to reset triage Devin |
+| `failedToStartSession` | Failed to start Devin session. Please try again. |
+| `failedToTriggerAutomation` | Failed to trigger automation |
+| `failedToUpdateAutomation` | Failed to update automation |
+| `featuredAutomations` | Featured automations |
+| `fieldGroupAddedLabel` | Added Label |
+| `fieldGroupCheckRun` | Check Run |
+| `fieldGroupComment` | Comment |
+| `fieldGroupCommit` | Commit |
+| `fieldGroupIssue` | Issue |
+| `fieldGroupPullRequest` | Pull Request |
+| `fieldGroupRepository` | Repository |
+| `fieldGroupReview` | Review |
+| `fieldPlaceholder` | Field... |
+| `files` | Files |
+| `fillRequiredFieldsBeforeSaving` | Fill in all required trigger fields before saving |
+| `fillRequiredTriggerFields` | Fill in all required trigger fields before saving |
+| `filter` | Filter |
+| `findingsPerScanLimit` | Findings per scan limit |
+| `findingsPerScanTooltip` | Maximum findings this automation processes per scan. |
+| `forUpTo` | for up to |
+| `freqDay` | Day |
+| `freqHour` | Hour |
+| `freqMinute` | Minute |
+| `freqMonth` | Month |
+| `freqWeek` | Week |
+| `friday` | Friday |
+| `fromEventCount_one` | from {{count}} event |
+| `fromEventCount_other` | from {{count}} events |
+| `generateAutomationPrompt` | Help me generate a new automation. |
+| `generateWithDevin` | Generate with Devin |
+| `generateWithDevinCardDescription` | Describe what automation you want to build |
+| `generateWithDevinDescription` | Describe what you want and Devin will build the automation for you in a session. |
+| `githubPublicDisabledReason` | Automations don't trigger for public repositories. An admin can allow them for this connection in Settings → Integrations → GitHub. |
+| `githubWebhookRequired` | GitHub automations require a GitHub App connection to receive webhooks. Token-based connections don't support event triggers. |
+| `gitlabPublicDisabledReason` | Automations don't trigger for public projects, so they can't be selected. |
+| `gitlabPublicProjectWarning` | For security reasons, automations don't trigger for events from public projects, or from internal projects on gitlab.com (visible to every signed-in gitlab.com user). |
+| `gotIt` | Got it |
+| `grouped` | Grouped / Skipped |
+| `hideSecret` | Hide secret |
+| `hourRange` | Hour (0-23) |
+| `improveAutomationPrompt` | Review automation {{id}}. Optimize for value per ACU. Pull its recent runs (cost + outcome), then recommend the top 3 changes ranked by impact ÷ effort, with evidence. Check with me before updating the automation. |
+| `improveWithDevin` | Improve with Devin |
+| `inChannel` | in channel |
+| `inProject` | in project |
+| `inRepo` | in repo |
+| `inTeam` | in team |
+| `inactive` | Inactive |
+| `incidentAgentTypeLocked` | Agent type can't be changed after creation. |
+| `incidentTriggerNowDisabled` | Run now is disabled for incident automations. |
+| `instructions` | Instructions |
+| `instructionsAgentDescription` | Describe what the agent should do |
+| `instructionsDescription` | What Devin does when triggers are activated |
+| `instructionsDescriptionMonitor` | Tell Devin how to handle messages in this channel |
+| `instructionsRequired` | Instructions are required |
+| `introAcuLimits` | ACU limits |
+| `introAutomationPill` | Automation |
+| `introCustomizationDescription` | Configure ACU limits, security profiles, MCPs and network policies, and other controls |
+| `introCustomizationTitle` | Customization |
+| `introDevin` | Devin |
+| `introDevinSession` | Devin session |
+| `introDevinSessionSubtitle` | Kicks off recurring task |
+| `introEventsDescription` | Automatically run Devin from supported integrations or your own systems using custom webhooks |
+| `introEventsTitle` | Event-based triggers |
+| `introFileReport` | File report |
+| `introImproveMemory` | Improve memory |
+| `introKeyFeatures` | Key features |
+| `introLinearConnection` | Linear connection |
+| `introLinearConnectionSubtitle` | Issues and backlog groomed |
+| `introMaybeLater` | Maybe later |
+| `introNetworkPolicy` | Network policy |
+| `introNewAutomation` | New automation run |
+| `introNewKnowledge` | New knowledge |
+| `introNotification` | Notification |
+| `introProfile` | Profile |
+| `introPullRequest` | Pull request |
+| `introScheduleDescription` | Have Devin handle workloads on any recurring date or time interval |
+| `introSchedulePillSubtitle` | Every Monday at 6:00am |
+| `introScheduleTitle` | Scheduled triggers |
+| `introSecurity` | Security |
+| `introSelfImprovementDescription` | Use scratchpad to persist state and knowledge across automation runs |
+| `introSelfImprovementTitle` | Persistent Memory |
+| `introSubtitle` | Trigger on events or schedules to investigate issues, generate insights, and create pull requests automatically. |
+| `introTitle` | Introducing Automations |
+| `introTriggerEvent` | Trigger event |
+| `invalidParameters` | Invalid parameters |
+| `investigated` | Investigation |
+| `inviteDevinToChannel` | Invite @Devin to a channel |
+| `inviteDevinToChannelToAdd` | Invite @Devin to a channel to add it here |
+| `inviteDevinToChannelToContinue` | Invite @Devin to a Slack channel to continue |
+| `invocationsPer` | invocations per |
+| `issueColumn` | Issue |
+| `issueCount_one` | {{count}} issue |
+| `issueCount_other` | {{count}} issues |
+| `issueNotFound` | This issue could not be found. It may have been deleted or merged into another issue. |
+| `issuePanelLabel` | Issue |
+| `issues` | Issues |
+| `issuesLoadError` | Couldn't load issues. |
+| `last4Weeks` | Last 4 weeks |
+| `lastNDays` | Last {{days}} days |
+| `lastOccurrenceColumn` | Last occurrence |
+| `lastTriggered` | Last triggered |
+| `lastUpdatedBySession` | Last updated by <sessionLink>a Devin session</sessionLink> on {{when}} |
+| `lastUpdatedByUser` | Last updated by {{name}} on {{when}} |
+| `lastUpdatedOn` | Last updated on {{when}} |
+| `lastWeek` | Last week |
+| `lessCommon` | Less common |
+| `limits` | Limits |
+| `limitsDescription` | Cap resource usage and invocation rate |
+| `linearAnyLabel` | Any label |
+| `linearAnyStatus` | Any status |
+| `linearAnyTeam` | Any team |
+| `linearAreIn` | are in |
+| `linearAreLabeled` | are labeled |
+| `linearAutomationsDescription` | Start sessions when specific conditions are met |
+| `linearAutomationsLabel` | Automations |
+| `linearCommaAreIn` | , are in |
+| `linearDefaultPlaybook` | Default playbook |
+| `linearNoTeamsMapped` | No Linear teams are mapped to this organization. Linear triggers won't fire until an admin maps a team in Linear settings. |
+| `linearPlaybookMissing` | This playbook no longer exists. Please edit this automation to fix it. |
+| `linearRun` | , run |
+| `linearTeamUnmapped` | This trigger references a Linear team that isn't mapped to this organization, so events from that team won't fire this automation. An admin can update team mappings in Linear settings. |
+| `linearTeamsUnmapped` | This trigger references Linear teams that aren't mapped to this organization, so events from those teams won't fire this automation. An admin can update team mappings in Linear settings. |
+| `linearWhenTicketsFrom` | When tickets from |
+| `linkUser` | Link user |
+| `linkUserToUseTrigger` | Link your {{source}} user to use this trigger. |
+| `linkYourUserToUseTrigger` | Link your {{source}} user to use this trigger. |
+| `linking` | Linking… |
+| `loadingChannels` | Loading channels… |
+| `loadingScratchpadFolder` | Loading scratchpad folder… |
+| `loadingTeamOptions` | Loading team options… |
+| `manageMcps` | Manage MCPs |
+| `manualOption` | Manual |
+| `maxAcuLimit` | Maximum per-session ACU limit is 1000 |
+| `maxAcusDescription` | Maximum ACUs each session can use |
+| `maxConcurrentRuns` | Concurrent runs |
+| `maxConcurrentRunsDescription` | Maximum runs of this automation at once; extra events wait in the queue |
+| `maxConcurrentRunsTooltip` | A run stops counting toward this limit as soon as its session finishes and is waiting for new instructions — not only when the session is fully stopped. |
+| `maxDollarLimit` | Maximum per-session limit is ${{max}} |
+| `maxQueueDepth` | Queue depth |
+| `maxQueueDepthDescription` | Maximum events that can wait in the queue; extra events are dropped |
+| `maxSpendDescription` | Maximum spend for a single session |
+| `mcpBlockedByProfileTooltip` | Not allowed by the governing security profile — sessions will not be able to use this MCP server |
+| `mcpCatalogError` | Couldn't load MCP servers |
+| `mcpCatalogUnavailableBeforeSaving` | MCP servers haven't loaded, so the selected MCPs can't be checked before saving |
+| `mcpRunAsCreatorOnly` | This MCP is only available when running as creator |
+| `mcps` | MCPs |
+| `mcpsAutoUnselected` | The following MCPs were unselected as they require run as creator: {{names}} |
+| `mcpsBlockedByProfile_named_one` | {{count}} selected MCP server is not allowed by the security profile “{{name}}” and will be dropped. To allow it, update the security profile. |
+| `mcpsBlockedByProfile_named_other` | {{count}} selected MCP servers are not allowed by the security profile “{{name}}” and will be dropped. To allow them, update the security profile. |
+| `mcpsBlockedByProfile_one` | {{count}} selected MCP server is not allowed by the governing security profile and will be dropped. To allow it, update the security profile. |
+| `mcpsBlockedByProfile_other` | {{count}} selected MCP servers are not allowed by the governing security profile and will be dropped. To allow them, update the security profile. |
+| `mcpsDescription` | Select which connectors you'd like this automation to use |
+| `metadata` | Metadata |
+| `metadataDescription` | Add key-value pairs to organize and filter your automations |
+| `metadataIncomplete` | Each metadata entry must contain both a key and a value. |
+| `metadataKeyPlaceholder` | Key |
+| `metadataValuePlaceholder` | Value |
+| `minAcuLimit` | Minimum per-session ACU limit is 1 |
+| `minDollarLimit` | Minimum per-session limit is ${{min}} |
+| `minuteRange` | Minute (0-59) |
+| `minuteWithinHour` | Minute within hour |
+| `missingIntegrationConfigure_creating` | Configure {{label}} before creating this automation |
+| `missingIntegrationConfigure_saving` | Configure {{label}} before saving this automation |
+| `missingIntegrationConnect_creating` | Connect {{label}} before creating this automation |
+| `missingIntegrationConnect_saving` | Connect {{label}} before saving this automation |
+| `missingIntegrationLink_creating` | Link your {{label}} account before creating this automation |
+| `missingIntegrationLink_saving` | Link your {{label}} account before saving this automation |
+| `monday` | Monday |
+| `monitorCannotHaveNonSlackTriggers` | Monitor automations cannot have non-Slack message triggers |
+| `monitorChannelMismatch` | The monitor action's source channel must be one of the trigger channels |
+| `monitorJoinMissingScope` | Couldn't join. <reconnect>Reconnect Slack</reconnect> to grant access. |
+| `monitorMustHaveOneAction` | Monitor automations must have exactly one action |
+| `monitorMustHaveSlackTrigger` | Monitor automations must have at least one Slack message trigger |
+| `monitorNoNonSlackTriggers` | Monitor automations cannot have non-Slack message triggers |
+| `monitorOneAction` | Monitor automations must have exactly one action |
+| `monitorOneSlackTrigger` | Monitor automations must have exactly one Slack message trigger |
+| `monitorTriggerChannelMismatch` | Monitor trigger channel must match the monitor action's source channel |
+| `moreActions` | More actions |
+| `mostPopular` | Most popular |
+| `nameColumn` | Name |
+| `nameLabel` | Name |
+| `nameRequired` | Name is required |
+| `networkPolicy` | Network policy |
+| `networkPolicyControlDescription` | Control network destinations sessions can access |
+| `networkPolicyControlDescription_governed` | Further restrict network destinations this automation's sessions can access, beyond its security profile |
+| `networkPolicyDescription` | Control which network destinations sessions can access |
+| `networkPolicyMore` | +{{count}} more |
+| `networkPolicyNoDestinations` | No destinations allowed |
+| `networkPolicyShowLess` | Show less |
+| `newAutomation` | New Automation |
+| `newDomain` | New |
+| `newFile` | New file |
+| `newFindingsPerScan` | new findings per scan |
+| `newFolder` | New folder |
+| `newIssueCount_one` | {{count}} new issue |
+| `newIssueCount_other` | {{count}} new issues |
+| `next` | Next |
+| `noAccess` | No access |
+| `noAutomationsMatchFilters` | No automations match these filters |
+| `noAutomationsMatchFiltersDetail_one` | No automation has all {{count}} metadata value. Try removing a filter or broadening your search. |
+| `noAutomationsMatchFiltersDetail_other` | No automation has all {{count}} metadata values. Try removing a filter or broadening your search. |
+| `noAutomationsYet` | No automations yet |
+| `noAutomationsYetPeriod` | No automations yet. |
+| `noAutomationsYetSetup` | No automations yet. Set one up: |
+| `noChannels` | No channels |
+| `noChannelsAvailableTooltip` | No channels are available to select. Check your Slack connection and channel mappings. |
+| `noChannelsFound` | No channels found |
+| `noChannelsMappedToOrg` | No channels mapped to this org |
+| `noChannelsMappedToOrgPeriod` | No channels mapped to this org. |
+| `noChannelsMappedTooltip` | No channels are mapped to this org. Update your enterprise Slack settings to map channels. |
+| `noConsumption` | No consumption in this range. |
+| `noErrorMessage` | No error message was recorded for this run. |
+| `noEventMessage` | No message |
+| `noEvents` | No events in this range. |
+| `noFailedRuns` | No failed runs. This automation hasn't reported any errors. |
+| `noFilesYet` | No files yet. |
+| `noFilteredEvents` | No events match the selected status filter. |
+| `codeStep.switchLabel` | Preflight check |
+| `codeStep.toggleTitle` | Run a preflight check on each trigger event |
+| `codeStep.toggleDescription` | A script runs in an isolated VM before sessions start. It can skip the event, reshape its data, or emit one session per item. |
+| `codeStep.expandConfig` | Expand the Preflight check configuration |
+| `codeStep.collapseConfig` | Collapse the Preflight check configuration |
+| `codeStep.summaryInline` | inline |
+| `codeStep.secretCount_one` | {{count}} secret |
+| `codeStep.secretCount_other` | {{count}} secrets |
+| `codeStep.timeoutSummary` | {{seconds}}s |
+| `codeStep.sourceLabel` | Source |
+| `codeStep.sourceDescription` | Write the script in this card — more sources coming |
+| `codeStep.sourceInline` | Write inline |
+| `codeStep.runtime` | Runtime |
+| `codeStep.runtimeDescription` | Language the script runs in |
+| `codeStep.scriptLabel` | Script |
+| `codeStep.scriptLineCount_one` | {{count}} line |
+| `codeStep.scriptLineCount_other` | {{count}} lines |
+| `codeStep.scriptEdited` | edited {{time}} |
+| `codeStep.editScript` | Edit script… |
+| `codeStep.viewScript` | View script… |
+| `codeStep.editScriptTitle` | Edit script |
+| `codeStep.copyScript` | Copy script |
+| `codeStep.saveScript` | Save script |
+| `codeStep.environment` | Environment |
+| `codeStep.environmentDescription` | Where the script executes |
+| `codeStep.minimalEnvironment` | Minimal environment |
+| `codeStep.timeout` | Timeout |
+| `codeStep.timeoutDescription` | Script is killed and the run marked failed after this |
+| `codeStep.timeoutMax` | max {{max}} |
+| `codeStep.secretsLabel` | Secrets |
+| `codeStep.secretsSelectedSummary` | {{count}} selected — {{names}} |
+| `codeStep.noSecretsSelected` | None selected |
+| `codeStep.selectSecretsTitle` | Select secrets |
+| `codeStep.selectSecretsSubtitle` | Injected into the script's environment |
+| `codeStep.selectedSection` | Selected |
+| `codeStep.allSecretsSection` | All secrets |
+| `codeStep.orgSecretTag` | Org secret |
+| `codeStep.orgSecretMissingTag` | No longer exists — removed on save |
+| `codeStep.secretsFooterCount` | {{selected}} of {{total}} selected |
+| `codeStep.contractLabel` | Script contract |
+| `codeStep.contractVars` | $EVENT_FILE · $STATE_FILE · $OUTPUT_FILE |
+| `codeStep.copyStarterTemplate` | Copy starter template |
+| `codeStep.stateLabel` | State |
+| `codeStep.clearStateConfirmPlaceholder` | type {{word}} to confirm |
+| `codeStep.egressWarning` | The script has network access, governed by this automation's network policy and security profiles. Only secrets selected here are visible to it. |
+| `codeStep.contractBody` | $EVENT_FILE     the trigger event (read-only JSON)<br>$STATE_FILE     your persistent JSON, <=64KB, kept between runs<br>$LAST_RUN_FILE  what happened to the items you emitted before<br>                (read-only): {"items": [{"key", "status", "session_id"}]}<br>$OUTPUT_FILE    your decision — must be written before exit:<br>  {"run": true}                     proceed to sessions<br>  {"run": false, "reason": "..."}   skip this run<br>  {"items": [{...}, {...}]}         one session per item<br>Items are capped at 10 per run (max 50); extras run next time.<br>An item's "id" is a unit of work, not an entity: "INC-1" runs once,<br>ever. Add "version" (e.g. the upstream updated_at) so a reopened item<br>counts as new work. An item whose session fails is released and can<br>run again. |
+| `codeStep.stateSummary_one` | {{size}} of {{max}}KB · {{count}} handled item id |
+| `codeStep.stateSummary_other` | {{size}} of {{max}}KB · {{count}} handled item ids |
+| `codeStep.clearState` | Clear state… |
+| `codeStep.serverConfigChanged` | This Preflight check was changed on the server. Your local draft is still unsaved. |
+| `codeStep.discardLocalDraft` | Discard local draft |
+| `codeStep.loadingConfig` | Loading the saved Preflight check configuration… |
+| `codeStep.configLoadError` | Couldn't load the saved Preflight check configuration. |
+| `codeStep.requestError` | Something went wrong. Try again in a moment. |
+| `codeStep.retry` | Retry |
+| `codeStep.viewRun` | View Preflight check run |
+| `codeStep.runDetailsTitle` | Preflight run |
+| `codeStep.runDetailsLoadError` | Couldn't load this Preflight check run. Try again in a moment. |
+| `codeStep.runBadgeRan` | Ran |
+| `codeStep.runBadgeSkipped` | Skipped |
+| `codeStep.runBadgeFailed` | Failed |
+| `codeStep.runBadgeValidationFailed` | Validation failed |
+| `codeStep.runBadgeRunning` | Running… |
+| `codeStep.runBadgeStale` | Stopped reporting |
+| `codeStep.runMetaRan` | ran {{seconds}}s |
+| `codeStep.runExitCodeInline` | exit {{code}} |
+| `codeStep.runItemsEmitted` | Items · {{count}} emitted |
+| `codeStep.runItemFallback` | item {{index}} |
+| `codeStep.runLogsHeading` | Logs · stdout + stderr |
+| `codeStep.runLogsMeta` | {{lines}} lines · {{size}} |
+| `codeStep.copyLogs` | Copy |
+| `codeStep.downloadLogs` | Download |
+| `codeStep.noEventsYetHeading` | No events yet |
+| `codeStep.noEventsPreflight` | The script runs on the next trigger — or trigger one immediately with Run now. |
+| `codeStep.closeRunDetails` | Close |
+| `codeStep.clearStateConfirmTitle` | Clear state & dedup history? |
+| `codeStep.clearStateConfirmBody_one` | Wipes this Preflight check's $STATE_FILE ({{bytes}} bytes) and {{count}} already-handled item id. On the next run, everything the trigger returns counts as new — sessions can start up to the per-run item cap. |
+| `codeStep.clearStateConfirmBody_other` | Wipes this Preflight check's $STATE_FILE ({{bytes}} bytes) and {{count}} already-handled item ids. On the next run, everything the trigger returns counts as new — sessions can start up to the per-run item cap. |
+| `codeStep.clearStateConfirmInputLabel` | Type "{{word}}" to confirm |
+| `codeStep.clearStateConfirm` | Clear state |
+| `codeStep.secretsPermissionRequired` | A Preflight check with attached secrets can only be saved or test-run by users with permission to manage organization secrets. Ask an admin or remove the attached secrets. |
+| `codeStep.noSecretsAttached` | No organization secrets are attached to this Preflight check. |
+| `codeStep.orgSecretsLoading` | Loading organization secrets… |
+| `codeStep.orgSecretsLoadError` | Couldn't load organization secrets. |
+| `codeStep.selectSecrets` | Select secrets… |
+| `codeStep.searchSecretsPlaceholder_one` | Search {{count}} secret… |
+| `codeStep.searchSecretsPlaceholder_other` | Search {{count}} secrets… |
+| `codeStep.noMatchingSecrets` | No secrets match your search. |
+| `codeStep.noOrgSecrets` | Your organization has no secrets yet. |
+| `codeStep.done` | Done |
+| `codeStep.cancel` | Cancel |
+| `noIssues` | No issues in this range. |
+| `noLimit` | No limit |
+| `noLinkedEvents` | No linked events. |
+| `noMatchingAutomations` | No matching automations |
+| `noMatchingEvents` | No events on this page match your search. Use Previous/Next to search other pages. |
+| `noMatchingEventsSinglePage` | No events match your search. |
+| `noMatchingIssues` | No issues match your search. |
+| `noMatchingMetadata` | No matching metadata |
+| `noMatchingTriageDevins` | No matching triage Devins |
+| `noMcps` | None |
+| `noMcpsAvailable` | No MCPs available |
+| `noMcpsMatching` | No MCPs matching "{{query}}" |
+| `noMetadataYet` | No metadata yet |
+| `noMetadataYetDescription` | Add key-value pairs in an automation's <advanced>Advanced</advanced> settings, then filter by them here. |
+| `noOptionsFound` | No options found. |
+| `noPermissionEdit` | You don't have permission to edit this automation |
+| `noPermissionRun` | You don't have permission to run this automation |
+| `noPrompt` | No prompt |
+| `noScanSelected` | No scan selected |
+| `noSessionSelected` | No session selected |
+| `noSessionTagsConfigured` | No session tags are configured for this organization |
+| `noSlackChannels` | No Slack channels |
+| `noSlackChannelsCheckIntegration` | No Slack channels found — check your Slack integration |
+| `noSlackChannelsFound` | No Slack channels found |
+| `noStartingInstructions` | No starting instructions |
+| `noSuggestions` | No suggestions |
+| `noTeamOptionsFound` | No team options found |
+| `noTemplatesFound` | No templates found. |
+| `noTemplatesMatch` | No templates match your search. |
+| `noTriageDevinsYet` | No triage Devins yet |
+| `notAvailableForPrivateChannels` | Not available for private trigger channels |
+| `notRecommended` | Not recommended |
+| `notSet` | Not set |
+| `notifications` | Notifications |
+| `notificationsDescription` | Alert when the automation run completes |
+| `notifyEmail` | Email |
+| `notifyWhenAlways` | Always |
+| `notifyWhenFailure` | On failure |
+| `notifyWhenSuccess` | On success |
+| `occurrenceCount_one` | {{count}} occurrence |
+| `occurrenceCount_other` | {{count}} occurrences |
+| `occurrencesColumn` | Occurrences |
+| `onlyJoinedChannelsAvailable` | Only channels @Devin has joined are available |
+| `opAfter` | after |
+| `opBefore` | before |
+| `opBetween` | between |
+| `opContains` | contains |
+| `opEndsWith` | ends with |
+| `opEq` | = |
+| `opEquals` | equals |
+| `opGt` | > |
+| `opGte` | ≥ |
+| `opIn` | in |
+| `opIs` | is |
+| `opIsEmpty` | is empty |
+| `opLt` | < |
+| `opLte` | ≤ |
+| `opMatches` | matches |
+| `opNeq` | ≠ |
+| `opNotContains` | not contains |
+| `opNotEndsWith` | not ends with |
+| `opNotEquals` | not equals |
+| `opNotIn` | not in |
+| `opNotStartsWith` | not starts with |
+| `opStartsWith` | starts with |
+| `operatorPlaceholder` | Op... |
+| `or` | or |
+| `orgDefaultMode` | Org default |
+| `orgWide` | Org-wide |
+| `organization` | Organization |
+| `payloadFilter` | Payload filter (optional) |
+| `payloadFilterHelp` | Python regex (<code>re.search</code>, case-sensitive). Matched against the JSON body for POST requests or the query string for GET requests. Leave empty to match all. |
+| `payloadFilterLabel` | Payload filter: |
+| `payloadFilterOptional` | Payload filter (optional) |
+| `payloadFilterPlaceholder` | e.g. deploy\|release\|hotfix |
+| `payloadFilterReadonly` | Payload filter: |
+| `per` | per |
+| `perSession` | per session |
+| `personal` | Personal |
+| `postAgentResponseTo` | Post the agent response to {{channel}} |
+| `postAgentResponseToSlackChannel` | Post the agent response to a Slack channel |
+| `postSessionUpdatesTo` | Post session updates to {{channel}} |
+| `postSessionUpdatesToChannel` | Post session updates to a channel |
+| `postSessionUpdatesToSlackChannel` | Post session updates to a Slack channel |
+| `postSlackUpdatesTo` | Post Slack updates to |
+| `postToSlack` | Post to Slack |
+| `postsInTriggeringThread` | Posts initial message in triggering Slack thread |
+| `postsInitialMessageInThread` | Posts initial message in triggering Slack thread |
+| `postsSessionUpdatesTo` | Posts session updates to {{channel}} |
+| `postsToSlackChannel` | Posts to Slack channel {{channel}} |
+| `previous` | Previous |
+| `promptPlaceholder` | i.e. describe what types of trigger events are routed to this automation and how the agent should behave |
+| `publicChannels` | Public channels |
+| `publicChannelsWithDms` | Public channels + DMs |
+| `publicRepoWarning` | For security reasons, automations don't trigger for events from public repositories, so public repos appear disabled in the repository picker. |
+| `publicRepoWarningWithSettingsLink` | For security reasons, automations don't trigger for events from public GitHub repositories. You can change this behavior in <settingsLink>GitHub connections settings</settingsLink>. |
+| `pylonReadOnly` | Pylon (read-only) |
+| `queuedCount_one` | {{count}} queued |
+| `queuedCount_other` | {{count}} queued |
+| `queueing` | Enable queueing |
+| `queueingDescription` | Limit how many runs happen at once and let extra events wait in a queue |
+| `rateLimit` | Rate limit |
+| `rateLimit12h` | 12 hours |
+| `rateLimit15min` | 15 minutes |
+| `rateLimit1h` | 1 hour |
+| `rateLimit24h` | 24 hours |
+| `rateLimit6h` | 6 hours |
+| `rateLimit7d` | 7 days |
+| `rateLimitDescription` | Maximum number of runs within a rolling time window |
+| `rateLimitNone` | — |
+| `rateLimitWindow12Hours` | 12 hours |
+| `rateLimitWindow15Minutes` | 15 minutes |
+| `rateLimitWindow1Hour` | 1 hour |
+| `rateLimitWindow24Hours` | 24 hours |
+| `rateLimitWindow6Hours` | 6 hours |
+| `rateLimitWindow7Days` | 7 days |
+| `readOnly` | Read-only |
+| `recommended` | Recommended |
+| `reconnect` | Reconnect |
+| `regenerate` | Regenerate |
+| `regenerateSecret` | Regenerate secret |
+| `regenerateWebhookSecret` | Regenerate webhook secret |
+| `regenerateWebhookSecretDescription` | The current secret will immediately stop working. Any system sending events to this webhook must be updated with the new secret. |
+| `regenerateWebhookSecretTitle` | Regenerate webhook secret |
+| `regeneratingWebhookSecret` | Regenerating webhook secret... |
+| `region` | Region |
+| `remove` | Remove |
+| `removeCondition` | Remove condition |
+| `removeDomain` | Remove {{value}} |
+| `removeMetadata` | Remove metadata |
+| `removeReply` | Remove reply |
+| `removeTrigger` | Remove trigger |
+| `repeatEvery` | Repeat every |
+| `repeatOn` | Repeat on |
+| `reply` | Reply |
+| `replyApiOnly` | Posts the response and continues the conversation in the thread |
+| `replyCommentsOnIssue` | Comments on the issue |
+| `replyCommentsOnMergeRequest` | Comments on the merge request |
+| `replyCommentsOnPr` | Comments on the PR |
+| `replyOnThread` | Replies on the thread |
+| `replyPostsSessionLink` | Posts a link to the session when it starts |
+| `requireAttention` | {{count}} require attention |
+| `requiredForAutomationType` | Required for this type of automation |
+| `reservedMetadataKey` | “{{key}}” is a reserved metadata key and will not be saved. |
+| `resetMonitoringSessionDescription` | Changing these settings will reset the monitoring Devin session. A new session will start automatically on the next trigger. |
+| `resetMonitoringSessionTitle` | Reset monitoring session |
+| `resetSession` | Reset session |
+| `resettingTriageDevin` | Resetting triage Devin... |
+| `resetTriageSessionDescription` | The current session will be cleared and a fresh session starts on the next trigger. The shared scratchpad and task sessions it already created are unaffected. |
+| `resetTriageSessionTitle` | Reset triage session? |
+| `resolveErrors` | Please resolve the errors to continue. |
+| `responder` | Responder |
+| `retry` | Retry |
+| `rruleAtMinute` | at :{{minute}} |
+| `rruleAtTime` | at {{time}} |
+| `rruleAtTimeInTimeZone` | at {{time}} ({{timeZone}}) |
+| `rruleRunOnceOnInTimeZone` | Run once on {{datetime}} ({{timeZone}}) |
+| `rruleCustom` | Custom |
+| `rruleDaily` | Daily |
+| `rruleDayOrdinalNd` | {{day}}nd |
+| `rruleDayOrdinalRd` | {{day}}rd |
+| `rruleDayOrdinalSt` | {{day}}st |
+| `rruleDayOrdinalTh` | {{day}}th |
+| `rruleEveryDayLong` | Every day |
+| `rruleEveryHour` | Every hour |
+| `rruleEveryMinute` | Every minute |
+| `rruleEveryNDays` | Every {{interval}} days |
+| `rruleEveryNHours` | Every {{interval}} hours |
+| `rruleEveryNMin` | Every {{interval}} min |
+| `rruleEveryNMinutes` | Every {{interval}} minutes |
+| `rruleEveryNMonths` | Every {{interval}} months |
+| `rruleEveryNMonthsOnDay` | Every {{interval}} months on the {{dayOrdinal}} |
+| `rruleEveryNWeeks` | Every {{interval}} weeks |
+| `rruleEveryNamedDay` | Every {{day}} |
+| `rruleHourly` | Hourly |
+| `rruleMonthly` | Monthly |
+| `rruleMonthlyOnDay` | Monthly on the {{dayOrdinal}} |
+| `rruleNoSchedule` | No schedule |
+| `rruleOnDays` | on {{days}} |
+| `rruleOnWeekdays` | on weekdays |
+| `rruleOnWeekends` | on weekends |
+| `rruleRunOnceOn` | Run once on {{datetime}} |
+| `rruleString` | RRULE string |
+| `rruleUtcHint` | RFC 5545 RRULE with an optional timezone. |
+| `rruleVisualMode` | Visual |
+| `rruleWeekdays` | Weekdays |
+| `rruleWeekends` | Weekends |
+| `rruleWeekly` | Weekly |
+| `runAs` | Run as |
+| `runAsCreator` | Creator |
+| `runAsCreatorYou` | Creator (you) |
+| `runAsCreatorYouDescription` | Use your own permissions during session |
+| `runAsDescription` | Use this user identity when running sessions |
+| `runAsOrganization` | Organization |
+| `runAsSystem` | System User |
+| `runAsSystemDescription` | Uses system permissions during session |
+| `runAutomation` | Run automation |
+| `runningCount_one` | {{count}} running |
+| `runningCount_other` | {{count}} running |
+| `runsAs` | Runs as {{name}} |
+| `runsAsUser` | Runs as {{name}} |
+| `saturday` | Saturday |
+| `save` | Save |
+| `saveAutomation` | Save automation |
+| `saveChanges` | Save changes |
+| `scanIdPlaceholder` | scan id |
+| `scanLabel` | Scan: |
+| `scanLowercase` | scan |
+| `scanRequired` | A scan is required |
+| `scheduleAt` | at |
+| `scheduleCustom` | Custom schedule |
+| `scheduleEveryDay` | Every day |
+| `scheduleEveryHour` | Every hour |
+| `scheduleEveryWeek` | Every week |
+| `scheduleOn` | on |
+| `scheduleRunOnce` | Run once |
+| `scheduleTriggerRequired` | Schedule trigger requires a schedule |
+| `scheduleTriggeredAt` | Schedule triggered at {{timestamp}} |
+| `scheduledTimeMustBeFuture` | Scheduled time must be in the future |
+| `scheduledTimeMustBeInFuture` | Scheduled time must be in the future |
+| `scheduledTimeRequired` | Scheduled time is required |
+| `scheduleHourlyPhrase` | <frequency /> at minute <minute /> |
+| `scheduleDailyPhrase` | <frequency /> at <time /> |
+| `scheduleWeeklyPhrase` | <frequency /> on <weekday /> at <time /> |
+| `selectTimezone` | Select timezone |
+| `searchTimezones` | Search timezones |
+| `noTimezonesFound` | No timezones found |
+| `scratchpadDescription` | Long-term memory shared across all Devin sessions run as part of this automation |
+| `scratchpadEmpty` | No shared content yet. Add notes Devin should carry across every session — learnings, flaky tests, or anything future runs should know. |
+| `scratchpadFolder` | Scratchpad folder |
+| `scratchpadFolderDescription` | Browse and edit the Devin-managed scratchpad folder. |
+| `scratchpadFolderEmpty` | This scratchpad folder has no files yet. |
+| `scratchpadFolderReadOnlyDescription` | Read-only view of the Devin-managed scratchpad folder. |
+| `savingScratchpadFolder` | Saving scratchpad folder... |
+| `scratchpadFolderSaved` | Scratchpad folder saved |
+| `failedToSaveScratchpadFolder` | Failed to save scratchpad folder |
+| `scratchpadForceEnabledTooltip` | Shared scratchpad cannot be disabled for auto-triage agent type |
+| `scratchpadTooLarge` | This scratchpad exceeded the size limit and can't be loaded. |
+| `scratchpadTooLargeEditable` | Files you create and save here will replace its contents. |
+| `search` | Search |
+| `searchAutomations` | Search automations… |
+| `searchChannels` | Search channels |
+| `searchChannelsPlaceholder` | Search channels… |
+| `searchEventsPlaceholder` | Search events… |
+| `searchIssuesPlaceholder` | Search issues… |
+| `searchMcps` | Search MCPs... |
+| `searchMetadata` | Search metadata… |
+| `searchPlaceholder` | Search automations… |
+| `searchSlackChannels` | Search Slack channels |
+| `searchTemplates` | Search templates... |
+| `searchTriageDevins` | Search triage Devins… |
+| `searching` | Searching… |
+| `secret` | Secret |
+| `securityProfile` | Security profile |
+| `securityProfileBindingLoadFailed` | Couldn't load the security profile binding for this automation. |
+| `securityProfileDescription` | Set controls for the level of access granted to sessions created by this automation. |
+| `securityProfileFallback_enterprise` | Sessions will use the enterprise security profile “{{name}}” instead. |
+| `securityProfileFallback_organization` | Sessions will use the organization security profile “{{name}}” instead. |
+| `securityProfileGoverns` | Sessions will use the {{scope}} security profile instead. |
+| `securityProfileGoverns_named` | Sessions will use the {{scope}} security profile “{{name}}” instead. |
+| `securityProfileInjectionWarning` | Automations that read untrusted content are at risk of prompt injection. Pick a profile that limits network and tool access. |
+| `securityProfileLookupFailed` | Couldn't load this automation's security profile settings, so network access can't be summarized here. |
+| `securityProfileNone` | No security profile |
+| `securityProfileScope_automation` | automation-specific |
+| `securityProfileScope_automationsDefault` | automations default |
+| `securityProfileScope_enterprise` | enterprise |
+| `securityProfileScope_organization` | organization |
+| `securityProfileUseOrgDefault` | Use organization default |
+| `securityProfileUseOrgDefault_named` | Use organization default ({{name}}) |
+| `securityProfileUseOrgDefault_none` | Use organization default (No profile) |
+| `securityScanFinding` | Security scan finding |
+| `selectActionType` | Select action type... |
+| `selectAgentMode` | Select agent mode |
+| `selectChannel` | Select channel… |
+| `selectChannelPlaceholder` | Select channel… |
+| `selectConditionField` | Select condition field |
+| `selectConditionOperator` | Select condition operator |
+| `selectConditionValue` | Select condition value |
+| `selectExactlyOneTag` | Select exactly one required session tag |
+| `selectFrequency` | Select frequency |
+| `selectHour` | Select hour |
+| `selectNotificationTiming` | Select notification timing |
+| `selectPlaceholder` | Select... |
+| `selectRegion` | Select region |
+| `selectReplyField` | Select reply field |
+| `selectSchedule` | Select schedule... |
+| `selectSession` | Select a session |
+| `selectSlackChannelForTriage` | Select a Slack channel for the triage Devin |
+| `selectSlackChannelOrUncheck` | Please select at least one Slack channel or uncheck Slack |
+| `selectTeam` | Select team… |
+| `selectWeekday` | Select weekday |
+| `selected` | {{count}} selected |
+| `selected_one` | {{count}} selected |
+| `selected_other` | {{count}} selected |
+| `sessionColumn` | Session |
+| `sessionLabel` | Session: |
+| `sessionTagMissing` | Missing |
+| `sessionTagRequiredBeforeSave` | A session tag is required before this automation can be saved |
+| `sessionTagRequiredLabel` | Session tag — Required |
+| `sessionTagValue` | Session tag: {{tag}} |
+| `sessionTagsRequiredButNone` | Session tags are required but none are configured for this organization |
+| `setLimitOf` | Set limit of |
+| `setup` | Setup |
+| `sharedScratchpad` | Shared scratchpad |
+| `shortAgoDays_one` | {{count}}d ago |
+| `shortAgoDays_other` | {{count}}d ago |
+| `shortAgoHours_one` | {{count}}h ago |
+| `shortAgoHours_other` | {{count}}h ago |
+| `shortAgoMinutes_one` | {{count}}m ago |
+| `shortAgoMinutes_other` | {{count}}m ago |
+| `shortAgoMonths_one` | {{count}}mo ago |
+| `shortAgoMonths_other` | {{count}}mo ago |
+| `shortAgoNow` | now |
+| `shortAgoWeeks_one` | {{count}}w ago |
+| `shortAgoWeeks_other` | {{count}}w ago |
+| `shortAgoYears_one` | {{count}}y ago |
+| `shortAgoYears_other` | {{count}}y ago |
+| `showLessTags` | Show less |
+| `showMore` | Show {{count}} more |
+| `showMoreTags` | +{{count}} more |
+| `showSecret` | Show secret |
+| `showingNewestEvents_one` | Showing the newest {{visibleCount}} of {{formattedTotal}} event |
+| `showingNewestEvents_other` | Showing the newest {{visibleCount}} of {{formattedTotal}} events |
+| `showingRange` | {{from}}–{{to}} of {{total}} |
+| `skip` | Skip |
+| `skippedCount` | {{count}} skipped |
+| `slackChannel` | Slack channel |
+| `slackChannelDescription` | What channel should Devin watch? |
+| `slackChannelNotAvailable` | Selected Slack channel is not available. Invite @Devin to the channel first. |
+| `slackJoinFailed` | Devin couldn't join the Slack channel |
+| `slackJoinFailedMissingScope` | Reconnect Slack in settings to grant Devin permission to join channels. |
+| `slackJoinFailedReconnect` | Couldn't join. <reconnect>Reconnect Slack</reconnect> to grant access. |
+| `slackJoinFailedUnavailable` | The channel may be private or unavailable. Invite Devin manually or pick another channel. |
+| `slackNotifications` | Slack notifications |
+| `slackThreadModeAttach` | Attach to thread |
+| `slackThreadModeForward` | Post in new channel |
+| `slackThreadModeNone` | None |
+| `slackThreadModeNotify` | Notify thread |
+| `sortBy` | Sort by |
+| `sortByFirstOccurrence` | First occurrence |
+| `sortByLastOccurrence` | Last occurrence |
+| `sourceLabelCodeScan` | Security scan |
+| `sourceLabelSchedule` | Schedule |
+| `sourceLabelSnapshotBuild` | Snapshot build |
+| `specificChannels` | Specific channels |
+| `spendLimitPerSession` | Spend limit per session |
+| `startFromTemplate` | Start from template |
+| `startFromTemplateDescription` | Pick a ready-made template and customize it to fit your workflow. |
+| `starting` | Starting... |
+| `statusCanceled` | Canceled |
+| `statusFailed` | Failed |
+| `statusInProgress` | In progress |
+| `statusQueued` | Queued |
+| `statusRunning` | Running |
+| `statusSkipped` | Skipped |
+| `statusSucceeded` | Succeeded |
+| `subHourlyBlockMessage` | Schedules that run more frequently than once per hour require a Teams plan or above. |
+| `subtitle` | Bring Devin into your recurring and event-driven workflows |
+| `successRate` | {{rate}}% success rate |
+| `successful` | {{count}} successful |
+| `suggested` | Suggested |
+| `suggestedAutomations` | Suggested automations |
+| `suggestedFirstMessage` | Hey <mention>Devin</mention> read this channel's history and take notes for yourself on how to respond to messages |
+| `sunday` | Sunday |
+| `targetSession` | Target session: |
+| `targetSessionLabel` | Target session: |
+| `tellDevinHowToHandle` | Tell Devin how to handle messages in this channel |
+| `templateOption` | Template |
+| `templates` | Templates |
+| `templatesLoadError` | Couldn't load templates. |
+| `templateNotFound` | This automation template could not be found. |
+| `testCommand` | Test command |
+| `then` | then |
+| `thisActionCannotBeUndone` | This action cannot be undone. |
+| `thursday` | Thursday |
+| `time` | Time |
+| `title` | Automations |
+| `titleColumn` | Event |
+| `to` | to |
+| `toLabel` | to |
+| `toOwner` | to owner |
+| `toTeam` | to team |
+| `totalRuns` | {{count}} total runs |
+| `triageChannelMismatch` | The triage action's source channel must be one of the trigger channels |
+| `triageDevinActive` | Triage Devin active. |
+| `triageDevins` | Triage Devins |
+| `triageMustHaveSlackTrigger` | Auto-triage automations must have at least one Slack message trigger |
+| `triagePromptPlaceholder` | i.e. describe how to triage and investigate issues |
+| `triageDevinReset` | Triage Devin reset successfully |
+| `trigger` | Run |
+| `triggerAutomation` | Run now |
+| `triggerChannel` | Trigger channel |
+| `triggerIntegrations` | Trigger integrations |
+| `triggerNoPromptDescription` | This will start a new Devin session using the automation’s configured prompt. |
+| `triggerNow` | Run now |
+| `triggerPlaceholder` | i.e. provide context for this run |
+| `triggerPromptDescription` | Manually run automation now. Please provide context that will be included as additional context for this run. |
+| `triggerRequiresField` | {{triggerName}} trigger requires a {{fieldName}} |
+| `triggerSection` | Trigger |
+| `triggerSuccessDescription` | A new run will start shortly and appear in the events history. |
+| `triggerWatchChannel` | Watch channel |
+| `triggeredAtColumn` | Triggered at |
+| `triggers` | Triggers |
+| `triggersDescription` | Run automation when any of these conditions are met |
+| `tryAgainInAMoment` | Try again in a moment. |
+| `trySendingMessage` | Try sending a message to <channel>{{channelName}}</channel>! |
+| `tuesday` | Tuesday |
+| `unknown` | Unknown |
+| `unrestrictedAccess` | Sessions will have unrestricted network access. |
+| `updateSecurityProfile` | Update security profile |
+| `unsavedChanges` | Unsaved changes |
+| `untitledAutomation` | Untitled automation |
+| `untitledIssue` | Untitled issue |
+| `updateAutomation` | Update automation |
+| `updatingAutomation` | Updating automation... |
+| `updateNetworkConfig` | Update network configuration |
+| `updateNetworkConfigDescription` | Changing network settings will put the monitoring Devin to sleep and re-wake it. This will cause a momentary interruption to its work. |
+| `updateNetworkConfigTitle` | Update network configuration |
+| `upgrade` | Upgrade |
+| `useBuiltInLinearInstead` | Use the built-in Linear integration instead |
+| `useBuiltInSlackInstead` | Use the built-in Slack integration instead |
+| `viewAllExamples` | View all examples |
+| `viewAutomation` | View automation |
+| `viewErrors` | View errors |
+| `viewSession` | View session |
+| `viewSessions` | View sessions |
+| `watchChannel` | Watch channel |
+| `webhookSecret` | Webhook Secret |
+| `webhookSecretDescription` | Copy your webhook secret now — it will not be shown again. |
+| `webhookSecretNote` | Copy this secret now — it will not be shown again after the automation is created. |
+| `webhookSecretNoteSaved` | Copy this secret now — it will not be shown again after the automation is saved. |
+| `webhookSecretNoteShort` | Copy this secret now — it will not be shown again. |
+| `webhookSecretRegenerated` | Webhook secret regenerated |
+| `webhookSecretPassHint` | Pass the secret via the <code1>X-Webhook-Secret</code1> header, an <code2>Authorization: Bearer</code2> header, or the <code3>secret</code3> query parameter. |
+| `webhookTestCommandHelp` | Replace <code>{{secretPlaceholder}}</code> with your secret. Pass it via the <code>X-Webhook-Secret</code> header, an <code>Authorization: Bearer</code> header, or the <code>secret</code> query parameter. |
+| `webhookUrl` | Webhook URL |
+| `wednesday` | Wednesday |
+| `whatChannelShouldDevinWatch` | What channel should Devin watch? |
+| `whatDevinDoes` | What Devin does when triggers are activated |
+| `whenLabel` | When: |
+| `wholeAcuLimit` | Per-session ACU limit must be a whole number |
+| `withResponse` | with response |
+| `withSessionLink` | with session link |
+| `you` | You |

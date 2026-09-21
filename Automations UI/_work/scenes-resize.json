@@ -1,0 +1,14 @@
+[
+  { "name": "z1-list-1280-to-700", "url": "http://localhost:5177/automations", "width": 1280, "height": 900, "wait": 2500, "pre": "localStorage.setItem('automations-intro-seen','1'); localStorage.removeItem('sidebar-mode')",
+    "steps": [ { "resize": [700, 900], "wait": 900 } ] },
+  { "name": "z2-detail-1280-to-640", "url": "http://localhost:5177/automations/auto_01", "width": 1280, "height": 900, "wait": 3200,
+    "steps": [ { "resize": [640, 1100], "wait": 1200 } ] },
+  { "name": "z3-create-1280-to-560", "url": "http://localhost:5177/automations/create?template=sentry-remediation", "width": 1280, "height": 900, "wait": 3000,
+    "steps": [ { "resize": [560, 1000], "wait": 900 } ] },
+  { "name": "z4-detail-640-back-to-1280", "url": "http://localhost:5177/automations/auto_01", "width": 640, "height": 900, "wait": 3200,
+    "steps": [ { "resize": [1280, 900], "wait": 1200 } ] },
+  { "name": "z5-templates-1280-to-900", "url": "http://localhost:5177/automations/templates", "width": 1280, "height": 900, "wait": 2500,
+    "steps": [ { "resize": [900, 900], "wait": 900 } ] },
+  { "name": "z6-list-1024-to-1000", "url": "http://localhost:5177/automations", "width": 1100, "height": 800, "wait": 2500, "pre": "localStorage.removeItem('sidebar-mode')",
+    "steps": [ { "resize": [1000, 800], "wait": 900 } ] }
+]

@@ -1,0 +1,25 @@
+167: w-full max-w-[400px]
+173: flex min-w-0 items-center gap-2
+176: flex-shrink-0 text-text-secondary
+180: truncate
+192: min-w-[400px]
+195: border-b border-border-secondary px-3 py-1.5
+198: w-full
+205: group items-start gap-4 border-b border-border-secondary
+208: relative mt-0.5 h-3.5 w-3.5 flex-shrink-0
+211: text-text-secondary group-data-[selected]:hidden
+214: absolute inset-0
+218: min-w-0
+220: flex min-w-0 flex-col gap-0.5
+223: truncate
+228: text-12 text-text-secondary
+238: px-3 py-1.5 text-13 text-text-secondary
+248: hidden
+255: group items-start gap-4
+258: relative mt-0.5 h-3.5 w-3.5 flex-shrink-0
+261: text-text-secondary group-data-[selected]:hidden
+264: absolute inset-0
+268: min-w-0
+270: flex min-w-0 flex-col gap-0.5
+273: truncate
+277: flex items-center gap-1 text-12 text-text-secondary

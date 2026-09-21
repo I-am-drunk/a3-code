@@ -1,0 +1,12 @@
+[
+  { "name": "r1-list-1280", "url": "http://localhost:5177/automations", "width": 1280, "height": 900, "wait": 2500, "pre": "localStorage.setItem('automations-intro-seen','1'); localStorage.removeItem('sidebar-mode')" },
+  { "name": "r2-detail-1280", "url": "http://localhost:5177/automations/auto_02", "width": 1280, "height": 900, "wait": 3000 },
+  { "name": "r3-create-1280", "url": "http://localhost:5177/automations/create?template=sentry-remediation", "width": 1182, "height": 768, "wait": 3000 },
+  { "name": "r4-list-900", "url": "http://localhost:5177/automations", "width": 900, "height": 800, "wait": 2500, "pre": "localStorage.removeItem('sidebar-mode')" },
+  { "name": "r5-create-700", "url": "http://localhost:5177/automations/create?template=sentry-remediation", "width": 700, "height": 900, "wait": 3000 },
+  { "name": "r6-templates-800", "url": "http://localhost:5177/automations/templates", "width": 800, "height": 900, "wait": 2500 },
+  { "name": "r7-detail-700", "url": "http://localhost:5177/automations/auto_01", "width": 700, "height": 900, "wait": 3000 },
+  { "name": "r8-list-700-drawer", "url": "http://localhost:5177/automations", "width": 700, "height": 800, "wait": 2500,
+    "steps": [ { "click": "[data-slot=\"sidebar-trigger\"]", "wait": 600 } ] },
+  { "name": "r9-list-1280-collapsed", "url": "http://localhost:5177/automations", "width": 1280, "height": 900, "wait": 2500, "pre": "localStorage.setItem('sidebar-mode', JSON.stringify('closed'))" }
+]

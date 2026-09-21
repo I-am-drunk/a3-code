@@ -1,0 +1,9 @@
+[
+  {"name":"T1-templates-search","url":"http://localhost:5177/automations/templates","width":1280,"height":800,"wait":1500,
+   "steps":[{"click":"button[aria-label='Search']","wait":300},{"type":"sentry daily","wait":500},
+            {"eval":"[...document.querySelectorAll('a[href*=\"template=\"], [role=link], article, a')].filter(e=>/Sentry/.test(e.textContent)).length","wait":50},
+            {"eval":"[...document.querySelectorAll('a')].map(a=>a.getAttribute('href')).filter(h=>h&&h.includes('template='))","wait":50}]},
+  {"name":"T2-template-open","url":"http://localhost:5177/automations/templates","width":1280,"height":800,"wait":1500,
+   "steps":[{"eval":"[...document.querySelectorAll('a')].find(a=>/Fix Sentry Errors Daily/.test(a.textContent))?.click()","wait":1500},
+            {"eval":"location.pathname+location.search","wait":50}]}
+]

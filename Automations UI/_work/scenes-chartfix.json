@@ -1,0 +1,3 @@
+[{"name":"X2-detail-chart-nudge","url":"http://localhost:5177/automations/auto_01","width":1280,"height":900,"wait":2000,
+  "steps":[{"resize":[1281,900],"wait":300},{"resize":[1280,900],"wait":900},
+           {"eval":"({bars: document.querySelectorAll('.recharts-bar-rectangle').length, rc: (r=>r?[r.clientWidth,r.clientHeight]:null)(document.querySelector('.recharts-responsive-container'))})","wait":50}]}]

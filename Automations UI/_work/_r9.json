@@ -1,0 +1,4 @@
+[{"name":"R9-create-pr-via-click","url":"http://localhost:5177/automations/create","width":1280,"height":700,"wait":2500,
+  "steps":[{"clickText":"Add trigger","sel":"button","wait":700},{"clickText":"GitHub","sel":"[role=menuitem]","wait":900},
+           {"eval":"(()=>{const el=[...document.querySelectorAll('[role=menuitem]')].find(e=>e.textContent.trim()==='Pull request'); if(!el) return 'no item'; el.click(); return 'clicked'})()","wait":1500},
+           {"eval":"(()=>{const h=[...document.querySelectorAll('h2,h3,span,div')].find(e=>e.textContent.trim()==='Triggers'&&e.children.length===0); const sec=h?h.parentElement.parentElement:null; return sec? sec.textContent.trim().slice(0,220):'no section'})()","wait":50}]}]

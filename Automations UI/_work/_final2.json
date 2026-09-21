@@ -1,0 +1,6 @@
+[{"name":"G1-list-1280","url":"http://localhost:5177/automations","width":1280,"height":900,"wait":2000,"pre":"localStorage.setItem('automations-intro','1')"},
+ {"name":"G2-list-560","url":"http://localhost:5177/automations","width":560,"height":900,"wait":2000,"pre":"localStorage.setItem('automations-intro','1')"},
+ {"name":"G3-templates-1280","url":"http://localhost:5177/automations/templates","width":1280,"height":900,"wait":2000},
+ {"name":"G4-error-logs-1280","url":"http://localhost:5177/automations/auto_01/error-logs","width":1280,"height":700,"wait":2000},
+ {"name":"G5-edit-auto03-560","url":"http://localhost:5177/automations/auto_03/edit","width":560,"height":1000,"wait":2500},
+ {"name":"G6-edit-auto05-560","url":"http://localhost:5177/automations/auto_05/edit","width":560,"height":1000,"wait":2500}]

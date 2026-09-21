@@ -1,0 +1,1 @@
+[{"name":"Z3-create","url":"http://localhost:5177/automations/create","width":1000,"height":700,"wait":2500,"steps":[{"eval":"document.title + \" | inputs=\" + document.querySelectorAll(\"input\").length","wait":50}]}]

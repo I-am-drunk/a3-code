@@ -1,0 +1,64 @@
+125: w-[220px] shrink-0 justify-between
+126: aria-label
+136: items-start
+192: flex flex-col items-start gap-1
+291: flex h-[34px] items-center gap-2 rounded-md px-2
+303: flex size-4 shrink-0 items-center justify-center
+304: size-3.5
+307: min-w-0 shrink-0 text-13 font-medium text-text-primary
+310: min-w-0 flex-1
+318: max-w-[220px]
+320: truncate
+328: w-[300px] min-w-[300px]
+331: px-1 pb-1
+350: text-12
+378: px-2 pb-1.5 pt-0.5
+383: aria-label
+395: pl-[34px]
+410: flex min-w-0 items-center gap-2
+413: truncate
+418: ml-auto shrink-0 text-text-secondary
+694: font-medium
+700: group
+701: aria-label
+702: flex flex-col overflow-hidden rounded-[10px] border border-border-secondary
+705: flex h-[42px] items-center gap-2 border-b border-border-secondary pl-4 pr-3.5
+708: flex flex-1 items-center gap-2
+718: shrink-0 text-text-secondary
+725: min-w-0 flex-1 bg-transparent text-13 text-text-primary outline-none placeholder:text-text-disabled
+731: shrink-0 text-13 text-text-secondary
+737: max-h-[265px] overflow-y-auto p-2
+742: flex h-[34px] cursor-pointer items-center gap-2 rounded-md px-2
+750: flex size-4 shrink-0 items-center justify-center
+751: size-3.5
+754: min-w-0 flex-1 truncate text-13 font-medium text-text-primary
+765: flex h-[34px] cursor-pointer items-center gap-2 rounded-md px-2
+773: flex size-4 shrink-0 items-center justify-center
+774: size-3.5
+777: min-w-0 flex-1 truncate text-13 font-medium text-text-primary
+809: flex flex-col gap-1 p-2
+814: flex h-[34px] items-center gap-2 px-2
+816: size-4 shrink-0
+817: h-3.5 w-40
+826: flex flex-col items-center gap-2 px-2 py-4
+829: text-13 text-text-secondary
+842: px-2 py-4 text-center text-13
+857: flex h-[34px] items-center gap-2 rounded-md px-2
+858: flex h-[34px] cursor-pointer items-center gap-2 rounded-md px-2
+870: size-4 opacity-50
+870: size-4
+875: min-w-0 flex-1 truncate text-13 font-medium text-text-disabled
+877: min-w-0 flex-1 truncate text-13 font-medium
+878: min-w-0 flex-1 truncate text-13 font-medium text-text-primary
+887: flex items-center
+890: shrink-0 text-text-orange
+929: flex h-[34px] items-center gap-2 rounded-md px-2
+940: size-4 opacity-50
+944: min-w-0 flex-1 truncate text-13 font-medium
+968: border-t border-border-secondary px-4 py-2 text-13 text-text-orange
+1206: text-text-link hover:text-text-link-strong hover:underline
+1246: text-13 text-text-orange
+1265: text-13 text-text-secondary
+1273: text-13 text-text-secondary
+1283: text-13 text-text-secondary
+1288: text-13 text-text-secondary

@@ -1,0 +1,10 @@
+42: aria-label
+46: w-[300px] min-w-0
+155: flex items-center gap-1
+176: h-[28px] w-14 min-w-0 flex-nowrap gap-0 px-1 py-1
+181: aria-label
+184: w-6 flex-none
+210: text-text-secondary
+232: h-[28px] w-14 min-w-0 flex-nowrap gap-0 px-1 py-1
+237: aria-label
+240: w-6 flex-none

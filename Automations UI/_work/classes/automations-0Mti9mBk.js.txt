@@ -1,0 +1,150 @@
+145: aria-hidden
+146: pointer-events-none absolute right-0 top-0 h-[110px] w-[150px] text-text-blue
+161: flex size-7 items-center justify-center rounded-md
+163: bg-tint-blue text-text-blue
+164: bg-tint-secondary text-text-primary
+169: flex min-w-0 flex-col gap-1
+172: text-13 font-medium text-text-primary
+176: text-pretty text-12 leading-4 text-text-secondary
+183: mt-auto flex items-center gap-1 text-12
+184: text-text-blue
+184: text-text-secondary
+193: opacity-60
+196: hover:bg-tint-tertiary
+207: flex flex-col gap-12 pt-6
+210: grid gap-3 sm:grid-cols-3
+221: bg-tint-blue hover:brightness-[0.98] disabled:opacity-60
+263: flex flex-col gap-4
+266: text-14 font-medium text-text-secondary
+270: rounded
+273: min-w-0 overflow-x-auto
+278: shrink-0 whitespace-nowrap
+287: shrink-0 whitespace-nowrap
+299: flex items-center justify-center gap-3 rounded-lg border border-border-secondary px-4 py-3
+303: text-13 leading-[18px] text-text-secondary
+309: aria-describedby
+317: grid gap-3 sm:grid-cols-2 lg:grid-cols-3
+348: group relative flex flex-col gap-3 overflow-hidden rounded-xl p-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-border-primary
+365: shadow-shadow-sm flex items-center gap-2.5 rounded-[10px] border border-border-secondary bg-bg-elevated px-4 py-2.5
+370: flex shrink-0 items-center gap-1
+374: flex min-w-0 flex-col
+377: truncate text-13 font-medium text-text-primary
+382: truncate text-12 text-text-secondary
+396: my-1.5 text-text-primary opacity-10
+397: aria-hidden
+415: my-1.5 text-text-primary opacity-10
+416: aria-hidden
+440: flex flex-col items-center duration-500 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 motion-safe:fill-mode-both
+448: flex flex-col items-center
+454: text-text-primary
+455: size-4
+456: text-text-primary
+469: text-text-primary
+478: flex items-start justify-center gap-3
+481: w-[140px]
+482: text-text-green
+486: w-[140px]
+489: text-text-primary
+494: w-[140px]
+495: size-4
+507: flex flex-col items-center
+511: w-[280px]
+512: text-text-primary
+521: w-[280px]
+525: text-text-primary
+535: w-[280px]
+536: text-text-primary
+547: shadow-shadow-sm flex w-[150px] flex-col gap-2.5 rounded-[10px] border p-3
+552: flex items-center gap-1 text-12 font-medium
+554: shrink-0
+555: truncate
+558: h-2 w-full rounded-[3px]
+559: h-2 w-full rounded-[3px]
+560: h-2 w-5/6 rounded-[3px]
+561: h-2 w-1/2 rounded-[3px]
+568: relative h-[300px] w-[440px] max-w-full
+573: aria-hidden
+576: absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+583: absolute inset-0 text-text-primary opacity-10
+584: aria-hidden
+594: motion-safe:[animation:automations-intro-draw_0.8s_ease-out_forwards] motion-safe:[stroke-dasharray:1] motion-safe:[stroke-dashoffset:1]
+599: motion-safe:[animation:automations-intro-draw_0.8s_ease-out_0.9s_forwards] motion-safe:[stroke-dasharray:1] motion-safe:[stroke-dashoffset:1]
+608: duration-300 motion-safe:animate-in motion-safe:fade-in motion-safe:fill-mode-both
+613: duration-300 motion-safe:animate-in motion-safe:fade-in motion-safe:fill-mode-both
+622: absolute bottom-1/2 left-0 border-[#D8CE6A] bg-[#EDE795]
+623: text-[#A8A050]
+624: bg-[#A8A050]
+628: absolute right-0 top-1/2 border-[#4FA98C] bg-[#6FCDB4]
+629: text-[#3F8F79]
+630: bg-[#3F8F79]
+633: absolute right-[6%] top-[3%] text-13 text-text-secondary
+637: absolute bottom-[3%] left-[6%] text-13 text-text-secondary
+645: relative inline-flex h-12 w-[88px] items-center justify-end overflow-hidden rounded-full bg-tint-secondary p-1
+646: aria-hidden
+649: absolute inset-0 rounded-full bg-bg-accent-primary duration-500 motion-safe:animate-in motion-safe:fade-in motion-safe:fill-mode-both
+653: shadow-shadow-sm relative size-10 rounded-full bg-bg-elevated duration-500 motion-safe:animate-in motion-safe:slide-in-from-left-10 motion-safe:fill-mode-both
+668: max-w-[980px]
+672: flex min-h-[540px]
+675: flex w-2/5 min-w-[360px] shrink-0 flex-col gap-5 p-5
+678: p-0
+687: flex min-h-0 flex-1 flex-col gap-2
+690: text-12 text-text-secondary
+694: flex flex-col gap-1
+702: aria-pressed
+704: flex w-full items-start gap-3 rounded-[10px] p-3 text-left
+706: bg-tint-blue
+707: hover:bg-tint-tertiary
+712: flex size-5 shrink-0 items-center justify-center rounded-full border border-border-secondary bg-bg-elevated text-11 font-medium
+714: text-text-blue
+715: text-text-primary
+720: flex min-w-0 flex-col gap-0.5
+723: text-13 font-medium text-text-primary
+727: text-pretty text-12 leading-4 text-text-secondary
+742: flex items-center justify-end gap-2
+761: light relative isolate flex min-w-0 flex-1 flex-col items-center overflow-hidden bg-tint-tertiary p-6
+765: flex min-h-0 flex-1 items-center justify-center
+769: flex items-center gap-2
+776: aria-label
+778: h-1.5 rounded-full
+780: w-4 bg-text-primary
+781: w-1.5 bg-text-disabled
+800: aria-hidden
+801: pointer-events-none absolute inset-0 -z-10 bg-cover bg-center
+805: aria-hidden
+806: pointer-events-none absolute inset-0 -z-10 bg-cover bg-center opacity-60
+868: ml-1 text-text-disabled
+877: px-3 py-12 text-center text-13 leading-[18px] text-text-secondary
+1018: flex size-full flex-col items-center overflow-y-auto
+1022: flex w-full flex-col gap-4
+1025: mx-1 flex flex-col gap-1
+1028: text-18 font-medium
+1032: text-13 text-text-secondary
+1040: flex flex-col
+1043: mx-1 flex items-center justify-between gap-2
+1046: rounded
+1069: flex items-center gap-2
+1072: flex items-center gap-0.5
+1076: w-56
+1096: inline-end
+1100: aria-label
+1114: aria-label
+1131: aria-label
+1176: mr-auto
+1185: flex max-w-[240px] flex-col gap-0.5
+1188: font-medium
+1194: text-text-secondary
+1203: text-text-secondary
+1236: mx-1 pb-1
+1245: flex flex-col gap-5 pt-4
+1251: flex items-center justify-center gap-3
+1253: rounded-lg border border-border-secondary px-4 py-3
+1254: py-12
+1259: text-13 leading-[18px] text-text-secondary
+1265: aria-describedby
+1284: w-[100px]
+1294: flex flex-col items-center gap-3 py-12 text-center
+1298: text-text-secondary
+1301: text-14 font-medium text-text-primary
+1307: max-w-[320px] text-13 text-text-secondary
+1316: mt-1 text-13 font-medium text-text-accent-primary hover:underline
+1322: px-3 py-12 text-center text-13 leading-[18px] text-text-secondary

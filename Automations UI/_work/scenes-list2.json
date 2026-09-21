@@ -1,0 +1,7 @@
+[
+  { "name": "L1-list-1280", "url": "http://localhost:5177/automations", "width": 1280, "height": 900, "wait": 2500, "pre": "localStorage.setItem('automations-intro','1'); localStorage.setItem('sidebar-mode', JSON.stringify('open'))" },
+  { "name": "L2-list-mine-empty-search", "url": "http://localhost:5177/automations?tab=mine&q=zzzz", "width": 1280, "height": 900, "wait": 2500 },
+  { "name": "L3-templates-1280", "url": "http://localhost:5177/automations/templates", "width": 1280, "height": 900, "wait": 2500 },
+  { "name": "L4-tagfilter-open", "url": "http://localhost:5177/automations", "width": 1280, "height": 900, "wait": 2500,
+    "steps": [ { "eval": "const b=[...document.querySelectorAll('button')].find(b => (b.getAttribute('aria-label')||'').toLowerCase().includes('filter')); b.id='__tf'", "wait": 200 }, { "click": "#__tf", "wait": 700 } ] }
+]

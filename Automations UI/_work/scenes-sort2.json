@@ -1,0 +1,10 @@
+[
+  {"name":"S2-sort-name","url":"http://localhost:5177/automations","width":1280,"height":800,"wait":1500,
+   "pre":"localStorage.setItem('automations-intro','1')",
+   "steps":[{"eval":"[...document.querySelectorAll('button')].find(b=>/^Name/.test(b.textContent.trim()))?.click()","wait":400},
+            {"eval":"[...document.querySelectorAll('a[href^=\"/automations/auto_\"]')].map(a=>a.textContent.trim().slice(0,18)).slice(0,3)","wait":50},
+            {"eval":"[...document.querySelectorAll('button')].find(b=>/^Name/.test(b.textContent.trim()))?.click()","wait":400},
+            {"eval":"[...document.querySelectorAll('a[href^=\"/automations/auto_\"]')].map(a=>a.textContent.trim().slice(0,18)).slice(0,3)","wait":50},
+            {"eval":"[...document.querySelectorAll('button')].find(b=>/^Name/.test(b.textContent.trim()))?.click()","wait":400},
+            {"eval":"[...document.querySelectorAll('a[href^=\"/automations/auto_\"]')].map(a=>a.textContent.trim().slice(0,18)).slice(0,3)","wait":50}]}
+]

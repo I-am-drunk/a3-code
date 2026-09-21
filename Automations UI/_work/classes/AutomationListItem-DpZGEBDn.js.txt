@@ -1,0 +1,21 @@
+59: aria-hidden
+126: w-[70px]
+150: min-w-0 truncate
+157: group/row flex items-center gap-5 overflow-clip rounded-md px-3 py-2 hover:bg-tint-secondary
+160: flex min-w-0 flex-1 gap-2.5
+164: flex h-[18px] shrink-0 items-center justify-center py-px text-text-primary
+168: flex min-w-0 flex-1 flex-col gap-0.5
+171: flex min-w-0 items-center gap-1.5 text-13 font-medium leading-[18px] text-text-primary first-letter:uppercase
+180: shrink-0
+185: shrink-0
+191: truncate text-13 leading-[18px] text-text-secondary
+201: text-text-accent-primary
+213: flex h-5 w-[91px] shrink-0 items-center
+217: h-5 w-[91px] rounded
+221: relative shrink-0
+228: block text-right text-12 tabular-nums leading-4 text-text-secondary
+237: block text-right text-12 leading-4 text-text-secondary
+243: block text-right text-12 leading-4 text-text-secondary group-hover/row:invisible group-has-[:focus-visible]/row:invisible
+255: absolute inset-0 flex items-center justify-end
+257: pointer-events-none opacity-0 group-hover/row:pointer-events-auto group-hover/row:opacity-100 group-has-[:focus-visible]/row:pointer-events-auto group-has-[:focus-visible]/row:opacity-100
+267: aria-label

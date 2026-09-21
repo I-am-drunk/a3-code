@@ -1,0 +1,2 @@
+[{"name":"R8-create-github-pr-warning","url":"http://localhost:5177/automations/create","width":1280,"height":700,"wait":2500,
+  "steps":[{"clickText":"Add trigger","sel":"button","wait":700},{"clickText":"GitHub","sel":"[role=menuitem]","wait":900},{"clickText":"Pull request","sel":"[role=menuitem]","wait":1800}]}]

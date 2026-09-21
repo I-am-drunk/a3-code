@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Devin design tokens — values ported literally from                 */
+/* app-initial-DhvrCsn_.css (`.dark,.light .theme-inverse` and        */
+/* `.light`/`.dark .theme-inverse` blocks). Stored as rgb triplets     */
+/* and consumed as rgb(var(--token)) exactly like the shipped bundle.  */
+/* ------------------------------------------------------------------ */
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));
+@custom-variant can-hover (@media (hover: hover));
+
+:root, .light {
+  --tint-secondary: 0 0 0 / .06;
+  --text-primary: 25 25 25;
+  --text-secondary: 25 25 25 / .56;
+  --border-secondary: 0 0 0 / .08;
+  --text-disabled: 25 25 25 / .4;
+  --text-tertiary: 25 25 25 / .4;
+  --border-primary: 0 0 0 / .1;
+  --bg-page: 252 252 252;
+  --bg-wash: 248 248 248;
+  --bg-elevated-wax: 255 255 255 / .94;
+  --bg-accent-neutral: 54 54 54;
+  --text-accent-primary: 49 124 255;
+  --text-always-black: 13 15 13;
+  --text-primary-inverse: 255 255 255;
+  --bg-elevated: 255 255 255;
+  --text-primary-strong: 0 0 0;
+  --shadow-shadow-sm: 0 0 0 / .05;
+  --shadow-shadow-2xl: 0 0 0 / .25;
+  --text-red: 245 59 58;
+  --text-purple: 149 108 222;
+  --text-brown: 154 103 0;
+  --text-orange: 245 142 58;
+  --tint-primary: 0 0 0 / .08;
+  --text-always-white: 255 255 255;
+  --text-link: 13 133 185 / .85;
+  --bg-accent-secondary: 21 107 255 / .2;
+  --border-secondary-always-black: 0 0 0 / .08;
+  --border-primary-always-black: 0 0 0 / .1;
+  --bg-elevated-transparent: 255 255 255;
+  --shadow-shadow-lg: 0 0 0 / .1;
+  --shadow-shadow-base: 0 0 0 / .06;
+  --bg-red: 245 59 58 / .12;
+  --tint-red: 245 59 58 / .12;
+  --bg-purple: 149 108 222 / .12;
+  --tint-purple: 149 108 222 / .12;
+  --bg-scrim: 0 0 0 / .12;
+  --text-green: 0 165 88;
+  --bg-green: 62 237 155 / .2;
+  --tint-green: 62 237 155 / .2;
+  --bg-orange: 245 142 58 / .12;
+  --tint-orange: 245 142 58 / .12;
+  --text-link-strong: 30 152 206;
+  --tint-tertiary: 0 0 0 / .04;
+  --border-primary-strong: 0 0 0;
+  --bg-destructive: 245 59 58;
+  --text-destructive: 245 59 58;
+  --bg-blue: 51 125 244 / .1;
+  --tint-blue: 51 125 244 / .1;
+  --text-blue: 51 125 244;
+  --bg-link: 62 184 237 / .08;
+  --border-accent-primary: 49 124 255;
+  --bg-accent-primary: 49 124 255;
+  --tint-accent-secondary: 49 124 255 / .08;
+  --shadow-inner: inset 1px 1px 1px 0px #0000001a;
+  --shadow-L1: 0px 1px 2px 0px rgb(var(--shadow-shadow-sm));
+  --shadow-L2: 0px 1px 3px 0px rgb(var(--shadow-shadow-base)), 0px 1px 2px 0px #0000000f;
+  --shadow-L3: 0px 10px 15px -3px rgb(var(--shadow-shadow-lg)), 0px 4px 6px -2px #0000000d;
+  --shadow-L4: 0px 25px 50px -12px rgb(var(--shadow-shadow-2xl));
+  color-scheme: light;
+}
+
+.dark {
+  --tint-secondary: 255 255 255 / .05;
+  --text-primary: 255 255 255 / .9;
+  --text-secondary: 255 255 255 / .52;
+  --border-secondary: 255 255 255 / .04;
+  --text-disabled: 255 255 255 / .4;
+  --text-tertiary: 255 255 255 / .4;
+  --border-primary: 255 255 255 / .08;
+  --bg-page: 20 20 20;
+  --bg-wash: 25 25 25;
+  --bg-elevated-wax: 31 31 31 / .94;
+  --bg-accent-neutral: 249 249 249;
+  --text-accent-primary: 73 176 255;
+  --text-always-black: 13 15 13;
+  --text-primary-inverse: 0 0 0;
+  --bg-elevated: 31 31 31;
+  --text-primary-strong: 255 255 255;
+  --shadow-shadow-sm: 0 0 0 / .2;
+  --shadow-shadow-2xl: 0 0 0 / .5;
+  --text-red: 245 59 58;
+  --text-purple: 149 108 222;
+  --text-brown: 210 153 34;
+  --text-orange: 245 142 58;
+  --tint-primary: 255 255 255 / .08;
+  --text-always-white: 255 255 255;
+  --text-link: 62 184 237 / .85;
+  --bg-accent-secondary: 21 107 255 / .08;
+  --border-secondary-always-black: 0 0 0 / .04;
+  --border-primary-always-black: 0 0 0 / .08;
+  --bg-elevated-transparent: 255 255 255 / .05;
+  --shadow-shadow-lg: 0 0 0 / .3;
+  --shadow-shadow-base: 0 0 0 / .25;
+  --bg-red: 245 59 58 / .12;
+  --tint-red: 245 59 58 / .12;
+  --bg-purple: 149 108 222 / .12;
+  --tint-purple: 149 108 222 / .12;
+  --bg-scrim: 0 0 0 / .32;
+  --text-green: 0 236 126;
+  --bg-green: 0 236 126 / .08;
+  --tint-green: 0 236 126 / .08;
+  --bg-orange: 245 142 58 / .08;
+  --tint-orange: 245 142 58 / .08;
+  --text-link-strong: 62 184 237;
+  --tint-tertiary: 255 255 255 / .03;
+  --border-primary-strong: 255 255 255;
+  --bg-destructive: 245 59 58;
+  --text-destructive: 245 59 58;
+  --bg-blue: 51 125 244 / .1;
+  --tint-blue: 51 125 244 / .1;
+  --text-blue: 51 125 244;
+  --bg-link: 62 184 237 / .08;
+  --border-accent-primary: 73 176 255;
+  --bg-accent-primary: 68 137 255;
+  --tint-accent-secondary: 68 137 255 / .05;
+  --shadow-inner: inset 0px -1px 1px 0px #ffffff0a;
+  color-scheme: dark;
+}
+
+/* Map the rgb-triplet tokens into Tailwind v4 color utilities so the exact
+   shipped class names (bg-bg-elevated, text-text-secondary, border-border-secondary,
+   bg-tint-tertiary, ring-text-destructive …) resolve identically. */
+@theme inline {
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: "SF Mono", "Roboto Mono", ui-monospace, monospace;
+
+  --color-bg-page: rgb(var(--bg-page));
+  --color-bg-wash: rgb(var(--bg-wash));
+  --color-bg-elevated: rgb(var(--bg-elevated));
+  --color-bg-elevated-wax: rgb(var(--bg-elevated-wax));
+  --color-bg-elevated-transparent: rgb(var(--bg-elevated-transparent));
+  --color-bg-accent-primary: rgb(var(--bg-accent-primary));
+  --color-bg-accent-secondary: rgb(var(--bg-accent-secondary));
+  --color-bg-accent-neutral: rgb(var(--bg-accent-neutral));
+  --color-bg-destructive: rgb(var(--bg-destructive));
+  --color-bg-scrim: rgb(var(--bg-scrim));
+  --color-bg-blue: rgb(var(--bg-blue));
+  --color-bg-red: rgb(var(--bg-red));
+  --color-bg-green: rgb(var(--bg-green));
+  --color-bg-orange: rgb(var(--bg-orange));
+  --color-bg-link: rgb(var(--bg-link));
+
+  --color-tint-primary: rgb(var(--tint-primary));
+  --color-tint-secondary: rgb(var(--tint-secondary));
+  --color-tint-tertiary: rgb(var(--tint-tertiary));
+  --color-tint-blue: rgb(var(--tint-blue));
+  --color-tint-red: rgb(var(--tint-red));
+  --color-tint-green: rgb(var(--tint-green));
+  --color-tint-orange: rgb(var(--tint-orange));
+  --color-tint-purple: rgb(var(--tint-purple));
+  --color-tint-accent-secondary: rgb(var(--tint-accent-secondary));
+
+  --color-text-primary: rgb(var(--text-primary));
+  --color-text-primary-strong: rgb(var(--text-primary-strong));
+  --color-text-primary-inverse: rgb(var(--text-primary-inverse));
+  --color-text-secondary: rgb(var(--text-secondary));
+  --color-text-tertiary: rgb(var(--text-tertiary));
+  --color-text-disabled: rgb(var(--text-disabled));
+  --color-text-accent-primary: rgb(var(--text-accent-primary));
+  --color-text-always-white: rgb(var(--text-always-white));
+  --color-text-always-black: rgb(var(--text-always-black));
+  --color-text-link: rgb(var(--text-link));
+  --color-text-link-strong: rgb(var(--text-link-strong));
+  --color-text-destructive: rgb(var(--text-destructive));
+  --color-text-red: rgb(var(--text-red));
+  --color-text-green: rgb(var(--text-green));
+  --color-text-orange: rgb(var(--text-orange));
+  --color-text-blue: rgb(var(--text-blue));
+  --color-text-purple: rgb(var(--text-purple));
+  --color-text-brown: rgb(var(--text-brown));
+
+  --color-border-primary: rgb(var(--border-primary));
+  --color-border-secondary: rgb(var(--border-secondary));
+  --color-border-primary-strong: rgb(var(--border-primary-strong));
+  --color-border-accent-primary: rgb(var(--border-accent-primary));
+  --color-border-primary-always-black: rgb(var(--border-primary-always-black));
+  --color-border-secondary-always-black: rgb(var(--border-secondary-always-black));
+
+  --shadow-L1: var(--shadow-L1);
+  --shadow-L2: var(--shadow-L2);
+  --shadow-L3: var(--shadow-L3);
+  --shadow-L4: var(--shadow-L4);
+  --shadow-shadow-sm: 0px 1px 2px 0px rgb(var(--shadow-shadow-sm));
+}
+
+/* Exact `text-N` scale from the shipped CSS (font-size / line-height / tracking). */
+@utility text-10 { letter-spacing: .01em; font-size: .625rem; line-height: .875rem; }
+@utility text-11 { letter-spacing: .01em; font-size: .6875rem; line-height: .875rem; }
+@utility text-12 { letter-spacing: -.005em; font-size: .75rem; line-height: 1rem; }
+@utility text-13 { letter-spacing: -.005em; font-size: .8125rem; line-height: 1.125rem; }
+@utility text-14 { letter-spacing: -.005em; font-size: .875rem; line-height: 1.25rem; }
+@utility text-15 { letter-spacing: -.005em; font-size: .9375rem; line-height: 1.375rem; }
+@utility text-16 { font-size: 1rem; line-height: 1.625rem; }
+@utility text-17 { letter-spacing: -.015em; font-size: 1.0625rem; line-height: 1.625rem; }
+@utility text-18 { letter-spacing: -.01em; font-size: 1.125rem; line-height: 1.8125rem; }
+@utility text-22 { letter-spacing: -.015em; font-size: 1.375rem; line-height: 28px; }
+
+@utility focus-ring {
+  &:focus-visible { outline: none; box-shadow: 0 0 0 2px rgb(var(--border-primary)); }
+}
+
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--border-primary)) transparent;
+}
+
+@layer base {
+  html, body, #root { height: 100%; }
+  html, body { overscroll-behavior-x: none; }
+  body {
+    margin: 0;
+    background: rgb(var(--bg-page));
+    color: rgb(var(--text-primary));
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -.005em;
+    font-size: .8125rem;
+    line-height: 1.125rem;
+  }
+  * { border-color: rgb(var(--border-secondary)); }
+  button { font: inherit; letter-spacing: inherit; color: inherit; cursor: default; }
+  input, textarea { font: inherit; letter-spacing: inherit; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: rgb(var(--border-primary)); border-radius: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+}
+
+@keyframes automations-intro-draw { to { stroke-dashoffset: 0; } }
+@keyframes menu-in { from { opacity: 0; transform: scale(.97) translateY(-2px); } to { opacity: 1; transform: none; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.menu-in { animation: menu-in 120ms cubic-bezier(.16,1,.3,1); }
+@media (prefers-reduced-motion: no-preference) { .fade-in { animation: fade-in 150ms ease-out; } }

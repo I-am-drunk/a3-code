@@ -1,0 +1,35 @@
+69: min-h-[180px] space-y-4
+72: flex gap-2 border-b border-border-secondary pb-3
+79: flex-1
+86: flex-1
+97: mb-1.5 text-12 font-medium text-text-primary
+101: flex items-center gap-2
+107: w-[80px]
+110: aria-label
+125: mb-1.5 text-12 font-medium text-text-primary
+129: flex justify-center gap-1.5
+139: aria-label
+140: aria-pressed
+142: text-12 font-semibold
+155: mb-1.5 text-12 font-medium text-text-primary
+163: w-[80px]
+171: mb-1.5 text-12 font-medium text-text-primary
+179: w-[80px]
+188: mb-1.5 flex items-center gap-1 text-12 font-medium text-text-primary
+194: font-normal text-text-secondary
+207: flex items-center gap-2
+210: flex-1
+213: mb-1 block text-12 text-text-secondary
+221: w-full
+226: flex-1
+229: mb-1 block text-12 text-text-secondary
+237: w-full
+250: mb-1.5 text-12 font-medium text-text-primary
+258: font-mono
+261: mt-2 text-12 text-text-secondary
+269: flex flex-col gap-2
+271: text-12
+282: w-full
+298: w-[340px]
+321: min-w-0 truncate
+325: opacity-70

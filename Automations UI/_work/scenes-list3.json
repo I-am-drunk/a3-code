@@ -1,0 +1,6 @@
+[
+  {"name":"L5-list-560","url":"http://localhost:5177/automations","width":560,"height":900,"wait":1800},
+  {"name":"L6-templates-560","url":"http://localhost:5177/automations/templates","width":560,"height":900,"wait":1800},
+  {"name":"L7-list-900","url":"http://localhost:5177/automations","width":900,"height":700,"wait":1800},
+  {"name":"L8-templates-disconnected","url":"http://localhost:5177/automations/templates","width":1280,"height":900,"wait":1200,"steps":[{"eval":"window.__automationsCaps && window.__automationsCaps.set({connections:{slack:'disconnected'}})","wait":900}]}
+]

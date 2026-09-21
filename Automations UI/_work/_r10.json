@@ -1,0 +1,4 @@
+[{"name":"R10-edit-public-repo-footer","url":"http://localhost:5177/automations/auto_01/edit","width":1280,"height":600,"wait":2800,
+  "steps":[{"eval":"(()=>{const i=[...document.querySelectorAll('input')].find(x=>x.value==='diddletime/web'); if(!i) return 'no input'; i.focus(); i.select(); return 'focused'})()","wait":150},{"type":"diddletime/docs","wait":1500}]},
+ {"name":"R11-create-pr-footer","url":"http://localhost:5177/automations/create","width":1280,"height":600,"wait":2500,
+  "steps":[{"clickText":"Add trigger","sel":"button","wait":700},{"clickText":"GitHub","sel":"[role=menuitem]","wait":900},{"clickText":"Pull request","sel":"[role=menuitem]","wait":1800}]}]

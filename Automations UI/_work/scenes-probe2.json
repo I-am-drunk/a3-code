@@ -1,0 +1,6 @@
+[{"name":"P2-issues-bars","url":"http://localhost:5177/automations/auto_03","width":1280,"height":1200,"wait":2500,
+  "steps":[{"resize":[1281,1200],"wait":250},{"resize":[1280,1200],"wait":800},
+           {"eval":"(()=>{const bars=[...document.querySelectorAll('.recharts-bar-rectangle path')]; const svg=document.querySelector('.recharts-surface'); return {bars:bars.length, sample:bars.slice(0,4).map(p=>p.getAttribute('d')), svg: svg? svg.getAttribute('width')+'x'+svg.getAttribute('height'):null, ticks:[...document.querySelectorAll('.recharts-cartesian-axis-tick-value')].map(t=>t.textContent).slice(0,12)}})()","wait":50}]},
+ {"name":"W7-hour-select-pointerdown","url":"http://localhost:5177/automations/auto_02/edit","width":1280,"height":900,"wait":2500,
+  "steps":[{"eval":"(()=>{const b=document.querySelector('button[aria-label=\"Select hour\"]'); if(!b) return 'no button'; b.scrollIntoView({block:'center'}); b.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,button:0,pointerType:'mouse',pointerId:1,isPrimary:true})); return 'dispatched'})()","wait":800},
+           {"eval":"(()=>({listbox: !!document.querySelector('[role=listbox]'), options: [...document.querySelectorAll('[role=option]')].length}))()","wait":50}]}]

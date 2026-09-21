@@ -1,0 +1,3 @@
+17: aria-hidden
+34: fill-[#632CA6] dark:fill-[#B794F6]
+89: fill-[#1D252C] dark:fill-white

@@ -1,0 +1,9 @@
+[
+  { "name": "e1-edit-1280", "url": "http://localhost:5177/automations/auto_02/edit", "width": 1280, "height": 900, "wait": 3000, "pre": "localStorage.setItem('automations-intro-seen','1'); localStorage.setItem('sidebar-mode', JSON.stringify('open'))" },
+  { "name": "e2-templates-click-card", "url": "http://localhost:5177/automations/templates", "width": 1280, "height": 900, "wait": 2500,
+    "steps": [ { "eval": "const el=[...document.querySelectorAll('a,button')].find(e => e.textContent.includes('Fix Sentry Errors Daily')); el.click()", "wait": 2500 } ] },
+  { "name": "e3-list-row-to-detail-to-edit", "url": "http://localhost:5177/automations", "width": 1280, "height": 900, "wait": 2500,
+    "steps": [ { "eval": "[...document.querAll ? [] : document.querySelectorAll('a')].find(a => a.textContent.includes('Investigate Datadog alerts')).click()", "wait": 2500 },
+               { "eval": "[...document.querySelectorAll('a')].find(a => a.textContent.trim() === 'Edit').click()", "wait": 2500 } ] },
+  { "name": "e4-detail-light", "url": "http://localhost:5177/automations/auto_03", "width": 1280, "height": 900, "wait": 3200, "pre": "localStorage.setItem('theme','light')" }
+]

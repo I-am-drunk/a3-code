@@ -1,0 +1,138 @@
+[
+ {
+  "name": "D1-detail-auto03-top",
+  "url": "http://localhost:5177/automations/auto_03",
+  "width": 1280,
+  "height": 1600,
+  "wait": 2200,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     1600
+    ],
+    "wait": 250
+   },
+   {
+    "resize": [
+     1280,
+     1600
+    ],
+    "wait": 700
+   }
+  ]
+ },
+ {
+  "name": "D2-detail-auto03-issues",
+  "url": "http://localhost:5177/automations/auto_03",
+  "width": 1280,
+  "height": 1400,
+  "wait": 2200,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],a,[role=tab]')].find(e=>e.textContent.trim()==='Issues'); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 1200
+   },
+   {
+    "resize": [
+     1281,
+     1400
+    ],
+    "wait": 250
+   },
+   {
+    "resize": [
+     1280,
+     1400
+    ],
+    "wait": 700
+   }
+  ]
+ },
+ {
+  "name": "D3-detail-range-menu",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],a,[role=tab]')].find(e=>e.textContent.trim().startsWith('Last 4 weeks')); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "D4-detail-overflow",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],a,[role=tab]')].find(e=>/more actions/i.test(e.getAttribute('aria-label')||'')); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "D5-detail-run-dialog",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],a,[role=tab]')].find(e=>e.textContent.trim().startsWith('Run automation')); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 900
+   }
+  ]
+ },
+ {
+  "name": "D6-detail-consumption",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],a,[role=tab]')].find(e=>e.textContent.trim()==='Consumption'); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 1200
+   },
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 250
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 700
+   }
+  ]
+ }
+]

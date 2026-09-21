@@ -1,0 +1,8 @@
+[
+  {"name":"B6-frozen-hover","url":"http://localhost:5177/automations","width":1280,"height":800,"wait":1500,
+   "pre":"localStorage.setItem('automations-intro','1')",
+   "steps":[{"eval":"window.__automationsCaps.set({spendingFrozen:true})","wait":500},
+            {"eval":"[...document.querySelectorAll('button')].filter(b=>/Create automation/.test(b.textContent)).map(b=>({disabled:b.disabled,cls:b.className.slice(0,80),parent:b.parentElement.tagName,parentCls:b.parentElement.className.slice(0,60)}))","wait":50},
+            {"hover":"button:disabled","wait":1200},
+            {"eval":"[...document.querySelectorAll('[role=tooltip]')].map(t=>t.textContent)","wait":50}]}
+]

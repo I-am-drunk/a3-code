@@ -1,0 +1,5 @@
+14: bg-text-blue
+15: bg-text-green
+16: bg-text-orange
+17: bg-text-purple
+18: bg-text-red

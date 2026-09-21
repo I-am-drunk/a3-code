@@ -1,0 +1,12 @@
+175: flex min-h-[126px] flex-col gap-3 overflow-hidden rounded-xl border border-border-secondary bg-bg-elevated p-4 hover:border-border-primary hover:bg-bg-wash
+178: flex items-center gap-2
+181: flex shrink-0 text-text-primary
+185: text-13 font-medium leading-snug text-text-primary
+191: line-clamp-2 min-h-0 shrink text-12 text-text-secondary
+196: flex flex-wrap gap-1.5
+202: flex items-center gap-1 rounded bg-tint-tertiary px-1.5 py-0.5 text-11
+212: flex items-center gap-1 rounded bg-tint-tertiary px-1.5 py-0.5 text-11
+225: min-h-[126px] rounded-xl border border-border-secondary p-4
+227: mb-2 h-4 w-3/4 rounded
+228: mb-2 h-3 w-full rounded
+229: h-3 w-1/2 rounded

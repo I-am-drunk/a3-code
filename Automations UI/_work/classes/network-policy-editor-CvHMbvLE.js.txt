@@ -1,0 +1,25 @@
+149: cursor-pointer select-none
+166: bg-bg-elevated border-border-secondary flex flex-col overflow-hidden rounded-[10px] border
+167: min-h-0 flex-1
+171: border-border-secondary flex h-[32px] shrink-0 items-stretch border-b
+174: flex-1
+179: text-text-secondary hover:text-text-primary hover:bg-tint-secondary text-13 flex min-w-0 flex-1 items-center gap-2 px-3
+197: aria-label
+198: border-border-secondary text-text-secondary hover:text-text-primary hover:bg-tint-secondary flex items-center border-l px-3
+207: divide-border-secondary divide-y overflow-y-auto
+208: min-h-0 flex-1
+208: max-h-[50vh]
+216: flex h-[32px] items-center gap-2 px-3
+217: bg-tint-green
+230: text-13 min-w-0 flex-1 border-none bg-transparent p-0
+235: text-text-secondary text-12 shrink-0
+246: cursor-pointer select-none
+258: aria-label
+271: flex h-[32px] items-center gap-2 px-3
+272: bg-tint-green
+277: text-13 min-w-0 flex-1 truncate
+279: text-text-primary
+280: text-text-disabled line-through
+302: flex h-[32px] items-center gap-2 px-3
+305: text-text-primary text-13 min-w-0 flex-1 truncate
+310: text-text-secondary text-12

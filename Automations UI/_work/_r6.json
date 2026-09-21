@@ -1,0 +1,3 @@
+[{"name":"R6-github-pr-added","url":"http://localhost:5177/automations/create","width":1280,"height":700,"wait":2500,
+  "steps":[{"clickText":"Add trigger","sel":"button","wait":700},{"hoverText":"GitHub","sel":"[role=menuitem]","wait":900},{"hoverText":"Pull request","sel":"[role=menuitem]","wait":300},{"clickText":"Pull request","sel":"[role=menuitem]","wait":1500},
+           {"eval":"[...document.querySelectorAll('input')].map(i=>(i.getAttribute('aria-label')||i.placeholder)+'='+i.value).slice(0,6)","wait":50}]}]

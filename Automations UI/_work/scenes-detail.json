@@ -1,0 +1,15 @@
+[
+  { "name": "d1-top", "url": "http://localhost:5177/automations/auto_02", "width": 1280, "height": 900, "wait": 3500 },
+  { "name": "d2-full", "url": "http://localhost:5177/automations/auto_02", "width": 1280, "height": 2400, "wait": 3000 },
+  { "name": "d3-menu", "url": "http://localhost:5177/automations/auto_02", "width": 1280, "height": 900, "wait": 3000,
+    "steps": [ { "click": "[aria-label=\"More actions\"]", "wait": 700 } ] },
+  { "name": "d4-run", "url": "http://localhost:5177/automations/auto_02", "width": 1280, "height": 900, "wait": 3000,
+    "steps": [ { "eval": "[...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Run automation').click()", "wait": 700 } ] },
+  { "name": "d5-filter", "url": "http://localhost:5177/automations/auto_02", "width": 1280, "height": 1600, "wait": 3000,
+    "steps": [ { "eval": "const b=[...document.querySelectorAll('button')].find(b => (b.getAttribute('aria-label')||b.textContent.trim()) === 'Filter'); b.id='__filter'; b.scrollIntoView({block:'center'})", "wait": 300 }, { "click": "#__filter", "wait": 700 } ] },
+  { "name": "d6-consumption", "url": "http://localhost:5177/automations/auto_02", "width": 1280, "height": 1600, "wait": 3000,
+    "steps": [ { "eval": "[...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Consumption').click()", "wait": 1500 } ] },
+  { "name": "d7-triage", "url": "http://localhost:5177/automations/auto_03", "width": 1280, "height": 1600, "wait": 3500 },
+  { "name": "d8-run-nonschedule", "url": "http://localhost:5177/automations/auto_01", "width": 1280, "height": 900, "wait": 3000,
+    "steps": [ { "eval": "[...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Run automation').click()", "wait": 700 } ] }
+]

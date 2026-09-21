@@ -1,0 +1,164 @@
+[
+ {
+  "name": "D1-overflow",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 1800,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 200
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 500
+   },
+   {
+    "click": "[aria-label=\"More actions\"]",
+    "wait": 600
+   }
+  ]
+ },
+ {
+  "name": "D2-run-dialog",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 1800,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 200
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 500
+   },
+   {
+    "eval": "[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===\"Run automation\")?.click()",
+    "wait": 700
+   }
+  ]
+ },
+ {
+  "name": "D3-webhook-detail",
+  "url": "http://localhost:5177/automations/auto_04",
+  "width": 1280,
+  "height": 900,
+  "wait": 1800,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 200
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 500
+   }
+  ]
+ },
+ {
+  "name": "D4-slack-detail",
+  "url": "http://localhost:5177/automations/auto_03",
+  "width": 1280,
+  "height": 900,
+  "wait": 1800,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 200
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 500
+   }
+  ]
+ },
+ {
+  "name": "D5-not-found",
+  "url": "http://localhost:5177/automations/nope",
+  "width": 1280,
+  "height": 700,
+  "wait": 2500
+ },
+ {
+  "name": "D6-no-manage",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 700,
+  "wait": 1800,
+  "steps": [
+   {
+    "eval": "window.__automationsCaps.set({canManageAutomations:false})",
+    "wait": 500
+   },
+   {
+    "click": "[aria-label=\"More actions\"]",
+    "wait": 600
+   }
+  ]
+ },
+ {
+  "name": "D7-frozen-hover-run",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 700,
+  "wait": 1800,
+  "steps": [
+   {
+    "eval": "window.__automationsCaps.set({spendingFrozen:true})",
+    "wait": 500
+   },
+   {
+    "eval": "(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===\"Run automation\"); if(!b) return 'no run btn'; const r=b.getBoundingClientRect(); window.__runBtn=[r.x+r.width/2,r.y+r.height/2]; return [b.disabled, b.getAttribute('aria-disabled'), r.x, r.y];})()",
+    "wait": 100
+   },
+   {
+    "hover": "header button:has(svg.lucide-play), header [data-frozen], header button",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "D8-errorlogs-overflow",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 700,
+  "wait": 1800,
+  "steps": [
+   {
+    "eval": "window.__automationsCaps.set({errorLogs:true})",
+    "wait": 400
+   },
+   {
+    "click": "[aria-label=\"More actions\"]",
+    "wait": 600
+   }
+  ]
+ }
+]

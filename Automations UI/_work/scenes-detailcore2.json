@@ -1,0 +1,46 @@
+[
+ {
+  "name": "D9-webhook-auto05",
+  "url": "http://localhost:5177/automations/auto_05",
+  "width": 1280,
+  "height": 900,
+  "wait": 1800,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 200
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 500
+   }
+  ]
+ },
+ {
+  "name": "D10-frozen-tooltip",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 600,
+  "wait": 1800,
+  "steps": [
+   {
+    "eval": "window.__automationsCaps.set({spendingFrozen:true})",
+    "wait": 400
+   },
+   {
+    "eval": "(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Run automation'); if(b){b.setAttribute('data-shoot','run'); return 'marked'} return 'none'})()",
+    "wait": 100
+   },
+   {
+    "hover": "[data-shoot=run]",
+    "wait": 900
+   }
+  ]
+ }
+]

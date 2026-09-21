@@ -1,0 +1,8 @@
+[
+  { "name": "n1-list-1000", "url": "http://localhost:5177/automations", "width": 1000, "height": 800, "wait": 2500, "pre": "localStorage.setItem('automations-intro-seen','1')" },
+  { "name": "n2-list-700", "url": "http://localhost:5177/automations", "width": 700, "height": 800, "wait": 2500 },
+  { "name": "n3-detail-900", "url": "http://localhost:5177/automations/auto_01", "width": 900, "height": 800, "wait": 3000 },
+  { "name": "n4-create-700", "url": "http://localhost:5177/automations/create?template=sentry-remediation", "width": 700, "height": 900, "wait": 3000 },
+  { "name": "n5-templates-800", "url": "http://localhost:5177/automations/templates", "width": 800, "height": 900, "wait": 2500 },
+  { "name": "n6-list-1280", "url": "http://localhost:5177/automations", "width": 1280, "height": 900, "wait": 2500 }
+]

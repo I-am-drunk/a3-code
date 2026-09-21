@@ -1,0 +1,2 @@
+7: block max-w-[260px]
+8: blockers.spendingFrozen

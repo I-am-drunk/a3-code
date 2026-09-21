@@ -1,0 +1,4 @@
+[
+  {"name":"E1-error-logs-1280","url":"http://localhost:5177/automations/auto_01/error-logs","width":1280,"height":800,"wait":2000},
+  {"name":"E2-error-logs-560","url":"http://localhost:5177/automations/auto_01/error-logs","width":560,"height":800,"wait":2000}
+]

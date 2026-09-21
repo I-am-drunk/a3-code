@@ -1,0 +1,2 @@
+[{"name":"P1-issues-chart-probe","url":"http://localhost:5177/automations/auto_03","width":1280,"height":1200,"wait":2500,
+  "steps":[{"eval":"(()=>{const rc=document.querySelector('.recharts-responsive-container'); if(!rc) return 'no rc'; const out=[]; let el=rc; for(let i=0;i<8&&el;i++){const cs=getComputedStyle(el); out.push([el.tagName.toLowerCase(), (el.getAttribute('class')||'').slice(0,90), el.clientWidth+'x'+el.clientHeight, 'display='+cs.display, 'ai='+cs.alignItems, 'w='+cs.width]); el=el.parentElement;} return out;})()","wait":50}]}]

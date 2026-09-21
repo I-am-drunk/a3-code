@@ -1,0 +1,68 @@
+[
+ {
+  "name": "W2b-edit-schedule-tz",
+  "url": "http://localhost:5177/automations/auto_02/edit",
+  "width": 1280,
+  "height": 700,
+  "wait": 2500
+ },
+ {
+  "name": "D7-issue-sheet",
+  "url": "http://localhost:5177/automations/auto_03",
+  "width": 1280,
+  "height": 1000,
+  "wait": 2500,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],div')].find(e=>e.textContent.trim().startsWith('Stale plan after upgrade') && e.children.length<=3); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "name": "D8-custom-range-calendar",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button')].find(e=>e.textContent.trim().startsWith('Last 4 weeks')); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 700
+   },
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('[role=menuitem],button,div')].find(e=>e.textContent.trim()==='Custom range'); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 900
+   }
+  ]
+ },
+ {
+  "name": "D9-events-table",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 1000,
+  "wait": 2500,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('h2,h3,div,span')].find(e=>e.textContent.trim()==='Events' && e.children.length===0); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "scroll": "[data-shoot='1']",
+    "wait": 600
+   }
+  ]
+ }
+]

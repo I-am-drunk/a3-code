@@ -1,0 +1,6 @@
+[
+ {"name":"T1-edit-auto01","url":"http://localhost:5177/automations/auto_01/edit","width":1280,"height":900,"wait":2500,
+  "steps":[{"eval":"(()=>{const h=[...document.querySelectorAll('h2,h3,span,div')].find(e=>e.textContent.trim()==='Triggers'&&e.children.length===0); const sec=h? h.closest('section')||h.parentElement.parentElement : null; const card=sec? sec.querySelector('[class*=rounded]') : null; const walk=(el,d)=>{ if(!el||d>7) return ''; const tag=el.tagName.toLowerCase(); const cls=(el.getAttribute('class')||'').split(' ').slice(0,9).join(' '); const own=[...el.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent.trim()).filter(Boolean).join('|'); let s='  '.repeat(d)+tag+(cls?'.'+cls.replace(/ /g,'.'):'')+(own?' \"'+own.slice(0,40)+'\"':'')+'\\n'; for(const c of el.children) s+=walk(c,d+1); return s;}; return card? walk(card,0).slice(0,6000) : 'no card'})()","wait":50}]},
+ {"name":"T2-edit-auto03","url":"http://localhost:5177/automations/auto_03/edit","width":1280,"height":900,"wait":2500},
+ {"name":"T3-edit-auto05","url":"http://localhost:5177/automations/auto_05/edit","width":1280,"height":900,"wait":2500}
+]

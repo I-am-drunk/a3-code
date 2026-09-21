@@ -1,0 +1,9 @@
+42: w-full
+70: max-w-[400px]
+73: border-text-orange/50 ring-1 ring-text-orange/30
+82: text-text-secondary
+96: min-w-[320px]
+99: border-b border-border-secondary px-3 py-1.5
+102: w-full
+107: px-3 py-3 text-center text-14
+122: block truncate

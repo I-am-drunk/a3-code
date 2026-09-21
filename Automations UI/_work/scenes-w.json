@@ -1,0 +1,94 @@
+[
+ {
+  "name": "W1-create-add-trigger-menu",
+  "url": "http://localhost:5177/automations/create",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],a,[role=tab]')].find(e=>e.textContent.trim()==='Add trigger'); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "W2-edit-schedule-auto02",
+  "url": "http://localhost:5177/automations/auto_02/edit",
+  "width": 1280,
+  "height": 900,
+  "wait": 2500
+ },
+ {
+  "name": "W3-edit-schedule-hour-open",
+  "url": "http://localhost:5177/automations/auto_02/edit",
+  "width": 1280,
+  "height": 900,
+  "wait": 2500,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],a,[role=tab]')].find(e=>/hour/i.test(e.getAttribute('aria-label')||'')); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "W4-edit-auto01-add-condition",
+  "url": "http://localhost:5177/automations/auto_01/edit",
+  "width": 1280,
+  "height": 900,
+  "wait": 2500,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],a,[role=tab]')].find(e=>/add condition|add.*condition/i.test(e.getAttribute('aria-label')||'')); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "W5-edit-auto01-event-menu",
+  "url": "http://localhost:5177/automations/auto_01/edit",
+  "width": 1280,
+  "height": 900,
+  "wait": 2500,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],a,[role=tab]')].find(e=>e.textContent.trim().startsWith('Pull request')); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "W6-create-empty-add-trigger-chip",
+  "url": "http://localhost:5177/automations/create",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "eval": "(()=>{document.querySelectorAll('[data-shoot]').forEach(e=>e.removeAttribute('data-shoot'));const el=[...document.querySelectorAll('button,[role=button],a,[role=tab]')].find(e=>e.textContent.trim().startsWith('Add Trigger')); if(el){el.setAttribute('data-shoot','1'); return 'tagged: '+el.tagName+' '+(el.textContent||'').trim().slice(0,30)} return 'NOT FOUND'})()",
+    "wait": 100
+   },
+   {
+    "click": "[data-shoot='1']",
+    "wait": 800
+   }
+  ]
+ }
+]

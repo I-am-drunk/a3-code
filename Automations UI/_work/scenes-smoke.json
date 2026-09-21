@@ -1,0 +1,5 @@
+[
+  {"name":"S1-create-1280","url":"http://localhost:5177/automations/create","width":1280,"height":1400,"wait":2500},
+  {"name":"S2-edit-1280","url":"http://localhost:5177/automations/auto_01/edit","width":1280,"height":1400,"wait":2500},
+  {"name":"S3-detail-1280","url":"http://localhost:5177/automations/auto_01","width":1280,"height":900,"wait":2000,"steps":[{"resize":[1281,900],"wait":250},{"resize":[1280,900],"wait":700}]}
+]

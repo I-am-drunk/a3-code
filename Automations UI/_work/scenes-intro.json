@@ -1,0 +1,7 @@
+[
+  { "name": "i1-intro-1280", "url": "http://localhost:5177/automations", "width": 1280, "height": 900, "wait": 2500, "pre": "localStorage.removeItem('automations-intro-seen'); localStorage.setItem('sidebar-mode', JSON.stringify('open'))" },
+  { "name": "i2-intro-700", "url": "http://localhost:5177/automations", "width": 700, "height": 900, "wait": 2500, "pre": "localStorage.removeItem('automations-intro-seen')" },
+  { "name": "i3-list-1280-createmenu", "url": "http://localhost:5177/automations", "width": 1280, "height": 900, "wait": 2500, "pre": "localStorage.setItem('automations-intro-seen','1')",
+    "steps": [ { "eval": "const b=[...document.querySelectorAll('button')].find(b => b.textContent.trim().startsWith('Create automation')); b.id='__create'", "wait": 200 }, { "click": "#__create", "wait": 700 } ] },
+  { "name": "i4-list-560", "url": "http://localhost:5177/automations", "width": 560, "height": 900, "wait": 2500 }
+]

@@ -1,0 +1,243 @@
+[
+ {
+  "name": "F1-detail-1280",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2500,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 250
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 700
+   }
+  ]
+ },
+ {
+  "name": "F2-detail-560",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 560,
+  "height": 900,
+  "wait": 2500,
+  "steps": [
+   {
+    "resize": [
+     561,
+     900
+    ],
+    "wait": 250
+   },
+   {
+    "resize": [
+     560,
+     900
+    ],
+    "wait": 700
+   }
+  ]
+ },
+ {
+  "name": "F3-detail-issues",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 250
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 700
+   },
+   {
+    "eval": "[...document.querySelectorAll('[role=tab], button')].find(b=>/^Issues/.test(b.textContent.trim()))?.click()",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "F4-detail-issue-sheet",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 250
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 700
+   },
+   {
+    "eval": "[...document.querySelectorAll('[role=tab], button')].find(b=>/^Issues/.test(b.textContent.trim()))?.click()",
+    "wait": 1500
+   },
+   {
+    "eval": "(()=>{const rows=[...document.querySelectorAll('main a, main button, main [role=button], main li')].filter(e=>/occurrence/i.test(e.textContent)); rows[0]?.click(); return rows.length})()",
+    "wait": 1500
+   },
+   {
+    "eval": "location.pathname+location.search",
+    "wait": 50
+   }
+  ]
+ },
+ {
+  "name": "F5-detail-run-dialog",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 250
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 700
+   },
+   {
+    "eval": "[...document.querySelectorAll('header button')].find(b=>/^Run/.test(b.textContent.trim()))?.click()",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "F6-detail-overflow",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 250
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 700
+   },
+   {
+    "click": "header button[aria-label='More actions']",
+    "wait": 600
+   }
+  ]
+ },
+ {
+  "name": "F7-detail-range",
+  "url": "http://localhost:5177/automations/auto_01",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200,
+  "steps": [
+   {
+    "resize": [
+     1281,
+     900
+    ],
+    "wait": 250
+   },
+   {
+    "resize": [
+     1280,
+     900
+    ],
+    "wait": 700
+   },
+   {
+    "eval": "(()=>{const b=[...document.querySelectorAll('main button')].find(b=>/Last 30 days|Last 7 days|Last 14 days|Last 90 days/.test(b.textContent)); b?.click(); return b?.textContent})()",
+    "wait": 600
+   },
+   {
+    "eval": "(()=>{const o=[...document.querySelectorAll('[role=option], [role=menuitem], [role=menuitemradio]')].find(e=>/Custom/.test(e.textContent)); o?.click(); return o?.textContent})()",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "F8-create-1280",
+  "url": "http://localhost:5177/automations/create",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200
+ },
+ {
+  "name": "F9-create-560",
+  "url": "http://localhost:5177/automations/create",
+  "width": 560,
+  "height": 900,
+  "wait": 2200
+ },
+ {
+  "name": "F10-edit-1280",
+  "url": "http://localhost:5177/automations/auto_01/edit",
+  "width": 1280,
+  "height": 900,
+  "wait": 2500
+ },
+ {
+  "name": "F11-create-template",
+  "url": "http://localhost:5177/automations/create?template=sentry-remediation",
+  "width": 1280,
+  "height": 900,
+  "wait": 2500
+ },
+ {
+  "name": "F12-security-create",
+  "url": "http://localhost:5177/security/automations/create",
+  "width": 1280,
+  "height": 900,
+  "wait": 2200
+ },
+ {
+  "name": "F13-edit-scrolled",
+  "url": "http://localhost:5177/automations/auto_01/edit",
+  "width": 1280,
+  "height": 900,
+  "wait": 2500,
+  "steps": [
+   {
+    "eval": "(()=>{const el=[...document.querySelectorAll('main *')].find(e=>e.scrollHeight>e.clientHeight+50&&getComputedStyle(e).overflowY!=='visible'); if(el){el.scrollTop=el.scrollHeight;} return !!el})()",
+    "wait": 600
+   }
+  ]
+ }
+]

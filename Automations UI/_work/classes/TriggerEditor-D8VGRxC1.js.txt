@@ -1,0 +1,124 @@
+427: flex flex-col gap-1.5
+430: text-13 text-text-primary
+434: flex max-w-[600px] items-center gap-1.5
+437: min-w-0 flex-1 truncate rounded border border-border-secondary bg-tint-secondary px-2 py-1.5 font-mono text-12 text-text-primary
+445: aria-label
+462: flex flex-col gap-1.5
+465: text-13 text-text-primary
+469: flex max-w-[600px] items-center gap-1.5
+472: min-w-0 flex-1 truncate rounded border border-border-secondary bg-tint-secondary px-2 py-1.5 font-mono text-12 text-text-primary
+481: aria-label
+495: aria-label
+510: aria-label
+517: text-11
+525: flex flex-col gap-1.5
+528: text-13 text-text-primary
+532: flex max-w-[600px] items-start gap-1.5
+535: min-w-0 flex-1 overflow-x-auto whitespace-pre rounded border border-border-secondary bg-tint-secondary px-2 py-1.5 font-mono text-12 text-text-primary
+543: shrink-0
+544: aria-label
+552: text-11
+555: font-mono
+718: flex flex-wrap items-center gap-2 text-13 text-text-primary
+725: text-13 text-text-primary
+746: flex flex-wrap items-center gap-2 text-13 text-text-primary
+753: flex items-center gap-2
+756: text-13 text-text-primary
+765: aria-label
+788: flex flex-wrap items-center gap-2 text-13 text-text-primary
+795: flex flex-wrap items-center gap-2
+798: text-13 text-text-primary
+803: text-13 text-text-primary
+817: flex flex-wrap items-center gap-x-2 gap-y-1
+820: text-13 text-text-primary
+832: aria-label
+835: cursor-pointer whitespace-nowrap
+840: w-fit p-1
+848: p-1
+851: group
+852: aria-label
+853: aria-describedby
+868: flex items-center gap-1 px-2 pb-1 text-12 text-text-red
+872: shrink-0
+884: w-full
+900: flex items-center gap-1 text-12 text-text-red
+902: shrink-0
+927: h-[19px] w-32 rounded
+929: text-13 text-text-primary
+941: h-8 w-[300px] max-w-full rounded-[6px] px-2.5 font-medium
+942: ring-1 ring-text-destructive
+959: text-13 text-text-primary
+964: px-2 py-1 text-12 text-text-secondary
+969: px-2 py-1 text-12 text-text-secondary
+981: px-2 py-1 text-12 text-text-secondary
+992: aria-label
+993: ring-1 ring-text-destructive
+1021: flex items-start gap-1.5 text-text-primary
+1022: justify-between gap-2
+1026: flex items-start gap-1.5
+1028: mt-0.5 shrink-0
+1029: min-w-0
+1188: size-3
+1321: flex shrink-0 items-center gap-2 text-13 text-text-primary
+1334: aria-label
+1335: w-[52px]
+1416: flex min-w-0 flex-1 items-center gap-2 text-13 text-text-primary
+1419: shrink-0
+1451: aria-label
+1453: h-[24px] w-fit min-w-[unset] border-0 hover:border-0
+1459: !min-w-0
+1523: shrink-0
+1525: translate-y-px truncate text-12 leading-[18px] text-text-secondary
+1535: aria-label
+1536: ml-auto
+1671: ml-auto flex shrink-0 items-center gap-1
+1678: aria-label
+1701: text-13 text-text-primary
+1709: flex min-h-7 items-center gap-2 text-13 text-text-primary
+1712: text-text-primary
+1720: flex items-center gap-2.5
+1724: text-text-primary
+1729: flex items-center gap-2.5
+1733: text-text-primary
+1773: flex items-center gap-2 text-13 text-text-secondary
+1775: shrink-0
+1812: relative flex flex-col gap-2 overflow-hidden rounded-[10px] border border-border-secondary bg-bg-elevated p-2.5 pl-3.5
+1813: ring-1 ring-text-destructive
+1817: flex flex-wrap items-center gap-x-2 gap-y-1
+1821: text-13 text-text-primary
+1825: relative
+1839: absolute left-2.5 top-full mt-[-2px] w-max max-w-[300px]
+1843: text-11 text-text-destructive
+1851: font-medium underline underline-offset-2 disabled:opacity-60
+1857: text-11 text-text-orange
+1869: h-3
+1869: aria-hidden
+1879: relative flex flex-col overflow-hidden rounded-[10px] border border-border-secondary bg-bg-elevated p-2.5 pl-3.5
+1880: ring-1 ring-text-destructive
+1885: flex items-center
+1902: text-13 text-text-primary
+1921: ml-auto flex shrink-0 items-center gap-1
+1929: aria-label
+1939: flex items-center gap-2
+1943: min-w-0 flex-1
+1958: flex flex-col gap-3
+1961: flex items-center
+1979: flex flex-col gap-1.5
+1985: text-13 text-text-primary
+1998: max-w-[400px] font-mono text-13
+2001: text-11
+2012: text-12 text-text-primary
+2015: text-text-secondary
+2020: font-mono text-12
+2177: flex flex-col gap-2
+2183: flex flex-col rounded-[10px] border border-border-secondary bg-bg-elevated p-2.5 pl-3.5
+2185: flex flex-col gap-1.5
+2188: flex min-h-7 items-center
+2190: h-[18px] w-64 rounded
+2195: flex
+2198: -mt-1 mb-2 ml-2 mr-4 shrink-0 border-b border-l border-border-primary
+2202: flex flex-1 flex-col gap-1.5
+2209: flex items-center
+2211: h-[18px] w-48 rounded
+2228: flex flex-col gap-2
+2365: inline-flex h-[24px] shrink-0 items-center rounded-[4px] bg-tint-accent-secondary px-[5px] text-13 font-medium text-text-accent-primary

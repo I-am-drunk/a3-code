@@ -1,0 +1,60 @@
+42: flex items-start justify-between
+45: flex flex-col gap-0.5
+48: text-13 font-medium text-text-primary
+53: text-13 text-text-secondary
+121: w-[220px] shrink-0 justify-between
+122: aria-label
+145: items-start
+148: flex min-w-0 flex-col items-start gap-0.5
+153: whitespace-normal text-left text-12
+155: text-text-disabled
+156: text-text-secondary
+230: flex flex-col gap-4 rounded-[10px] border border-border-secondary bg-bg-elevated p-3.5
+233: flex items-start gap-3
+236: flex min-w-0 flex-1 items-center justify-between gap-4
+239: flex min-w-0 flex-col gap-0.5
+242: flex items-center gap-1
+245: text-13 font-medium text-text-primary
+250: text-13 font-normal
+258: text-13 text-text-secondary
+314: aria-label
+315: ml-auto shrink-0
+331: flex flex-col gap-2
+334: flex flex-col gap-0.5
+337: text-13 font-medium text-text-primary
+341: text-13 text-text-secondary
+427: flex flex-col gap-4 rounded-[10px]
+434: flex flex-col gap-4 rounded-[10px] border border-border-secondary bg-bg-elevated p-3.5
+437: flex items-center justify-between gap-4
+440: flex min-w-0 flex-col gap-0.5
+443: text-13 font-medium text-text-primary
+447: text-13 text-text-secondary
+485: flex flex-col gap-4 rounded-[10px]
+492: relative flex flex-col gap-4 rounded-[10px] border border-border-secondary bg-bg-elevated p-3.5
+495: flex flex-col gap-4
+498: flex items-center justify-between gap-4
+501: flex min-w-0 flex-col gap-0.5
+504: text-13 font-medium text-text-primary
+508: text-13 text-text-secondary
+567: flex flex-col gap-2
+570: flex flex-col gap-0.5
+573: text-13 font-medium text-text-primary
+577: text-13 text-text-secondary
+610: opacity-75
+624: flex flex-col gap-4 rounded-[10px]
+631: flex flex-col gap-4
+661: opacity-75
+675: flex flex-col gap-4 rounded-[10px] border border-border-secondary bg-bg-elevated p-3.5
+754: flex flex-col gap-4 rounded-[10px]
+811: m-1 w-fit min-w-[250px]
+812: z-[70]
+864: flex items-center gap-3 rounded-[10px] border border-border-secondary bg-bg-elevated p-3.5
+867: flex items-baseline gap-3
+870: text-13 text-text-primary
+874: text-12 text-text-secondary
+883: ml-auto
+897: flex items-center gap-3 rounded-[10px] border border-border-secondary bg-bg-elevated p-3.5
+900: text-13 text-text-primary
+904: aria-label
+913: w-fit
+919: ml-auto

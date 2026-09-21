@@ -1,0 +1,27 @@
+51: ml-1 text-text-disabled
+145: flex size-full flex-col items-center overflow-y-auto py-3 sm:py-6
+147: flex w-full max-w-[max(800px,50vw)] flex-col gap-4 px-2
+150: mx-1 flex items-center justify-between gap-2
+152: text-18 font-medium
+157: flex flex-col
+160: mx-1 flex items-center justify-between gap-2 py-2
+163: rounded
+166: min-w-0 overflow-x-auto
+171: shrink-0 whitespace-nowrap
+183: shrink-0 whitespace-nowrap
+195: flex shrink-0 items-center gap-0.5
+198: w-48
+214: inline-end
+218: aria-label
+230: aria-label
+239: mx-1 flex flex-col gap-8 pt-4
+247: flex items-center justify-center gap-3 rounded-lg border border-border-secondary px-4 py-3
+248: flex items-center justify-center gap-3 py-12
+252: text-13 leading-[18px] text-text-secondary
+258: aria-describedby
+266: grid grid-cols-2 gap-3 lg:grid-cols-3
+278: flex flex-col gap-3
+281: text-14 font-medium leading-5 text-text-primary
+285: grid grid-cols-2 gap-3 lg:grid-cols-3
+303: grid grid-cols-2 gap-3 lg:grid-cols-3
+312: py-8 text-center text-13 text-text-secondary

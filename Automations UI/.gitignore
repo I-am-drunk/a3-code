@@ -2,3 +2,8 @@
 reference/
 app/node_modules/
 _work/shots/
+_work/formatted/
+_work/formatted-desktop/
+_work/*/formatted/
+_work/*/*.vscdb*
+_work/*/acp-*

@@ -1,0 +1,37 @@
+67: flex flex-wrap gap-1.5
+74: flex max-w-full items-center gap-1 rounded-md border border-border-secondary px-2 py-0.5 text-12 text-text-primary hover:bg-tint-secondary
+77: size-1.5 shrink-0 rounded-full
+80: max-w-[160px] truncate text-text-secondary
+85: max-w-[160px] truncate
+90: ml-0.5 text-text-secondary
+99: flex flex-col gap-2
+101: flex items-center gap-2
+114: aria-label
+116: relative flex size-6 items-center justify-center rounded-[6px]
+117: text-text-secondary hover:bg-tint-secondary hover:text-text-primary
+118: text-text-primary
+121: size-4
+126: absolute -right-1 -top-1 h-auto min-w-[14px] px-1 py-0 text-11
+137: flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-13 font-medium
+138: border-border-secondary text-text-primary hover:bg-tint-secondary
+139: border-border-primary
+150: ml-0.5 h-auto min-w-[18px] px-1 py-0 text-11
+159: w-[280px] overflow-hidden p-0
+162: flex items-center gap-2 border-b border-border-secondary px-3 py-2
+166: shrink-0 text-text-secondary
+174: min-w-0 flex-1 bg-transparent text-13 text-text-primary outline-none
+179: max-h-[320px] overflow-y-auto overflow-x-hidden py-1
+183: flex flex-col items-center gap-2 px-4 py-6 text-center
+187: text-text-secondary
+190: text-13 font-medium text-text-primary
+194: text-12 text-text-secondary
+199: font-medium
+209: px-3 py-2 text-13 text-text-secondary
+216: flex flex-col
+219: truncate px-3 pb-1 pt-2 text-12 font-medium uppercase text-text-secondary
+230: flex items-center gap-2.5 px-3 py-1.5 text-left hover:bg-tint-secondary
+231: bg-tint-secondary/50
+236: size-2 shrink-0 rounded-full
+241: min-w-0 flex-1 break-all text-13 text-text-primary
+245: text-12 text-text-secondary
+251: shrink-0 text-text-accent-primary
