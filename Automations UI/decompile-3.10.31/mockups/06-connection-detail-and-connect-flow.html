@@ -1,0 +1,2504 @@
+<!doctype html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>T3 Code — Settings / Connections / Slack (mockup)</title>
+    <link rel="stylesheet" href="t3-tokens.css" />
+    <style>
+      /* Page-local mockup styles (prefix am-). Everything token-based; no animations. */
+      .theme-toggle {
+        margin-left: auto;
+      }
+      .am-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .am-head h2 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 24px;
+      }
+      .am-head .sub {
+        margin: 2px 0 0;
+        font-size: 13px;
+        color: var(--muted-foreground);
+      }
+      .am-head .actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .am-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      .am-toolbar .t3-input {
+        width: 220px;
+      }
+      .am-toolbar .t3-select {
+        width: auto;
+        min-width: 140px;
+      }
+      .am-menu .t3-menu-item {
+        white-space: nowrap;
+      }
+      .am-split {
+        display: inline-flex;
+      }
+      .am-split .t3-btn:first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      .am-split .t3-btn:last-child {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        margin-left: -1px;
+        width: 28px;
+        padding: 0;
+      }
+      .am-name {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+      .am-name .title {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--foreground);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .am-name .meta {
+        font-size: 12px;
+        color: var(--muted-foreground);
+        margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .am-name a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .am-trig {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--secondary-foreground);
+        white-space: nowrap;
+      }
+      .am-trig svg {
+        width: 14px;
+        height: 14px;
+        color: var(--muted-foreground);
+      }
+      .am-repo {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .am-spark {
+        display: block;
+        width: 91px;
+        height: 20px;
+      }
+      .am-spark .line {
+        fill: none;
+        stroke: var(--info);
+        stroke-width: 1.5;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+      .am-spark .flat {
+        stroke: var(--muted-foreground);
+        opacity: 0.5;
+      }
+      .am-row-dim td:not(.am-actions) {
+        opacity: 0.55;
+      }
+      .am-actions {
+        text-align: right;
+        white-space: nowrap;
+      }
+      .am-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .am-status .when {
+        color: var(--muted-foreground);
+      }
+      .am-entry {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 20px 0;
+      }
+      .am-entry .t3-card {
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        position: relative;
+      }
+      .am-entry .t3-card.hot {
+        border-color: color-mix(in srgb, var(--info) 45%, var(--border));
+        background: color-mix(in srgb, var(--info) 6%, var(--card));
+      }
+      .am-entry .tile {
+        width: 28px;
+        height: 28px;
+        border-radius: var(--radius-md);
+        background: var(--secondary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .am-entry .tile svg {
+        width: 14px;
+        height: 14px;
+      }
+      .am-entry .title {
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .am-entry .desc {
+        font-size: 12px;
+        color: var(--muted-foreground);
+      }
+      .am-entry .foot {
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--muted-foreground);
+      }
+      .am-entry .foot svg {
+        width: 14px;
+        height: 14px;
+      }
+      .am-templates {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .am-templates .t3-card {
+        padding: 12px 14px;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .am-templates .title {
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .am-templates .desc {
+        font-size: 12px;
+        color: var(--muted-foreground);
+        margin-top: 2px;
+      }
+      .am-section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 24px 0 10px;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .am-section-title .t3-help {
+        font-weight: 400;
+      }
+      .am-menu {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 4px;
+        min-width: 176px;
+        padding: 4px;
+        z-index: 5;
+      }
+      .am-anchor {
+        position: relative;
+        display: inline-block;
+      }
+      .am-variant {
+        border-top: 1px dashed var(--border);
+        margin-top: 32px;
+        padding-top: 16px;
+      }
+      .am-variant-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted-foreground);
+        margin-bottom: 12px;
+      }
+      /* Editor */
+      .am-form {
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        padding-bottom: 72px;
+      }
+      .am-form .name {
+        height: 38px;
+        font-size: 17px;
+        font-weight: 500;
+      }
+      .am-sec {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .am-sec > .hd {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .am-sec > .hd h3 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .am-sec > .hd .t3-help {
+        flex: 1;
+      }
+      .am-sec .t3-card > .body {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .am-grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .am-grid3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+      }
+      .am-inline {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .am-inline .t3-select,
+      .am-inline .t3-input {
+        width: auto;
+      }
+      .am-days {
+        display: inline-flex;
+        gap: 2px;
+      }
+      .am-days button {
+        width: 30px;
+        height: 26px;
+        border: 1px solid var(--input);
+        background: var(--background);
+        color: var(--secondary-foreground);
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        font-family: inherit;
+        cursor: pointer;
+      }
+      .am-days button.on {
+        background: var(--primary);
+        color: var(--primary-foreground);
+        border-color: var(--primary);
+      }
+      .am-code {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        background: var(--code-background);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 10px 12px;
+        white-space: pre-wrap;
+        word-break: break-all;
+        line-height: 1.5;
+        color: var(--foreground);
+      }
+      .am-code.secret {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .am-code.secret .v {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .am-cond-group {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: var(--background);
+      }
+      .am-cond {
+        display: grid;
+        grid-template-columns: 1fr 140px 1fr 28px;
+        gap: 8px;
+        align-items: center;
+      }
+      .am-op {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--muted-foreground);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .am-op .line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .am-prompt {
+        position: relative;
+      }
+      .am-prompt .t3-textarea {
+        min-height: 150px;
+        font-size: 13px;
+        padding-bottom: 36px;
+      }
+      .am-prompt .bar {
+        position: absolute;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        font-size: 12px;
+        color: var(--muted-foreground);
+      }
+      .am-mention {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 20px;
+        padding: 0 6px;
+        border-radius: 5px;
+        font-size: 12px;
+        background: color-mix(in srgb, var(--info) 12%, transparent);
+        color: var(--info);
+        font-family: var(--font-mono);
+      }
+      .am-mention.pb {
+        background: color-mix(in srgb, var(--primary) 8%, transparent);
+        color: var(--foreground);
+      }
+      .am-toggle-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .am-toggle-row .t3-grow .t3-label {
+        display: block;
+      }
+      .am-toggle-row .t3-grow .t3-help {
+        display: block;
+        margin-top: 2px;
+      }
+      .am-sticky {
+        position: sticky;
+        bottom: 0;
+        margin: 0 -24px -20px;
+        padding: 12px 24px;
+        background: color-mix(in srgb, var(--background) 92%, transparent);
+        backdrop-filter: blur(8px);
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+      .am-sticky .status {
+        margin-right: auto;
+        font-size: 12px;
+        color: var(--muted-foreground);
+        align-self: center;
+      }
+      .am-warn {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        padding: 8px 10px;
+        border-radius: var(--radius-md);
+        background: var(--warning-surface);
+        color: var(--warning-foreground);
+        font-size: 12px;
+      }
+      .am-warn svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      /* Detail */
+      .am-dhead {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .am-dhead .t {
+        min-width: 0;
+      }
+      .am-dhead h2 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .am-dhead .origin {
+        font-size: 12px;
+        color: var(--muted-foreground);
+        margin-top: 4px;
+      }
+      .am-kv {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin: 16px 0;
+      }
+      .am-kv .t3-panel {
+        padding: 12px 14px;
+      }
+      .am-kv .k {
+        font-size: 11px;
+        color: var(--muted-foreground);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .am-kv .v {
+        font-size: 14px;
+        font-weight: 500;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .am-chart {
+        height: 120px;
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+        padding: 0 2px;
+      }
+      .am-chart .b {
+        flex: 1;
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 1px;
+      }
+      .am-chart .s {
+        background: var(--success);
+        opacity: 0.8;
+      }
+      .am-chart .f {
+        background: var(--error);
+      }
+      .am-chart .k {
+        background: var(--muted-foreground);
+        opacity: 0.35;
+      }
+      .am-chart .r {
+        background: var(--update);
+      }
+      .am-chart .b > span:last-child {
+        border-radius: 2px 2px 0 0;
+      }
+      .am-legend {
+        display: flex;
+        gap: 14px;
+        font-size: 12px;
+        color: var(--muted-foreground);
+      }
+      .am-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .am-legend i {
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        display: inline-block;
+      }
+      .am-log {
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        background: var(--code-background);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 10px;
+        white-space: pre-wrap;
+        line-height: 1.5;
+        max-height: 220px;
+        overflow: auto;
+      }
+      .am-log .ok {
+        color: var(--success-foreground);
+      }
+      .am-log .err {
+        color: var(--error-foreground);
+      }
+      .am-log .dim {
+        color: var(--muted-foreground);
+      }
+      .am-thread {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--card);
+        text-decoration: none;
+        color: inherit;
+      }
+      .am-thread .ti {
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .am-thread .tm {
+        font-size: 12px;
+        color: var(--muted-foreground);
+        margin-top: 2px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .am-thread .tm svg {
+        width: 12px;
+        height: 12px;
+      }
+      .am-overlay {
+        position: absolute;
+        inset: 0;
+        background: color-mix(in srgb, var(--color-black) 35%, transparent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 20;
+      }
+      .am-dialog {
+        width: 440px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .am-dialog h3 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .am-dialog p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted-foreground);
+      }
+      .am-dialog .foot {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .t3-table td.t3-tabular {
+        white-space: nowrap;
+      }
+      .t3-details .sec {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+    </style>
+    <style>
+      /* Page-local styles for the Connections mockups (prefix cn-). Token-only; no animations. */
+      .cn-footer-active {
+        background: var(--sidebar-row-active);
+        box-shadow: 0 0 0 1px var(--sidebar-border);
+      }
+      .cn-footer-active svg {
+        color: var(--sidebar-foreground);
+      }
+      /* Settings layout: SettingsSidebarNav (h-8 rows, text-sm) + SettingsPageContainer width="readable" */
+      .cn-settings {
+        display: flex;
+        min-height: 100%;
+      }
+      .cn-settings-nav {
+        width: 200px;
+        flex-shrink: 0;
+        padding: var(--sidebar-content-inset);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .cn-settings-nav .lbl {
+        height: 32px;
+        display: flex;
+        align-items: center;
+        padding: 0 8px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted-foreground);
+      }
+      .cn-settings-nav a {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 32px;
+        padding: 0 8px;
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        color: var(--secondary-foreground);
+        text-decoration: none;
+      }
+      .cn-settings-nav a svg {
+        width: 14px;
+        height: 14px;
+        color: var(--muted-foreground);
+        opacity: 0.7;
+      }
+      .cn-settings-nav a:hover {
+        background: var(--sidebar-row-hover);
+        color: var(--foreground);
+      }
+      .cn-settings-nav a.is-active {
+        background: var(--sidebar-row-active);
+        color: var(--foreground);
+        box-shadow: 0 0 0 1px var(--border);
+      }
+      .cn-settings-nav a.is-active svg {
+        opacity: 1;
+        color: var(--foreground);
+      }
+      .cn-readable {
+        flex: 1;
+        min-width: 0;
+        max-width: 760px;
+        padding: 24px 28px 64px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+      .cn-page-head h2 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 24px;
+      }
+      .cn-page-head .sub {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: var(--muted-foreground);
+      }
+      /* SettingsSection: h2 text-sm text-foreground/70, px-3 sm:px-4 */
+      .cn-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .cn-section > h3 {
+        margin: 0;
+        padding: 0 16px;
+        font-size: 13px;
+        font-weight: 500;
+        color: color-mix(in srgb, var(--foreground) 70%, transparent);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .cn-section > h3 .t3-help {
+        font-weight: 400;
+      }
+      .cn-section > .desc {
+        margin: -4px 0 0;
+        padding: 0 16px;
+        font-size: 12px;
+        color: var(--muted-foreground);
+      }
+      /* SettingsGroup grouped: rounded-xl border-border/60 bg-card/40 shadow-xs/5, rows divided border-border/50 */
+      .cn-group {
+        border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+        background: color-mix(in srgb, var(--card) 40%, transparent);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-xs);
+        overflow: hidden;
+      }
+      .cn-group > .cn-row + .cn-row {
+        border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+      }
+      /* SettingsRow: py-3 px-3 sm:px-4, h3 text-sm font-medium, p 13px muted/80, control column right */
+      .cn-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: inherit;
+      }
+      .cn-row.is-link:hover {
+        background: color-mix(in srgb, var(--muted) 50%, transparent);
+      }
+      .cn-row > .txt {
+        flex: 1;
+        min-width: 0;
+      }
+      .cn-row > .txt h4 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .cn-row > .txt p {
+        margin: 2px 0 0;
+        font-size: 13px;
+        line-height: 18px;
+        color: color-mix(in srgb, var(--muted-foreground) 80%, transparent);
+      }
+      .cn-row > .ctl {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .cn-row > .ctl .t3-select {
+        width: auto;
+      }
+      .cn-row.stack {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .cn-row.stack > .top {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .cn-row.stack > .top > .txt {
+        flex: 1;
+        min-width: 0;
+      }
+      /* Integration logo tile: size-8 rounded-md secondary */
+      .cn-logo {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-md);
+        background: var(--secondary);
+        border: 1px solid var(--border);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--secondary-foreground);
+        flex-shrink: 0;
+        font-family: var(--font-mono);
+      }
+      .cn-logo.lg {
+        width: 44px;
+        height: 44px;
+        font-size: 14px;
+        border-radius: var(--radius-lg);
+      }
+      .cn-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted-foreground);
+        white-space: nowrap;
+      }
+      .cn-account {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .cn-avatar {
+        width: 20px;
+        height: 20px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--info) 18%, var(--secondary));
+        color: var(--info);
+        font-size: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .cn-chev {
+        width: 14px;
+        height: 14px;
+        color: var(--muted-foreground);
+      }
+      .cn-note {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        padding: 10px 12px;
+        border-radius: var(--radius-md);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      .cn-note svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .cn-note.warn {
+        background: var(--warning-surface);
+        color: var(--warning-foreground);
+      }
+      .cn-note.err {
+        background: var(--error-surface);
+        color: var(--error-foreground);
+      }
+      .cn-note.info {
+        background: color-mix(in srgb, var(--info) 8%, transparent);
+        color: var(--foreground);
+      }
+      .cn-note.info svg {
+        color: var(--info);
+      }
+      .cn-note code {
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        background: color-mix(in srgb, var(--foreground) 6%, transparent);
+        padding: 0 4px;
+        border-radius: 3px;
+      }
+      .cn-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+        padding: 0 16px;
+        font-size: 12px;
+        color: var(--muted-foreground);
+      }
+      .cn-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      /* Detail page */
+      .cn-dhead {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+      }
+      .cn-dhead .t {
+        flex: 1;
+        min-width: 0;
+      }
+      .cn-dhead h2 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .cn-dhead .sub {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: var(--muted-foreground);
+      }
+      .cn-dhead .actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .cn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .cn-back:hover {
+        color: var(--foreground);
+      }
+      .cn-back svg {
+        width: 12px;
+        height: 12px;
+        rotate: 180deg;
+      }
+      .cn-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        counter-reset: step;
+      }
+      .cn-step {
+        display: flex;
+        gap: 12px;
+        padding: 10px 0;
+        position: relative;
+      }
+      .cn-step + .cn-step::before {
+        content: "";
+        position: absolute;
+        left: 11px;
+        top: -8px;
+        height: 16px;
+        width: 1px;
+        background: var(--border);
+      }
+      .cn-step .n {
+        counter-increment: step;
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--background);
+        font-size: 11px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted-foreground);
+        flex-shrink: 0;
+      }
+      .cn-step .n::before {
+        content: counter(step);
+      }
+      .cn-step .n.done {
+        background: var(--success);
+        border-color: var(--success);
+        color: var(--color-white);
+      }
+      .cn-step .n.done::before {
+        content: "✓";
+      }
+      .cn-step .txt {
+        font-size: 13px;
+      }
+      .cn-step .txt .h {
+        font-weight: 500;
+      }
+      .cn-step .txt .d {
+        color: var(--muted-foreground);
+        margin-top: 2px;
+        font-size: 12px;
+      }
+      .cn-radio {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .cn-radio label {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--background);
+        cursor: pointer;
+      }
+      .cn-radio label.on {
+        border-color: color-mix(in srgb, var(--primary) 50%, var(--border));
+        background: color-mix(in srgb, var(--primary) 4%, var(--background));
+      }
+      .cn-radio input {
+        margin: 3px 0 0;
+        accent-color: var(--primary);
+      }
+      .cn-radio .h {
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .cn-radio .d {
+        font-size: 12px;
+        color: var(--muted-foreground);
+        margin-top: 1px;
+      }
+      .cn-picker {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--background);
+        overflow: hidden;
+      }
+      .cn-picker .srch {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+        color: var(--muted-foreground);
+      }
+      .cn-picker .srch svg {
+        width: 14px;
+        height: 14px;
+      }
+      .cn-picker ul {
+        list-style: none;
+        margin: 0;
+        padding: 4px;
+        max-height: 190px;
+        overflow: auto;
+      }
+      .cn-picker li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 30px;
+        padding: 0 8px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+      }
+      .cn-picker li:hover {
+        background: var(--accent);
+      }
+      .cn-picker li input {
+        accent-color: var(--primary);
+        margin: 0;
+      }
+      .cn-picker li .lock {
+        width: 12px;
+        height: 12px;
+        color: var(--muted-foreground);
+        margin-left: auto;
+      }
+      .cn-picker li .cnt {
+        margin-left: auto;
+        font-size: 11px;
+        color: var(--muted-foreground);
+      }
+      .cn-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .cn-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 24px;
+        padding: 0 8px;
+        border-radius: 999px;
+        background: var(--secondary);
+        font-size: 12px;
+        font-family: var(--font-mono);
+      }
+      .cn-chip svg {
+        width: 12px;
+        height: 12px;
+        color: var(--muted-foreground);
+      }
+      .cn-kv {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 6px 12px;
+        font-size: 13px;
+      }
+      .cn-kv dt {
+        color: var(--muted-foreground);
+      }
+      .cn-kv dd {
+        margin: 0;
+      }
+      .cn-overlay {
+        position: absolute;
+        inset: 0;
+        background: color-mix(in srgb, var(--color-black) 35%, transparent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 20;
+      }
+      .cn-dialog {
+        width: 460px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .cn-dialog h3 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .cn-dialog p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted-foreground);
+        line-height: 1.5;
+      }
+      .cn-dialog ul {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 13px;
+        color: var(--muted-foreground);
+      }
+      .cn-dialog .foot {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .cn-variant {
+        border-top: 1px dashed var(--border);
+        margin-top: 8px;
+        padding-top: 16px;
+      }
+      .cn-variant-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted-foreground);
+        margin-bottom: 12px;
+      }
+      .t3-details .sec {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Inline SVG sprite: lucide icon paths used by the shell (search, folder, plus, settings, git-pull-request, bar-chart, chevron-down, circle-dashed, circle-check, message-circle-question, git-branch, pin, alarm-clock). -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <symbol
+          id="i-search"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </symbol>
+        <symbol
+          id="i-folder"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"
+          />
+        </symbol>
+        <symbol
+          id="i-folder-plus"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 10v6" />
+          <path d="M9 13h6" />
+          <path
+            d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"
+          />
+        </symbol>
+        <symbol
+          id="i-plus"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 12h14" />
+          <path d="M12 5v14" />
+        </symbol>
+        <symbol
+          id="i-settings"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+          />
+          <circle cx="12" cy="12" r="3" />
+        </symbol>
+        <symbol
+          id="i-pr"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="18" cy="18" r="3" />
+          <circle cx="6" cy="6" r="3" />
+          <path d="M13 6h3a2 2 0 0 1 2 2v7" />
+          <line x1="6" x2="6" y1="9" y2="21" />
+        </symbol>
+        <symbol
+          id="i-usage"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" x2="18" y1="20" y2="10" />
+          <line x1="12" x2="12" y1="20" y2="4" />
+          <line x1="6" x2="6" y1="20" y2="14" />
+        </symbol>
+        <symbol
+          id="i-chevron"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </symbol>
+        <symbol
+          id="i-running"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M10.1 2.18a9.93 9.93 0 0 1 3.8 0" />
+          <path d="M17.6 3.71a9.95 9.95 0 0 1 2.69 2.7" />
+          <path d="M21.82 10.1a9.93 9.93 0 0 1 0 3.8" />
+          <path d="M20.29 17.6a9.95 9.95 0 0 1-2.7 2.69" />
+          <path d="M13.9 21.82a9.94 9.94 0 0 1-3.8 0" />
+          <path d="M6.4 20.29a9.95 9.95 0 0 1-2.69-2.7" />
+          <path d="M2.18 13.9a9.93 9.93 0 0 1 0-3.8" />
+          <path d="M3.71 6.4a9.95 9.95 0 0 1 2.7-2.69" />
+        </symbol>
+        <symbol
+          id="i-check"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="m9 12 2 2 4-4" />
+        </symbol>
+        <symbol
+          id="i-question"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <path d="M12 17h.01" />
+        </symbol>
+        <symbol
+          id="i-branch"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="6" x2="6" y1="3" y2="15" />
+          <circle cx="18" cy="6" r="3" />
+          <circle cx="6" cy="18" r="3" />
+          <path d="M18 9a9 9 0 0 1-9 9" />
+        </symbol>
+        <symbol
+          id="i-pin"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 17v5" />
+          <path
+            d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"
+          />
+        </symbol>
+        <symbol
+          id="i-alarm"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="13" r="8" />
+          <path d="M12 9v4l2 2" />
+          <path d="M5 3 2 6" />
+          <path d="m22 6-3-3" />
+        </symbol>
+        <symbol
+          id="i-zap"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"
+          />
+        </symbol>
+        <symbol
+          id="i-sun"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
+        </symbol>
+        <symbol
+          id="i-clock"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v6l4 2" />
+        </symbol>
+        <symbol
+          id="i-webhook"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />
+          <path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06" />
+          <path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8" />
+        </symbol>
+        <symbol
+          id="i-play"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polygon points="6 3 20 12 6 21 6 3" />
+        </symbol>
+        <symbol
+          id="i-hand"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 11V6a2 2 0 0 0-4 0v5" />
+          <path d="M14 10V4a2 2 0 0 0-4 0v2" />
+          <path d="M10 10.5V6a2 2 0 0 0-4 0v8" />
+          <path
+            d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"
+          />
+        </symbol>
+        <symbol
+          id="i-more"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="1" />
+          <circle cx="19" cy="12" r="1" />
+          <circle cx="5" cy="12" r="1" />
+        </symbol>
+        <symbol
+          id="i-copy"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+        </symbol>
+        <symbol
+          id="i-trash"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 6h18" />
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+        </symbol>
+        <symbol
+          id="i-x"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </symbol>
+        <symbol
+          id="i-alert"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+          <path d="M12 9v4" />
+          <path d="M12 17h.01" />
+        </symbol>
+        <symbol
+          id="i-arrow-right"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </symbol>
+        <symbol
+          id="i-chevron-right"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m9 18 6-6-6-6" />
+        </symbol>
+        <symbol
+          id="i-code"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+        </symbol>
+        <symbol
+          id="i-sparkles"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M9.94 14.34 9 17l-.94-2.66a4 4 0 0 0-2.4-2.4L3 11l2.66-.94a4 4 0 0 0 2.4-2.4L9 5l.94 2.66a4 4 0 0 0 2.4 2.4L15 11l-2.66.94a4 4 0 0 0-2.4 2.4Z"
+          />
+          <path d="M19 3v4" />
+          <path d="M21 5h-4" />
+        </symbol>
+        <symbol
+          id="i-external"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M15 3h6v6" />
+          <path d="M10 14 21 3" />
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+        </symbol>
+        <symbol
+          id="i-skip"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8 12h8" />
+        </symbol>
+        <symbol
+          id="i-xcircle"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="m15 9-6 6" />
+          <path d="m9 9 6 6" />
+        </symbol>
+        <symbol
+          id="i-layout"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="18" height="18" x="3" y="3" rx="2" />
+          <path d="M3 9h18" />
+          <path d="M9 21V9" />
+        </symbol>
+        <symbol
+          id="i-pencil"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21.17 6.83a2.83 2.83 0 0 0-4-4L4 16v4h4Z" />
+          <path d="m15 5 4 4" />
+        </symbol>
+        <symbol
+          id="i-link"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M9 17H7A5 5 0 0 1 7 7h2" />
+          <path d="M15 7h2a5 5 0 1 1 0 10h-2" />
+          <line x1="8" x2="16" y1="12" y2="12" />
+        </symbol>
+        <symbol
+          id="i-lock"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </symbol>
+        <symbol
+          id="i-refresh"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+          <path d="M21 3v5h-5" />
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+          <path d="M8 16H3v5" />
+        </symbol>
+        <symbol
+          id="i-hash"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="4" x2="20" y1="9" y2="9" />
+          <line x1="4" x2="20" y1="15" y2="15" />
+          <line x1="10" x2="8" y1="3" y2="21" />
+          <line x1="16" x2="14" y1="3" y2="21" />
+        </symbol>
+        <symbol
+          id="i-info"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4" />
+          <path d="M12 8h.01" />
+        </symbol>
+        <symbol
+          id="i-shield"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+          />
+        </symbol>
+        <symbol
+          id="i-blocks"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="7" height="7" x="14" y="3" rx="1" />
+          <path
+            d="M10 21V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H3"
+          />
+        </symbol>
+        <symbol
+          id="i-user"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="8" r="5" />
+          <path d="M20 21a8 8 0 0 0-16 0" />
+        </symbol>
+        <symbol
+          id="i-message"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+        </symbol>
+        <symbol
+          id="i-palette"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+          <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+          <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+          <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+          <path
+            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"
+          />
+        </symbol>
+        <symbol
+          id="i-keyboard"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="20" height="16" x="2" y="4" rx="2" />
+          <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10" />
+        </symbol>
+        <symbol
+          id="i-bot"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 8V4H8" />
+          <rect width="16" height="12" x="4" y="8" rx="2" />
+          <path d="M2 14h2M20 14h2M15 13v2M9 13v2" />
+        </symbol>
+        <symbol
+          id="i-drive"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="22" x2="2" y1="12" y2="12" />
+          <path
+            d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"
+          />
+          <line x1="6" x2="6.01" y1="16" y2="16" />
+          <line x1="10" x2="10.01" y1="16" y2="16" />
+        </symbol>
+        <symbol
+          id="i-archive"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="20" height="5" x="2" y="3" rx="1" />
+          <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+          <path d="M10 12h4" />
+        </symbol>
+        <symbol
+          id="i-camera"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"
+          />
+          <circle cx="12" cy="13" r="3" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="t3-app">
+      <!-- LEFT SIDEBAR — AppSidebarLayout.tsx:243-247 / Sidebar.tsx ThreadSidebar -->
+      <aside class="t3-sidebar" data-app-sidebar>
+        <!-- SidebarChrome.tsx:50-75 -->
+        <header class="t3-sidebar-header">
+          <a class="t3-sidebar-brand" href="#" aria-label="Go to threads"
+            ><span class="wordmark">T3</span><span class="suffix">Code</span></a
+          >
+          <span class="t3-badge sm pill neutral t3-env-pill">macbook-pro</span>
+        </header>
+
+        <!-- SidebarThreadHeader.tsx:82-145 -->
+        <div class="t3-sidebar-toolbar">
+          <button class="t3-sidebar-search" type="button" aria-label="Search threads">
+            <svg width="16" height="16"><use href="#i-search" /></svg><span>Search</span>
+          </button>
+          <div class="t3-sidebar-actions">
+            <button class="t3-icon-btn" type="button" aria-label="Filter threads by project">
+              <svg><use href="#i-folder" /></svg>
+            </button>
+            <button class="t3-icon-btn" type="button" aria-label="New project">
+              <svg><use href="#i-folder-plus" /></svg>
+            </button>
+            <button class="t3-icon-btn" type="button" aria-label="New thread">
+              <svg><use href="#i-plus" /></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sidebar.tsx:3384-3398 list order: pinned → active → Snoozed shelf → Settled shelf -->
+        <nav class="t3-sidebar-content" aria-label="Threads">
+          <!-- Automations nav item — idle state with failure badge; Settings (footer) is the active destination on this page -->
+          <a
+            class="t3-nav-item has-indicator"
+            href="02-automations-list.html"
+            aria-label="Automations, 1 failed"
+          >
+            <svg><use href="#i-zap" /></svg><span class="t3-grow t3-truncate">Automations</span
+            ><span
+              class="t3-nav-badge"
+              style="background: var(--error-surface); color: var(--error-foreground)"
+              >1 failed</span
+            >
+          </a>
+          <div style="height: 6px"></div>
+          <ul class="t3-sidebar-list">
+            <li class="t3-thread-row">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.55 0.15 264)">T3</span
+                  ><span class="name">t3-code</span
+                  ><svg
+                    width="12"
+                    height="12"
+                    style="color: var(--sidebar-muted-foreground); opacity: 0.65"
+                  >
+                    <use href="#i-pin" /></svg
+                  ><span class="t3-status-slot running" title="Working"
+                    ><svg><use href="#i-running" /></svg
+                  ></span>
+                </div>
+                <div class="t3-thread-title">
+                  Reconcile native change labels against pinned commits
+                </div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg><span class="branch">fix/ci-native-labels</span
+                  ><span class="add">+128</span><span class="del">−41</span>
+                </div>
+              </a>
+            </li>
+            <li class="t3-thread-row">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.55 0.15 264)">T3</span
+                  ><span class="name">t3-code</span
+                  ><span class="t3-status-slot attention" title="Needs your input"
+                    ><svg><use href="#i-question" /></svg
+                  ></span>
+                </div>
+                <div class="t3-thread-title">Strip Alchemy progress before parsing relay state</div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg
+                  ><span class="branch">fix/release-relay-progress</span><span class="add">+22</span
+                  ><span class="del">−9</span>
+                </div>
+              </a>
+            </li>
+            <li class="t3-thread-row">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.6 0.16 150)">MK</span
+                  ><span class="name">marketing-site</span
+                  ><span class="t3-status-slot running"
+                    ><svg><use href="#i-running" /></svg
+                  ></span>
+                </div>
+                <div class="t3-thread-title">
+                  Rewrite the pricing FAQ copy and add a comparison table
+                </div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg><span class="branch">content/pricing-faq</span>
+                </div>
+              </a>
+            </li>
+            <li class="t3-thread-row">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.62 0.18 30)">AP</span
+                  ><span class="name">acme-api</span><span class="t3-status-slot">2m</span>
+                </div>
+                <div class="t3-thread-title">Investigate flaky webhook retry test in CI</div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg><span class="branch">main</span>
+                </div>
+              </a>
+            </li>
+
+            <!-- Snoozed shelf — Sidebar.tsx:4877-4893 -->
+            <li>
+              <button class="t3-shelf snoozed t3-shelf-spacer" type="button" aria-expanded="true">
+                <span>Snoozed</span><span class="line"></span
+                ><svg style="rotate: 180deg"><use href="#i-chevron" /></svg>
+              </button>
+            </li>
+            <li class="t3-thread-row is-receded">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.55 0.15 264)">T3</span
+                  ><span class="name">t3-code</span
+                  ><span class="t3-status-slot" style="color: var(--snooze-fg)"
+                    ><svg><use href="#i-alarm" /></svg>&nbsp;Mon</span
+                  >
+                </div>
+                <div class="t3-thread-title">Mobile composer route transition polish</div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg
+                  ><span class="branch">mobile/composer-transition</span>
+                </div>
+              </a>
+            </li>
+
+            <!-- Settled shelf — Sidebar.tsx:4895-4912 -->
+            <li>
+              <button class="t3-shelf" type="button" aria-expanded="false">
+                <span>Settled (14)</span><span class="line"></span
+                ><svg><use href="#i-chevron" /></svg>
+              </button>
+            </li>
+            <li class="t3-thread-row is-receded">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.55 0.15 264)">T3</span
+                  ><span class="name">t3-code</span
+                  ><span class="t3-status-slot done"
+                    ><svg><use href="#i-check" /></svg
+                  ></span>
+                </div>
+                <div class="t3-thread-title">Accept SDK elicitation requests in ACP adapter</div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg><span class="branch">acp/elicitation</span
+                  ><span class="add">+310</span><span class="del">−12</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- SidebarChrome.tsx:187-227 -->
+        <footer class="t3-sidebar-footer">
+          <div class="menu">
+            <button
+              class="t3-icon-btn cn-footer-active"
+              type="button"
+              aria-label="Settings"
+              aria-current="page"
+            >
+              <svg><use href="#i-settings" /></svg>
+            </button>
+            <button class="t3-icon-btn" type="button" aria-label="Pull Requests">
+              <svg><use href="#i-pr" /></svg>
+            </button>
+            <button class="t3-icon-btn" type="button" aria-label="Usage">
+              <svg><use href="#i-usage" /></svg>
+            </button>
+            <span class="t3-update-pill">Update 1.4.2</span>
+          </div>
+        </footer>
+      </aside>
+
+      <!-- MAIN COLUMN -->
+      <main class="t3-main">
+        <div class="t3-topbar">
+          <span class="crumb">macbook-pro</span><span class="crumb">/</span
+          ><span class="crumb">Settings</span><span class="crumb">/</span
+          ><a
+            class="crumb"
+            href="05-connections-settings.html"
+            style="color: inherit; text-decoration: none"
+            >Connections</a
+          ><span class="crumb">/</span>
+          <h1>Slack</h1>
+          <button
+            class="t3-btn ghost sm icon theme-toggle"
+            type="button"
+            id="theme-toggle"
+            aria-label="Toggle theme"
+          >
+            <svg><use href="#i-sun" /></svg>
+          </button>
+        </div>
+        <div class="t3-body" style="position: relative">
+          <div class="cn-settings">
+            <nav class="cn-settings-nav" aria-label="Settings">
+              <div class="lbl">Settings</div>
+              <a href="#"
+                ><svg><use href="#i-layout" /></svg>Project</a
+              >
+              <a href="#"
+                ><svg><use href="#i-settings" /></svg>General</a
+              >
+              <a href="#"
+                ><svg><use href="#i-palette" /></svg>Appearance</a
+              >
+              <a href="#"
+                ><svg><use href="#i-keyboard" /></svg>Keybindings</a
+              >
+              <a href="#"
+                ><svg><use href="#i-camera" /></svg>SnapShots</a
+              >
+              <a href="#"
+                ><svg><use href="#i-bot" /></svg>Providers</a
+              >
+              <a href="#"
+                ><svg><use href="#i-blocks" /></svg>Integrations</a
+              >
+              <a class="is-active" href="05-connections-settings.html" aria-current="page"
+                ><svg><use href="#i-link" /></svg>Connections</a
+              >
+              <a href="#"
+                ><svg><use href="#i-branch" /></svg>Source Control</a
+              >
+              <a href="#"
+                ><svg><use href="#i-drive" /></svg>Storage</a
+              >
+              <a href="#"
+                ><svg><use href="#i-external" /></svg>T3 Connect</a
+              >
+              <a href="#"
+                ><svg><use href="#i-archive" /></svg>Archive</a
+              >
+            </nav>
+
+            <div class="cn-readable">
+              <!-- IntegrationPageLayout-*.js: back link + logo + title + description + primary action. -->
+              <a class="cn-back" href="05-connections-settings.html"
+                ><svg><use href="#i-arrow-right" /></svg>Connections</a
+              >
+              <div class="cn-dhead">
+                <span class="cn-logo lg" aria-hidden="true">SL</span>
+                <div class="t">
+                  <h2>
+                    Slack
+                    <span class="t3-badge success"
+                      ><span class="t3-dot success"></span>Connected</span
+                    >
+                  </h2>
+                  <!-- Devin copy PROVEN: integrationDescriptionSlack -->
+                  <p class="sub">
+                    Tag @Devin in Slack threads as soon as bug reports and feature requests come in
+                  </p>
+                </div>
+                <div class="actions">
+                  <button class="t3-btn secondary" type="button">
+                    <svg><use href="#i-refresh" /></svg>Re-authorize
+                  </button>
+                  <button class="t3-btn destructive" type="button">Disconnect</button>
+                </div>
+              </div>
+
+              <!-- Workspace facts (PROJECTED: fields the slack-*.js client reads after connect: team name, installer, scopes, installed_at). -->
+              <section class="cn-section" aria-labelledby="sec-ws">
+                <h3 id="sec-ws">Workspace</h3>
+                <div class="cn-group">
+                  <div class="cn-row">
+                    <div class="txt">
+                      <h4>Acme Inc</h4>
+                      <p>
+                        acme-inc.slack.com · installed Sep 12, 2026 by
+                        <span class="cn-account"><span class="cn-avatar">IR</span>@irene</span>
+                      </p>
+                    </div>
+                    <div class="ctl">
+                      <span class="cn-status">Bot user <span class="t3-mono">@t3-code</span></span>
+                    </div>
+                  </div>
+                  <div class="cn-row">
+                    <div class="txt">
+                      <h4>Granted scopes</h4>
+                      <p>
+                        What the Slack app can do in this workspace. Re-authorize if the list
+                        changes.
+                      </p>
+                    </div>
+                    <div class="ctl">
+                      <div class="cn-chips">
+                        <span class="cn-chip">app_mentions:read</span
+                        ><span class="cn-chip">channels:history</span
+                        ><span class="cn-chip">chat:write</span
+                        ><span class="cn-chip">im:history</span
+                        ><span class="cn-chip">users:read</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Access mode — three states none | all_public | specific (PROJECTED from slack-*.js access-mode select + channel picker). -->
+              <section class="cn-section" aria-labelledby="sec-access">
+                <h3 id="sec-access">Channel access</h3>
+                <p class="desc">
+                  Which channels agents may read and be mentioned in. Private channels always
+                  require an explicit invite.
+                </p>
+                <div class="cn-group">
+                  <div class="cn-row stack">
+                    <div class="top">
+                      <div class="txt">
+                        <h4>Default access</h4>
+                        <p>Applies to channels the bot is a member of.</p>
+                      </div>
+                    </div>
+                    <div class="cn-radio" role="radiogroup" aria-label="Default access">
+                      <label
+                        ><input type="radio" name="access" value="none" /><span
+                          ><span class="h">None</span
+                          ><span class="d" style="display: block"
+                            >The bot ignores channels unless they are listed below.</span
+                          ></span
+                        ></label
+                      >
+                      <label
+                        ><input type="radio" name="access" value="all_public" /><span
+                          ><span class="h">All public channels</span
+                          ><span class="d" style="display: block"
+                            >Any public channel the bot has been invited to. New channels are
+                            included automatically.</span
+                          ></span
+                        ></label
+                      >
+                      <label class="on"
+                        ><input type="radio" name="access" value="specific" checked /><span
+                          ><span class="h">Specific channels</span
+                          ><span class="d" style="display: block"
+                            >Only the channels you pick. Recommended for a first rollout.</span
+                          ></span
+                        ></label
+                      >
+                    </div>
+                  </div>
+                  <div class="cn-row stack">
+                    <div class="top">
+                      <div class="txt">
+                        <h4>
+                          Allowed channels <span class="t3-badge sm neutral">3 selected</span>
+                        </h4>
+                        <p>
+                          The bot must already be a member. Channels it has not joined are shown
+                          greyed out.
+                        </p>
+                      </div>
+                      <div class="ctl">
+                        <button class="t3-btn ghost sm" type="button">
+                          <svg><use href="#i-refresh" /></svg>Refresh list
+                        </button>
+                      </div>
+                    </div>
+                    <div class="cn-picker">
+                      <div class="srch">
+                        <svg><use href="#i-search" /></svg><span>Filter channels…</span>
+                      </div>
+                      <ul aria-label="Channels">
+                        <li>
+                          <input type="checkbox" checked aria-label="eng-bugs" /><svg
+                            width="12"
+                            height="12"
+                            style="color: var(--muted-foreground)"
+                          >
+                            <use href="#i-hash" /></svg
+                          >eng-bugs<span class="cnt">142 members</span>
+                        </li>
+                        <li>
+                          <input type="checkbox" checked aria-label="feature-requests" /><svg
+                            width="12"
+                            height="12"
+                            style="color: var(--muted-foreground)"
+                          >
+                            <use href="#i-hash" /></svg
+                          >feature-requests<span class="cnt">88 members</span>
+                        </li>
+                        <li>
+                          <input type="checkbox" checked aria-label="t3-code-dev" /><svg
+                            width="12"
+                            height="12"
+                            style="color: var(--muted-foreground)"
+                          >
+                            <use href="#i-hash" /></svg
+                          >t3-code-dev<span class="cnt">12 members</span>
+                        </li>
+                        <li>
+                          <input type="checkbox" aria-label="general" /><svg
+                            width="12"
+                            height="12"
+                            style="color: var(--muted-foreground)"
+                          >
+                            <use href="#i-hash" /></svg
+                          >general<span class="cnt">310 members</span>
+                        </li>
+                        <li>
+                          <input type="checkbox" aria-label="incidents" /><svg
+                            width="12"
+                            height="12"
+                            style="color: var(--muted-foreground)"
+                          >
+                            <use href="#i-lock" /></svg
+                          >incidents<span class="cnt">private · 21 members</span>
+                        </li>
+                        <li style="opacity: 0.5">
+                          <input
+                            type="checkbox"
+                            disabled
+                            aria-label="design (bot not a member)"
+                          /><svg width="12" height="12" style="color: var(--muted-foreground)">
+                            <use href="#i-hash" /></svg
+                          >design<span class="cnt">not a member — /invite @t3-code</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="cn-row">
+                    <div class="txt">
+                      <h4>Direct messages</h4>
+                      <p>
+                        Let people DM the bot to start a thread. Each DM maps to one thread in the
+                        project chosen below.
+                      </p>
+                    </div>
+                    <div class="ctl">
+                      <button
+                        class="t3-switch on"
+                        type="button"
+                        role="switch"
+                        aria-checked="true"
+                        aria-label="Allow direct messages"
+                      >
+                        <span class="thumb"></span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="cn-row">
+                    <div class="txt">
+                      <h4>Who can DM</h4>
+                      <p>Restrict DM access to a subset of workspace members.</p>
+                    </div>
+                    <div class="ctl">
+                      <select class="t3-select sm" aria-label="Who can DM">
+                        <option>Everyone in the workspace</option>
+                        <option selected>Members of allowed channels</option>
+                        <option>Only linked accounts</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- T3 mapping (PROPOSAL): a Slack mention needs a project + thread to land in. Devin picks repos per mention; T3 needs a default. -->
+              <section class="cn-section" aria-labelledby="sec-routing">
+                <h3 id="sec-routing">Routing <span class="t3-help">T3 addition</span></h3>
+                <div class="cn-group">
+                  <div class="cn-row">
+                    <div class="txt">
+                      <h4>Default project</h4>
+                      <p>Mentions that do not name a project start a thread here.</p>
+                    </div>
+                    <div class="ctl">
+                      <select class="t3-select sm" aria-label="Default project">
+                        <option selected>t3-code</option>
+                        <option>marketing-site</option>
+                        <option>acme-api</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="cn-row">
+                    <div class="txt">
+                      <h4>Post session updates</h4>
+                      <p>
+                        Reply in the originating Slack thread when the agent finishes a turn or
+                        needs input.
+                      </p>
+                    </div>
+                    <div class="ctl">
+                      <button
+                        class="t3-switch on"
+                        type="button"
+                        role="switch"
+                        aria-checked="true"
+                        aria-label="Post session updates"
+                      >
+                        <span class="thumb"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- VARIANT: not-connected state of the same page (connect button → OAuth pattern explainer). oauth-callback-*.js: install URL → provider consent → /oauth/callback on the T3 server → page refetches integrationCheck. -->
+              <div class="cn-variant">
+                <div class="cn-variant-label">
+                  <svg width="12" height="12"><use href="#i-layout" /></svg>Variant — not connected
+                  (first visit)
+                </div>
+                <div class="cn-dhead">
+                  <span class="cn-logo lg" aria-hidden="true">SL</span>
+                  <div class="t">
+                    <h2>Slack <span class="t3-badge neutral">Not connected</span></h2>
+                    <p class="sub">
+                      Tag @Devin in Slack threads as soon as bug reports and feature requests come
+                      in
+                    </p>
+                  </div>
+                  <div class="actions">
+                    <button class="t3-btn primary" type="button">
+                      <svg><use href="#i-external" /></svg>Connect Slack
+                    </button>
+                  </div>
+                </div>
+                <section class="cn-section" aria-labelledby="sec-how" style="margin-top: 20px">
+                  <h3 id="sec-how">How connecting works</h3>
+                  <div class="cn-group">
+                    <div class="cn-row stack">
+                      <div class="cn-steps">
+                        <div class="cn-step">
+                          <span class="n done"></span>
+                          <div class="txt">
+                            <div class="h">This environment mints a state token</div>
+                            <div class="d">
+                              Bound to <span class="t3-mono">macbook-pro</span> and to your T3
+                              session. Expires in 10 minutes.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cn-step">
+                          <span class="n"></span>
+                          <div class="txt">
+                            <div class="h">
+                              Slack asks you to pick a workspace and approve scopes
+                            </div>
+                            <div class="d">
+                              Opens in your browser. On a remote client the consent page opens where
+                              you are; the callback still lands on the host.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cn-step">
+                          <span class="n"></span>
+                          <div class="txt">
+                            <div class="h">
+                              Slack redirects to
+                              <span class="t3-mono">/oauth/callback/slack</span> on the T3 server
+                            </div>
+                            <div class="d">
+                              The server exchanges the code for a bot token and stores it in the
+                              environment's secrets. The browser never sees the token.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cn-step">
+                          <span class="n"></span>
+                          <div class="txt">
+                            <div class="h">This page re-checks the connection</div>
+                            <div class="d">
+                              Status flips to Connected and channel access defaults to
+                              <b>None</b> until you choose otherwise.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="cn-note info">
+                        <svg><use href="#i-shield" /></svg
+                        ><span
+                          >Devin routes this through
+                          <span class="t3-mono">app.devin.ai</span> (REMOTE). In T3 the redirect URI
+                          must be reachable by Slack, which means a public origin: T3 Connect tunnel
+                          or a hosted relay. Open question in README §3.</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disconnect confirm — Devin pattern (PROJECTED from slack-*.js disconnect mutation + confirm). Destructive, lists consequences. -->
+          <div class="cn-overlay" role="presentation">
+            <div
+              class="t3-popup cn-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="dlg-title"
+            >
+              <h3 id="dlg-title">Disconnect Slack?</h3>
+              <p>
+                The bot token for <b>Acme Inc</b> is deleted from this environment and the app is
+                uninstalled from the workspace.
+              </p>
+              <ul>
+                <li>2 automations use a Slack notification and will show "needs Connections".</li>
+                <li>Open threads started from Slack stay, but replies stop posting back.</li>
+                <li>
+                  Channel selections and routing are forgotten; reconnecting starts from
+                  <b>None</b>.
+                </li>
+              </ul>
+              <div class="foot">
+                <button class="t3-btn secondary" type="button">Cancel</button
+                ><button class="t3-btn destructive" type="button">Disconnect</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Theme toggle: light ⇄ dark via the `.dark` class on <html> (t3-tokens.css mechanism). Default light.
+      (function () {
+        var html = document.documentElement,
+          btn = document.getElementById("theme-toggle");
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+          var dark = html.classList.toggle("dark");
+          html.classList.toggle("light", !dark);
+        });
+      })();
+    </script>
+  </body>
+</html>
