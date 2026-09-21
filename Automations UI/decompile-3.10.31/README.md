@@ -1,0 +1,34 @@
+# Devin 3.10.31 decompilation — index
+
+Static-analysis findings from Devin.app 3.10.31 (Windsurf/VS Code shell, bundle id `com.exafunction.windsurf`) and the app.devin.ai production bundle captured 2026-09-20. Goal: understand Automations, Integrations/Connections, and Voice Call well enough to reimplement them in T3 Code, styled like T3 Code. **Nothing here is implemented in `apps/` or `packages/`; these are architecture documents and mockups.**
+
+Every claim carries an evidence label — PROVEN (citable string/branch), PROJECTED (shape implied by what the client reads), DERIVED (follows from proven control flow), or REMOTE/UNKNOWN (server-side, not visible). Citations are `chunk.js:line` into prettified copies of the bundles, which are gitignored alongside the proprietary app copy (`../reference/`, `../_work/formatted*/`). The shared subagent brief with all rules is `../_work/BRIEF.md`.
+
+## Headline answers
+
+- **Integrations are not MCP servers to the model.** Slack, Linear and Pylon are code-shipped native toolsets gated by an org connection plus per-Devin flags (`linear_tools_enabled`, `slack_tool_channels`); everything else the agent can use is an MCP server chosen via `recommended_mcps`. SCM integrations (GitHub, GitLab, Azure DevOps…) are server-side credentials that never surface as tools. OAuth tokens never reach the client. "Custom connections" are natural-language readiness health checks, not agent tools.
+- **Voice is plain browser WebRTC plus a small bespoke JSON WebSocket signaling channel** (`/voice/{devinId}/live`: offer/answer/resume/ping/end; server sends `transcript` frames). Speech-to-text and text-to-speech are server-side. Call boundaries arrive as a `set_voice_mode` tool call and are projected into `voice_call_started/ended` events; spoken turns become ordinary messages.
+- **What is local in Devin:** the Rust `devin` CLI is a complete local agent harness (tools, MCP client with OAuth, subagents, Seatbelt/bwrap sandbox, SQLite session store) that the shell spawns as `devin acp` over stdio. Model inference, Automations, Integrations and Voice are cloud-only. T3 Code already has an equivalent for every local piece.
+- **Automations changed additively from 3.8.20 to 3.10.31:** nothing removed; added an embedded Preflight `code_step`, Slack bot identity/reply access, on-call responders, `start_code_scan`, and a few trigger event types. The prior 3.8.20 spec (`../DEVIN_AUTOMATIONS_DECOMPILED_SPEC.md`) remains valid.
+- **T3 mapping:** T3's `thread.turn.start` already carries a bootstrap block (create thread, prepare worktree, run setup script), so an automation firing is one existing command dispatch; run history can be a projection over thread events. Voice call start/end map onto existing thread activities with a server-side voice reactor, requiring no provider-adapter changes.
+
+## Documents
+
+| Track | File | Covers |
+|---|---|---|
+| Integrations | `integrations/A-provider-registry-and-api.md` | Provider registries, connection identity model, endpoint and query-key tables, org/user/enterprise scoping |
+| Integrations | `integrations/B-oauth-and-connection-lifecycle.md` | Ten connect flows in three patterns, callback routes, token custody, disconnect, lifecycle state machine, copy |
+| Integrations | `integrations/C-agent-consumption-custom-connections-and-shell.md` | MCP-or-not answer, native vs MCP tool channels, custom connections, MCP server entry schema, shell/CLI role, T3 mapping |
+| Voice | `voice/A-controller-transport-signaling.md` | Entry points and gating, controller state machine, WebRTC transport, signaling contract, audio, sounds, presence, copy |
+| Voice | `voice/B-voice-events-in-session-and-t3-mapping.md` | Voice meta keys, event projection, transcript renderer, server-side STT path, desktop parity, T3 mapping |
+| Automations | `automations/A-changelog-and-data-model.md` | 3.8.20→3.10.31 changelog, updated TypeScript data model, endpoints, trigger catalogue |
+| Automations | `automations/B-t3-code-mapping-proposal.md` | Concept mapping, proposed contracts/commands/events, scheduler and webhook reactors, client surfaces, reverse states, non-goals |
+| Desktop | `desktop/A-shell-web-bridge-and-network.md` | iframe embedding, protobuf-JSON bridge v7 message table, nav manifest, auth handoff, endpoints, route table, limitations |
+| Desktop | `desktop/B-local-runtime-cli-acp-storage.md` | Rust CLI capability matrix, local-vs-remote table, ACP cache schema, storage layout |
+| Mockups | `mockups/` | `t3-tokens.css` + `t3-shell.html` (T3 visual language), sidebar Automations tab, list, editor, detail pages; `README.md` and `README-tokens.md` |
+
+Open the mockups directly in a browser; they are self-contained and make no network requests.
+
+## Known gaps
+
+Server-side behavior (scheduling engine, webhook verification, STT/TTS vendor, TURN, token storage, MCP execution location) is REMOTE and documented only as its client-visible boundary. The T3 mapping sections are proposals awaiting maintainer decisions listed in each document's open-questions section.
