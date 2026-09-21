@@ -1,0 +1,2025 @@
+<!doctype html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>T3 Code — Voice call (thread view)</title>
+    <link rel="stylesheet" href="t3-tokens.css" />
+    <style>
+      /* Page-local mockup styles (prefix vc-). Tokens only; no continuous animation except T3's duty-cycled status pulse (.t3-dot.running). */
+      .theme-toggle {
+        margin-left: auto;
+      }
+      .vc-thread {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+      .vc-scroll {
+        flex: 1 0 auto;
+        padding: 20px 24px 8px;
+      }
+      .vc-timeline {
+        max-width: 760px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .vc-user {
+        align-self: flex-end;
+        max-width: 78%;
+        background: var(--message-surface, var(--secondary));
+        color: var(--foreground);
+        padding: 8px 12px;
+        border-radius: var(--radius-lg);
+      }
+      .vc-user.optimistic {
+        opacity: 0.7;
+      }
+      .vc-user .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        color: var(--muted-foreground);
+        margin-bottom: 2px;
+      }
+      .vc-user .tag svg {
+        width: 12px;
+        height: 12px;
+      }
+      .vc-agent {
+        max-width: 92%;
+        color: var(--foreground);
+      }
+      .vc-agent p {
+        margin: 0 0 6px;
+      }
+      .vc-agent .tool {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted-foreground);
+        font-family: var(--font-mono);
+      }
+      .vc-agent .tool svg {
+        width: 14px;
+        height: 14px;
+      }
+      /* Timeline system rows: voice_call_started / voice_call_ended (D26asGkT:1208-1227). Centered divider like T3's turn separators. */
+      .vc-sys {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted-foreground);
+        font-size: 12px;
+      }
+      .vc-sys .line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .vc-sys .lbl {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .vc-sys .lbl svg {
+        width: 14px;
+        height: 14px;
+      }
+      .vc-live {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--update-foreground);
+      }
+      /* Composer — ChatComposer.tsx frame; call button lives beside Attach (:6960) in the left action cluster */
+      .vc-composer-wrap {
+        padding: 0 24px 16px;
+      }
+      .vc-composer {
+        max-width: 760px;
+        margin: 0 auto;
+        border: 1px solid var(--input);
+        border-radius: var(--radius-xl);
+        background: var(--card);
+        box-shadow: var(--shadow-xs);
+        overflow: hidden;
+      }
+      .vc-composer.is-live {
+        border-color: color-mix(in srgb, var(--update) 55%, var(--border));
+      }
+      .vc-composer.is-error {
+        border-color: color-mix(in srgb, var(--error) 55%, var(--border));
+      }
+      .vc-composer textarea {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        border: 0;
+        background: transparent;
+        color: var(--foreground);
+        font: inherit;
+        font-size: 13px;
+        line-height: 1.5;
+        padding: 12px 14px 4px;
+        resize: none;
+        outline: none;
+        min-height: 52px;
+      }
+      .vc-composer textarea::placeholder {
+        color: var(--placeholder);
+      }
+      .vc-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 8px 8px;
+      }
+      .vc-actions .spacer {
+        flex: 1;
+      }
+      .vc-actions .t3-btn.ghost {
+        color: var(--secondary-label);
+      }
+      .vc-actions .t3-btn.ghost.live {
+        color: var(--update-foreground);
+        background: var(--update-surface);
+      }
+      .vc-actions .t3-btn.ghost.connecting {
+        color: var(--update-foreground);
+      }
+      .vc-actions .t3-btn.ghost.reconnecting {
+        color: var(--warning-foreground);
+        background: var(--warning-surface);
+      }
+      .vc-actions .t3-btn.ghost.err {
+        color: var(--error-foreground);
+        background: var(--error-surface);
+      }
+      .vc-send {
+        border-radius: 999px;
+      }
+      /* In-call bar — VoiceCallButton:318-386. Sits above the composer actions, inside the frame. */
+      .vc-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-top: 1px solid var(--border);
+        background: var(--update-surface);
+        color: var(--update-foreground);
+        font-size: 12px;
+      }
+      .vc-bar.reconnecting {
+        background: var(--warning-surface);
+        color: var(--warning-foreground);
+      }
+      .vc-bar.err {
+        background: var(--error-surface);
+        color: var(--error-foreground);
+      }
+      .vc-bar .state {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+      }
+      .vc-bar .hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted-foreground);
+      }
+      .vc-bar .spacer {
+        flex: 1;
+      }
+      .vc-bar .t3-btn.sm {
+        height: 26px;
+      }
+      .vc-bar .t3-btn.ghost {
+        color: inherit;
+      }
+      .vc-bar .t3-btn.ghost.on {
+        background: color-mix(in srgb, currentColor 14%, transparent);
+      }
+      .vc-bar .elapsed {
+        font-variant-numeric: tabular-nums;
+        color: var(--muted-foreground);
+      }
+      /* Level meter — static bars (no animation); Devin's VoiceCallPresence draws an analyser. */
+      .vc-meter {
+        display: inline-flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 14px;
+      }
+      .vc-meter i {
+        display: block;
+        width: 3px;
+        border-radius: 1px;
+        background: currentColor;
+        opacity: 0.85;
+      }
+      /* State gallery */
+      .vc-gallery {
+        max-width: 760px;
+        margin: 0 auto 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .vc-gallery .t3-card > .head {
+        font-size: 12px;
+        color: var(--muted-foreground);
+        padding: 8px 12px;
+      }
+      .vc-gallery .t3-card > .body {
+        padding: 10px;
+      }
+      .vc-gallery .vc-composer {
+        max-width: none;
+      }
+      /* Transcript popover — VoiceCallButton:260-300 */
+      .vc-anchor {
+        position: relative;
+      }
+      .vc-transcript {
+        position: absolute;
+        left: 0;
+        bottom: calc(100% + 8px);
+        width: 340px;
+        padding: 0;
+        z-index: 3;
+      }
+      .vc-transcript .head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .vc-transcript .head .t3-btn {
+        margin-left: auto;
+      }
+      .vc-transcript .list {
+        max-height: 220px;
+        overflow-y: auto;
+        padding: 8px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 12px;
+      }
+      .vc-transcript .u,
+      .vc-transcript .a {
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        gap: 8px;
+      }
+      .vc-transcript .who {
+        color: var(--muted-foreground);
+        font-size: 11px;
+        padding-top: 1px;
+      }
+      .vc-transcript .partial {
+        color: var(--muted-foreground);
+        font-style: italic;
+      }
+      .vc-transcript .empty {
+        color: var(--muted-foreground);
+        text-align: center;
+        padding: 20px 8px;
+      }
+      /* Presence pill — VoiceCallPresence role=status (A§7:194-205) */
+      .vc-presence {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 24px;
+        padding: 0 10px 0 6px;
+        border-radius: 999px;
+        background: var(--update-surface);
+        color: var(--update-foreground);
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .vc-presence svg {
+        width: 14px;
+        height: 14px;
+      }
+      .vc-presence .t3-btn.sm {
+        height: 20px;
+        padding: 0 6px;
+        font-size: 11px;
+        color: inherit;
+      }
+      /* Sidebar "Return to call" pill — VoiceCallButton:400-449 */
+      .vc-return {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 6px 8px 0;
+        height: 32px;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: var(--update-surface);
+        color: var(--update-foreground);
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+      }
+      .vc-return svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      .vc-return .who {
+        font-weight: 400;
+        color: var(--sidebar-muted-foreground);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .vc-return .t3-dot {
+        margin-left: auto;
+      }
+      /* Right details slot */
+      .t3-details .sec {
+        margin-bottom: 18px;
+      }
+      .t3-details ul {
+        margin: 0;
+        padding-left: 16px;
+        font-size: 12px;
+        color: var(--muted-foreground);
+      }
+      .t3-details li {
+        margin: 2px 0;
+      }
+      /* 08 — mobile phone frames (apps/mobile idiom: full-bleed, 16px gutters, bottom composer) */
+      .vc-phones {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        padding: 20px 24px;
+      }
+      .vc-phone {
+        width: 390px;
+        height: 720px;
+        flex-shrink: 0;
+        border-radius: 40px;
+        border: 1px solid var(--border);
+        background: var(--background);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .vc-phone .cap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 11px;
+        color: var(--muted-foreground);
+        padding: 6px 0 0;
+        pointer-events: none;
+      }
+      .vc-phone .status {
+        height: 50px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 0 28px 4px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .vc-phone .nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 44px;
+        padding: 0 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .vc-phone .nav h2 {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .vc-phone .nav .t3-btn.icon {
+        width: 36px;
+        height: 36px;
+      }
+      .vc-phone .feed {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        font-size: 15px;
+        line-height: 1.45;
+      }
+      .vc-phone .feed .vc-user {
+        font-size: 15px;
+        max-width: 84%;
+      }
+      .vc-phone .feed .vc-sys {
+        font-size: 12px;
+      }
+      .vc-phone .foot {
+        border-top: 1px solid var(--border);
+        background: var(--card);
+        padding-bottom: 22px;
+      }
+      .vc-phone .mbar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 12px;
+        background: var(--update-surface);
+        color: var(--update-foreground);
+        font-size: 13px;
+      }
+      .vc-phone .mbar.err {
+        background: var(--error-surface);
+        color: var(--error-foreground);
+      }
+      .vc-phone .mbar .t3-btn {
+        color: inherit;
+      }
+      .vc-phone .mbar .t3-btn.icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+      }
+      .vc-phone .mbar .t3-btn.icon.on {
+        background: color-mix(in srgb, currentColor 14%, transparent);
+      }
+      .vc-phone .mbar .state {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+      }
+      .vc-phone .mbar .spacer {
+        flex: 1;
+      }
+      .vc-phone .mcomposer {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        padding: 8px 12px 0;
+      }
+      .vc-phone .mcomposer .field {
+        flex: 1;
+        min-height: 40px;
+        border: 1px solid var(--input);
+        border-radius: 20px;
+        background: var(--background);
+        padding: 10px 14px;
+        font-size: 15px;
+        color: var(--placeholder);
+      }
+      .vc-phone .mcomposer .t3-btn.icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+      }
+      .vc-phone .mcomposer .t3-btn.icon.live {
+        color: var(--update-foreground);
+        background: var(--update-surface);
+        border-color: transparent;
+      }
+      .vc-phone .home {
+        width: 134px;
+        height: 5px;
+        border-radius: 3px;
+        background: var(--foreground);
+        opacity: 0.25;
+        margin: 8px auto 0;
+      }
+      .vc-phone .sheet {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--popover);
+        color: var(--popover-foreground);
+        border-radius: 20px 20px 0 0;
+        box-shadow: var(--shadow-popup);
+        padding: 12px 16px 28px;
+      }
+      .vc-phone .sheet .grab {
+        width: 36px;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--border);
+        margin: 0 auto 12px;
+      }
+      .vc-phone .sheet h3 {
+        margin: 0 0 6px;
+        font-size: 16px;
+      }
+      .vc-phone .sheet p {
+        margin: 0 0 14px;
+        font-size: 14px;
+        color: var(--muted-foreground);
+      }
+      .vc-phone .sheet .row {
+        display: flex;
+        gap: 8px;
+      }
+      .vc-phone .sheet .row .t3-btn {
+        flex: 1;
+        height: 40px;
+        font-size: 14px;
+      }
+      .vc-phone .scrim {
+        position: absolute;
+        inset: 0;
+        background: rgb(0 0 0 / 35%);
+      }
+      .vc-phone .toast {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 150px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: var(--radius-lg);
+        background: var(--popover);
+        color: var(--popover-foreground);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-popup);
+        font-size: 13px;
+      }
+      .vc-phone .toast svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      .vc-phone .toast.err svg {
+        color: var(--error-foreground);
+      }
+      .vc-phone .toast .t3-btn {
+        margin-left: auto;
+      }
+      .vc-phone .mtranscript {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 160px;
+      }
+      .vc-phone .mtranscript .vc-transcript {
+        position: static;
+        width: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Inline SVG sprite: lucide icon paths used by the shell (search, folder, plus, settings, git-pull-request, bar-chart, chevron-down, circle-dashed, circle-check, message-circle-question, git-branch, pin, alarm-clock). -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <symbol
+          id="i-search"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </symbol>
+        <symbol
+          id="i-folder"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"
+          />
+        </symbol>
+        <symbol
+          id="i-folder-plus"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 10v6" />
+          <path d="M9 13h6" />
+          <path
+            d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"
+          />
+        </symbol>
+        <symbol
+          id="i-plus"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 12h14" />
+          <path d="M12 5v14" />
+        </symbol>
+        <symbol
+          id="i-settings"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+          />
+          <circle cx="12" cy="12" r="3" />
+        </symbol>
+        <symbol
+          id="i-pr"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="18" cy="18" r="3" />
+          <circle cx="6" cy="6" r="3" />
+          <path d="M13 6h3a2 2 0 0 1 2 2v7" />
+          <line x1="6" x2="6" y1="9" y2="21" />
+        </symbol>
+        <symbol
+          id="i-usage"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" x2="18" y1="20" y2="10" />
+          <line x1="12" x2="12" y1="20" y2="4" />
+          <line x1="6" x2="6" y1="20" y2="14" />
+        </symbol>
+        <symbol
+          id="i-chevron"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </symbol>
+        <symbol
+          id="i-running"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M10.1 2.18a9.93 9.93 0 0 1 3.8 0" />
+          <path d="M17.6 3.71a9.95 9.95 0 0 1 2.69 2.7" />
+          <path d="M21.82 10.1a9.93 9.93 0 0 1 0 3.8" />
+          <path d="M20.29 17.6a9.95 9.95 0 0 1-2.7 2.69" />
+          <path d="M13.9 21.82a9.94 9.94 0 0 1-3.8 0" />
+          <path d="M6.4 20.29a9.95 9.95 0 0 1-2.69-2.7" />
+          <path d="M2.18 13.9a9.93 9.93 0 0 1 0-3.8" />
+          <path d="M3.71 6.4a9.95 9.95 0 0 1 2.7-2.69" />
+        </symbol>
+        <symbol
+          id="i-check"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="m9 12 2 2 4-4" />
+        </symbol>
+        <symbol
+          id="i-question"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <path d="M12 17h.01" />
+        </symbol>
+        <symbol
+          id="i-branch"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="6" x2="6" y1="3" y2="15" />
+          <circle cx="18" cy="6" r="3" />
+          <circle cx="6" cy="18" r="3" />
+          <path d="M18 9a9 9 0 0 1-9 9" />
+        </symbol>
+        <symbol
+          id="i-pin"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 17v5" />
+          <path
+            d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"
+          />
+        </symbol>
+        <symbol
+          id="i-alarm"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="13" r="8" />
+          <path d="M12 9v4l2 2" />
+          <path d="M5 3 2 6" />
+          <path d="m22 6-3-3" />
+        </symbol>
+        <symbol
+          id="i-zap"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"
+          />
+        </symbol>
+        <symbol
+          id="i-sun"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
+        </symbol>
+        <symbol
+          id="i-clock"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v6l4 2" />
+        </symbol>
+        <symbol
+          id="i-webhook"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2" />
+          <path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06" />
+          <path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8" />
+        </symbol>
+        <symbol
+          id="i-play"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polygon points="6 3 20 12 6 21 6 3" />
+        </symbol>
+        <symbol
+          id="i-hand"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 11V6a2 2 0 0 0-4 0v5" />
+          <path d="M14 10V4a2 2 0 0 0-4 0v2" />
+          <path d="M10 10.5V6a2 2 0 0 0-4 0v8" />
+          <path
+            d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"
+          />
+        </symbol>
+        <symbol
+          id="i-more"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="1" />
+          <circle cx="19" cy="12" r="1" />
+          <circle cx="5" cy="12" r="1" />
+        </symbol>
+        <symbol
+          id="i-copy"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+        </symbol>
+        <symbol
+          id="i-trash"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 6h18" />
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+        </symbol>
+        <symbol
+          id="i-x"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </symbol>
+        <symbol
+          id="i-alert"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+          <path d="M12 9v4" />
+          <path d="M12 17h.01" />
+        </symbol>
+        <symbol
+          id="i-arrow-right"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </symbol>
+        <symbol
+          id="i-chevron-right"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m9 18 6-6-6-6" />
+        </symbol>
+        <symbol
+          id="i-code"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+        </symbol>
+        <symbol
+          id="i-sparkles"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M9.94 14.34 9 17l-.94-2.66a4 4 0 0 0-2.4-2.4L3 11l2.66-.94a4 4 0 0 0 2.4-2.4L9 5l.94 2.66a4 4 0 0 0 2.4 2.4L15 11l-2.66.94a4 4 0 0 0-2.4 2.4Z"
+          />
+          <path d="M19 3v4" />
+          <path d="M21 5h-4" />
+        </symbol>
+        <symbol
+          id="i-external"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M15 3h6v6" />
+          <path d="M10 14 21 3" />
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+        </symbol>
+        <symbol
+          id="i-skip"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8 12h8" />
+        </symbol>
+        <symbol
+          id="i-xcircle"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="m15 9-6 6" />
+          <path d="m9 9 6 6" />
+        </symbol>
+        <symbol
+          id="i-layout"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="18" height="18" x="3" y="3" rx="2" />
+          <path d="M3 9h18" />
+          <path d="M9 21V9" />
+        </symbol>
+        <symbol
+          id="i-pencil"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21.17 6.83a2.83 2.83 0 0 0-4-4L4 16v4h4Z" />
+          <path d="m15 5 4 4" />
+        </symbol>
+        <symbol
+          id="i-phone"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"
+          />
+        </symbol>
+        <symbol
+          id="i-phone-off"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"
+          />
+          <line x1="22" y1="2" x2="2" y2="22" />
+        </symbol>
+        <symbol
+          id="i-mic"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+          <line x1="12" y1="19" x2="12" y2="22" />
+        </symbol>
+        <symbol
+          id="i-mic-off"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="2" y1="2" x2="22" y2="22" />
+          <path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2" />
+          <path d="M5 10v2a7 7 0 0 0 12 5" />
+          <path d="M15 9.34V5a3 3 0 0 0-5.68-1.33" />
+          <path d="M9 9v3a3 3 0 0 0 5.12 2.12" />
+          <line x1="12" y1="19" x2="12" y2="22" />
+        </symbol>
+        <symbol
+          id="i-volume-x"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+          <line x1="23" y1="9" x2="17" y2="15" />
+          <line x1="17" y1="9" x2="23" y2="15" />
+        </symbol>
+        <symbol
+          id="i-volume"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+        </symbol>
+        <symbol
+          id="i-send"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M22 2 11 13" />
+          <path d="m22 2-7 20-4-9-9-4Z" />
+        </symbol>
+        <symbol
+          id="i-paperclip"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"
+          />
+        </symbol>
+        <symbol
+          id="i-arrow-up"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m5 12 7-7 7 7" />
+          <path d="M12 19V5" />
+        </symbol>
+        <symbol
+          id="i-chevron-down"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </symbol>
+        <symbol
+          id="i-dot"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+        </symbol>
+        <symbol
+          id="i-refresh"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+          <path d="M21 3v6h-6" />
+        </symbol>
+        <symbol
+          id="i-arrow-left"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m12 19-7-7 7-7" />
+          <path d="M19 12H5" />
+        </symbol>
+        <symbol
+          id="i-lock"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="3" y="11" width="18" height="11" rx="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="t3-app">
+      <!-- LEFT SIDEBAR — AppSidebarLayout.tsx:243-247 / Sidebar.tsx ThreadSidebar -->
+      <aside class="t3-sidebar" data-app-sidebar>
+        <!-- SidebarChrome.tsx:50-75 -->
+        <header class="t3-sidebar-header">
+          <a class="t3-sidebar-brand" href="#" aria-label="Go to threads"
+            ><span class="wordmark">T3</span><span class="suffix">Code</span></a
+          >
+          <span class="t3-badge sm pill neutral t3-env-pill">macbook-pro</span>
+        </header>
+
+        <!-- SidebarThreadHeader.tsx:82-145 -->
+        <div class="t3-sidebar-toolbar">
+          <button class="t3-sidebar-search" type="button" aria-label="Search threads">
+            <svg width="16" height="16"><use href="#i-search" /></svg><span>Search</span>
+          </button>
+          <div class="t3-sidebar-actions">
+            <button class="t3-icon-btn" type="button" aria-label="Filter threads by project">
+              <svg><use href="#i-folder" /></svg>
+            </button>
+            <button class="t3-icon-btn" type="button" aria-label="New project">
+              <svg><use href="#i-folder-plus" /></svg>
+            </button>
+            <button class="t3-icon-btn" type="button" aria-label="New thread">
+              <svg><use href="#i-plus" /></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sidebar.tsx:3384-3398 list order: pinned → active → Snoozed shelf → Settled shelf -->
+        <nav class="t3-sidebar-content" aria-label="Threads">
+          <!-- Automations nav item — active state (01-sidebar-automations-tab.html:288-291) -->
+          <a class="t3-nav-item" href="02-automations-list.html" aria-label="Automations">
+            <svg><use href="#i-zap" /></svg><span class="t3-grow t3-truncate">Automations</span>
+          </a>
+          <div style="height: 6px"></div>
+          <ul class="t3-sidebar-list">
+            <li class="t3-thread-row is-selected">
+              <a class="surface" href="#" aria-current="page">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.55 0.15 264)">T3</span
+                  ><span class="name">t3-code</span
+                  ><span
+                    class="t3-status-slot"
+                    style="color: var(--update-foreground)"
+                    title="Voice call live"
+                    ><svg><use href="#i-phone" /></svg></span
+                  ><span class="t3-status-slot running" title="Working"
+                    ><svg><use href="#i-running" /></svg
+                  ></span>
+                </div>
+                <div class="t3-thread-title">
+                  Reconcile native change labels against pinned commits
+                </div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg><span class="branch">fix/ci-native-labels</span
+                  ><span class="add">+128</span><span class="del">−41</span>
+                </div>
+              </a>
+            </li>
+            <li class="t3-thread-row">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.55 0.15 264)">T3</span
+                  ><span class="name">t3-code</span
+                  ><span class="t3-status-slot attention" title="Needs your input"
+                    ><svg><use href="#i-question" /></svg
+                  ></span>
+                </div>
+                <div class="t3-thread-title">Strip Alchemy progress before parsing relay state</div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg
+                  ><span class="branch">fix/release-relay-progress</span><span class="add">+22</span
+                  ><span class="del">−9</span>
+                </div>
+              </a>
+            </li>
+            <li class="t3-thread-row">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.6 0.16 150)">MK</span
+                  ><span class="name">marketing-site</span
+                  ><span class="t3-status-slot running"
+                    ><svg><use href="#i-running" /></svg
+                  ></span>
+                </div>
+                <div class="t3-thread-title">
+                  Rewrite the pricing FAQ copy and add a comparison table
+                </div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg><span class="branch">content/pricing-faq</span>
+                </div>
+              </a>
+            </li>
+            <li class="t3-thread-row">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.62 0.18 30)">AP</span
+                  ><span class="name">acme-api</span><span class="t3-status-slot">2m</span>
+                </div>
+                <div class="t3-thread-title">Investigate flaky webhook retry test in CI</div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg><span class="branch">main</span>
+                </div>
+              </a>
+            </li>
+
+            <!-- Snoozed shelf — Sidebar.tsx:4877-4893 -->
+            <li>
+              <button class="t3-shelf snoozed t3-shelf-spacer" type="button" aria-expanded="true">
+                <span>Snoozed</span><span class="line"></span
+                ><svg style="rotate: 180deg"><use href="#i-chevron" /></svg>
+              </button>
+            </li>
+            <li class="t3-thread-row is-receded">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.55 0.15 264)">T3</span
+                  ><span class="name">t3-code</span
+                  ><span class="t3-status-slot" style="color: var(--snooze-fg)"
+                    ><svg><use href="#i-alarm" /></svg>&nbsp;Mon</span
+                  >
+                </div>
+                <div class="t3-thread-title">Mobile composer route transition polish</div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg
+                  ><span class="branch">mobile/composer-transition</span>
+                </div>
+              </a>
+            </li>
+
+            <!-- Settled shelf — Sidebar.tsx:4895-4912 -->
+            <li>
+              <button class="t3-shelf" type="button" aria-expanded="false">
+                <span>Settled (14)</span><span class="line"></span
+                ><svg><use href="#i-chevron" /></svg>
+              </button>
+            </li>
+            <li class="t3-thread-row is-receded">
+              <a class="surface" href="#">
+                <div class="t3-thread-project">
+                  <span class="t3-favicon" style="--favicon-bg: oklch(0.55 0.15 264)">T3</span
+                  ><span class="name">t3-code</span
+                  ><span class="t3-status-slot done"
+                    ><svg><use href="#i-check" /></svg
+                  ></span>
+                </div>
+                <div class="t3-thread-title">Accept SDK elicitation requests in ACP adapter</div>
+                <div class="t3-thread-meta">
+                  <svg><use href="#i-branch" /></svg><span class="branch">acp/elicitation</span
+                  ><span class="add">+310</span><span class="del">−12</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- "Return to call" pill — VoiceCallButton:400-449 (Devin shows it in the sessions sidebar while a call runs in another session). T3: sidebar footer slot, links to the calling thread. -->
+        <a class="vc-return" href="#" aria-label="Return to call">
+          <svg><use href="#i-phone" /></svg><span>Return to call</span
+          ><span class="who t3-truncate">· Reconcile native change labels</span
+          ><span class="t3-dot running"></span>
+        </a>
+
+        <!-- SidebarChrome.tsx:187-227 -->
+        <footer class="t3-sidebar-footer">
+          <div class="menu">
+            <button class="t3-icon-btn" type="button" aria-label="Settings">
+              <svg><use href="#i-settings" /></svg>
+            </button>
+            <button class="t3-icon-btn" type="button" aria-label="Pull Requests">
+              <svg><use href="#i-pr" /></svg>
+            </button>
+            <button class="t3-icon-btn" type="button" aria-label="Usage">
+              <svg><use href="#i-usage" /></svg>
+            </button>
+            <span class="t3-update-pill">Update 1.4.2</span>
+          </div>
+        </footer>
+      </aside>
+
+      <!-- MAIN COLUMN -->
+      <main class="t3-main">
+        <div class="t3-topbar">
+          <span class="crumb">macbook-pro</span><span class="crumb">/</span
+          ><span class="crumb">t3-code</span><span class="crumb">/</span>
+          <h1>Reconcile native change labels against pinned commits</h1>
+          <!-- Presence pill — VoiceCallPresence role=status (voice/A §7:194-205): "You are on a call" / "{{name}} is on a call" / "Someone is on a call" + presence.endCall "End call" -->
+          <span class="vc-presence" role="status" style="margin-left: 12px"
+            ><svg><use href="#i-phone" /></svg>You are on a call<button
+              class="t3-btn ghost sm"
+              type="button"
+            >
+              End call
+            </button></span
+          >
+          <button
+            class="t3-btn ghost sm icon theme-toggle"
+            type="button"
+            id="theme-toggle"
+            aria-label="Toggle theme"
+          >
+            <svg><use href="#i-sun" /></svg>
+          </button>
+        </div>
+        <div class="t3-body">
+          <section class="vc-thread">
+            <div class="vc-scroll">
+              <div class="vc-timeline">
+                <div class="vc-user">
+                  Reconcile the native change labels against the pinned commits and tell me what
+                  drifted.
+                </div>
+                <div class="vc-agent">
+                  <p>
+                    Pinned commits live in <code>scripts/native/pins.json</code>. Three labels
+                    drifted: <code>ios-build</code>, <code>android-build</code>, and
+                    <code>expo-fingerprint</code>. I will diff each against its pin.
+                  </p>
+                  <div class="tool">
+                    <svg><use href="#i-code" /></svg>Read scripts/native/pins.json
+                  </div>
+                </div>
+
+                <!-- voice_call_started row — sessions D26asGkT:1208-1227 (renderer: centered system row with phone icon + timestamp). T3: timeline system row, same treatment as turn separators. -->
+                <div class="vc-sys" role="listitem" aria-label="Voice call started at 14:02">
+                  <span class="line"></span
+                  ><span class="lbl"
+                    ><svg><use href="#i-phone" /></svg>Voice call started · 14:02</span
+                  ><span class="line"></span>
+                </div>
+
+                <!-- Voice turns: Devin renders optimistic user speech as user_message (globalState:7492-7497); T3 shows a "via voice" tag -->
+                <div class="vc-user">
+                  <div class="tag">
+                    <svg><use href="#i-mic" /></svg>via voice
+                  </div>
+                  Skip the Expo one, it's regenerated on every build. Just handle the two build
+                  labels.
+                </div>
+                <div class="vc-agent">
+                  <p>
+                    Understood — ignoring <code>expo-fingerprint</code>. For
+                    <code>ios-build</code> the label points at <code>a41c9e0</code> but the pin is
+                    <code>7f2d0b3</code>; two commits behind. <code>android-build</code> matches its
+                    pin.
+                  </p>
+                  <div class="tool">
+                    <svg><use href="#i-branch" /></svg>git log 7f2d0b3..a41c9e0 --oneline
+                  </div>
+                </div>
+                <div class="vc-user optimistic">
+                  <div class="tag">
+                    <svg><use href="#i-mic" /></svg>via voice · transcribing
+                  </div>
+                  Okay, move the iOS label to the pin and open a PR against…
+                </div>
+                <!-- Live activity row — MessagesTimeline.logic.ts:315 LIVE_ACTIVITY_ROW_ID. Only the duty-cycled pulse animates. -->
+                <div class="vc-live" id="live-activity">
+                  <span class="t3-dot running"></span>Listening
+                </div>
+
+                <!-- voice_call_ended row shown for reference below the live state (in a real thread it replaces "Listening" when the call ends) -->
+                <div
+                  class="vc-sys"
+                  role="listitem"
+                  aria-label="Voice call ended, 6 minutes 12 seconds"
+                  style="opacity: 0.55"
+                >
+                  <span class="line"></span
+                  ><span class="lbl"
+                    ><svg><use href="#i-phone-off" /></svg>Voice call ended · 6m 12s · 14:08</span
+                  ><span class="line"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- COMPOSER (live call) — ChatComposer.tsx frame; call button in left cluster beside Attach (:6960); Send (ComposerPrimaryActions.tsx:248) -->
+            <div class="vc-composer-wrap">
+              <div class="vc-composer is-live">
+                <textarea
+                  rows="2"
+                  placeholder="Type or talk — the call is live"
+                  aria-label="Message"
+                ></textarea>
+                <!-- In-call bar — VoiceCallButton:318-386: [Mute microphone|Unmute microphone] [Silence Devin] [End voice call]; status "Listening"; hint "Hold spacebar to talk" -->
+                <div class="vc-bar" role="group" aria-label="Voice call controls">
+                  <span class="state"><span class="t3-dot running"></span>Listening</span>
+                  <span class="vc-meter" aria-hidden="true"
+                    ><i style="height: 4px"></i><i style="height: 8px"></i
+                    ><i style="height: 12px"></i><i style="height: 7px"></i
+                    ><i style="height: 10px"></i><i style="height: 5px"></i
+                  ></span>
+                  <span class="hint"
+                    ><svg width="14" height="14"><use href="#i-mic" /></svg>Hold
+                    <span class="t3-kbd">space</span> to talk</span
+                  >
+                  <span class="elapsed">06:12</span>
+                  <span class="spacer"></span>
+                  <div class="vc-anchor">
+                    <button
+                      class="t3-btn ghost sm"
+                      type="button"
+                      aria-expanded="true"
+                      aria-controls="call-transcript"
+                    >
+                      Call transcript
+                    </button>
+                    <!-- Transcript popover — VoiceCallButton:260-300; header "Call transcript"; empty copy "Your conversation will appear here as you speak." -->
+                    <div
+                      class="t3-popup vc-transcript"
+                      id="call-transcript"
+                      role="dialog"
+                      aria-label="Call transcript"
+                    >
+                      <div class="head">
+                        <svg width="14" height="14"><use href="#i-phone" /></svg>Call
+                        transcript<button
+                          class="t3-btn ghost sm icon"
+                          type="button"
+                          aria-label="Close transcript"
+                        >
+                          <svg><use href="#i-x" /></svg>
+                        </button>
+                      </div>
+                      <div class="list">
+                        <div class="u">
+                          <span class="who">You</span
+                          ><span
+                            >Skip the Expo one, it's regenerated on every build. Just handle the two
+                            build labels.</span
+                          >
+                        </div>
+                        <div class="a">
+                          <span class="who">Agent</span
+                          ><span
+                            >Understood — ignoring expo-fingerprint. For ios-build the label points
+                            at a41c9e0 but the pin is 7f2d0b3; two commits behind. android-build
+                            matches its pin.</span
+                          >
+                        </div>
+                        <div class="u">
+                          <span class="who">You</span
+                          ><span class="partial"
+                            >Okay, move the iOS label to the pin and open a PR against…</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    class="t3-btn ghost sm"
+                    type="button"
+                    aria-pressed="false"
+                    title="Mute microphone"
+                  >
+                    <svg><use href="#i-mic" /></svg>Mute microphone
+                  </button>
+                  <button
+                    class="t3-btn ghost sm"
+                    type="button"
+                    aria-pressed="false"
+                    title="Silence Devin"
+                  >
+                    <svg><use href="#i-volume-x" /></svg>Silence
+                  </button>
+                  <button class="t3-btn destructive sm" type="button" aria-label="End voice call">
+                    <svg><use href="#i-phone-off" /></svg>End voice call
+                  </button>
+                </div>
+                <div class="vc-actions">
+                  <button class="t3-btn ghost sm icon" type="button" aria-label="Attach files">
+                    <svg><use href="#i-paperclip" /></svg>
+                  </button>
+                  <button
+                    class="t3-btn ghost sm icon live"
+                    type="button"
+                    aria-label="End voice call"
+                    aria-pressed="true"
+                  >
+                    <svg><use href="#i-phone" /></svg>
+                  </button>
+                  <span class="spacer"></span>
+                  <button class="t3-btn ghost sm" type="button" aria-label="Runtime mode">
+                    Claude Code<svg><use href="#i-chevron-down" /></svg>
+                  </button>
+                  <button
+                    class="t3-btn primary sm icon vc-send"
+                    type="button"
+                    aria-label="Send message"
+                  >
+                    <svg><use href="#i-arrow-up" /></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- STATE GALLERY — call button states from VoiceCallController (voice/A §3:48-89): idle → connecting → live → reconnecting (backoff min(500·2^n, 5000), 8 attempts) → error / ended -->
+            <div
+              class="vc-composer-wrap"
+              style="padding-top: 8px; border-top: 1px solid var(--border)"
+            >
+              <div class="vc-gallery" style="margin-top: 16px">
+                <div class="t3-card">
+                  <div class="head">idle — tooltip “Start voice call” · voice/A §9 en:20572</div>
+                  <div class="body">
+                    <div class="vc-composer">
+                      <textarea
+                        rows="1"
+                        placeholder="Send a message to Claude Code…"
+                        aria-label="Message"
+                      ></textarea>
+                      <div class="vc-actions">
+                        <button
+                          class="t3-btn ghost sm icon"
+                          type="button"
+                          aria-label="Attach files"
+                        >
+                          <svg><use href="#i-paperclip" /></svg>
+                        </button>
+                        <span class="t3-has-tip"
+                          ><button
+                            class="t3-btn ghost sm icon"
+                            type="button"
+                            aria-label="Start voice call"
+                          >
+                            <svg><use href="#i-phone" /></svg></button
+                          ><span class="t3-tooltip" style="opacity: 1">Start voice call</span></span
+                        >
+                        <span class="spacer"></span
+                        ><button
+                          class="t3-btn primary sm icon vc-send"
+                          type="button"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg><use href="#i-arrow-up" /></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="t3-card">
+                  <div class="head">connecting — “Calling...” · bar action “Cancel call”</div>
+                  <div class="body">
+                    <div class="vc-composer">
+                      <textarea
+                        rows="1"
+                        placeholder="Send a message to Claude Code…"
+                        aria-label="Message"
+                      ></textarea>
+                      <div class="vc-bar">
+                        <span class="state"><span class="t3-dot running"></span>Calling...</span
+                        ><span class="spacer"></span
+                        ><button class="t3-btn ghost sm" type="button">Cancel call</button>
+                      </div>
+                      <div class="vc-actions">
+                        <button
+                          class="t3-btn ghost sm icon"
+                          type="button"
+                          aria-label="Attach files"
+                        >
+                          <svg><use href="#i-paperclip" /></svg>
+                        </button>
+                        <button
+                          class="t3-btn ghost sm icon connecting"
+                          type="button"
+                          aria-label="Cancel call"
+                          aria-busy="true"
+                        >
+                          <svg><use href="#i-phone" /></svg>
+                        </button>
+                        <span class="spacer"></span
+                        ><button
+                          class="t3-btn primary sm icon vc-send"
+                          type="button"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg><use href="#i-arrow-up" /></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="t3-card">
+                  <div class="head">
+                    live, muted — “Muted” replaces “Listening”; “Unmute microphone”
+                  </div>
+                  <div class="body">
+                    <div class="vc-composer is-live">
+                      <textarea
+                        rows="1"
+                        placeholder="Type or talk — the call is live"
+                        aria-label="Message"
+                      ></textarea>
+                      <div class="vc-bar">
+                        <span class="state"
+                          ><svg width="14" height="14"><use href="#i-mic-off" /></svg>Muted</span
+                        ><span class="hint">Hold <span class="t3-kbd">space</span> to talk</span
+                        ><span class="spacer"></span>
+                        <button
+                          class="t3-btn ghost sm on"
+                          type="button"
+                          aria-pressed="true"
+                          title="Unmute microphone"
+                        >
+                          <svg><use href="#i-mic-off" /></svg>Unmute microphone
+                        </button>
+                        <button
+                          class="t3-btn ghost sm on"
+                          type="button"
+                          aria-pressed="true"
+                          title="Silence Devin"
+                        >
+                          <svg><use href="#i-volume-x" /></svg>Silenced
+                        </button>
+                        <button
+                          class="t3-btn destructive sm"
+                          type="button"
+                          aria-label="End voice call"
+                        >
+                          <svg><use href="#i-phone-off" /></svg>End voice call
+                        </button>
+                      </div>
+                      <div class="vc-actions">
+                        <button
+                          class="t3-btn ghost sm icon"
+                          type="button"
+                          aria-label="Attach files"
+                        >
+                          <svg><use href="#i-paperclip" /></svg>
+                        </button>
+                        <button
+                          class="t3-btn ghost sm icon live"
+                          type="button"
+                          aria-label="End voice call"
+                          aria-pressed="true"
+                        >
+                          <svg><use href="#i-phone" /></svg>
+                        </button>
+                        <span class="spacer"></span
+                        ><button
+                          class="t3-btn primary sm icon vc-send"
+                          type="button"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg><use href="#i-arrow-up" /></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="t3-card">
+                  <div class="head">
+                    reconnecting — “Reconnecting call...” (attempt n/8) · warning tint
+                  </div>
+                  <div class="body">
+                    <div class="vc-composer">
+                      <textarea
+                        rows="1"
+                        placeholder="Type or talk — the call is live"
+                        aria-label="Message"
+                      ></textarea>
+                      <div class="vc-bar reconnecting">
+                        <span class="state"
+                          ><span class="t3-dot running" style="background: var(--warning)"></span
+                          >Reconnecting call...</span
+                        ><span class="hint">attempt 3 of 8</span><span class="spacer"></span
+                        ><button class="t3-btn ghost sm" type="button" aria-label="End voice call">
+                          <svg><use href="#i-phone-off" /></svg>End voice call
+                        </button>
+                      </div>
+                      <div class="vc-actions">
+                        <button
+                          class="t3-btn ghost sm icon"
+                          type="button"
+                          aria-label="Attach files"
+                        >
+                          <svg><use href="#i-paperclip" /></svg>
+                        </button>
+                        <button
+                          class="t3-btn ghost sm icon reconnecting"
+                          type="button"
+                          aria-label="Reconnecting call"
+                          aria-busy="true"
+                        >
+                          <svg><use href="#i-phone" /></svg>
+                        </button>
+                        <span class="spacer"></span
+                        ><button
+                          class="t3-btn primary sm icon vc-send"
+                          type="button"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg><use href="#i-arrow-up" /></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="t3-card">
+                  <div class="head">
+                    error — “Voice model error” / “Call connection closed ({{code}})” + Retry
+                  </div>
+                  <div class="body">
+                    <div class="vc-composer is-error">
+                      <textarea
+                        rows="1"
+                        placeholder="Send a message to Claude Code…"
+                        aria-label="Message"
+                      ></textarea>
+                      <div class="vc-bar err" role="alert">
+                        <span class="state"
+                          ><svg width="14" height="14"><use href="#i-alert" /></svg>Call connection
+                          closed (1006)</span
+                        ><span class="spacer"></span
+                        ><button class="t3-btn secondary sm" type="button">
+                          <svg><use href="#i-refresh" /></svg>Retry</button
+                        ><button class="t3-btn ghost sm icon" type="button" aria-label="Dismiss">
+                          <svg><use href="#i-x" /></svg>
+                        </button>
+                      </div>
+                      <div class="vc-actions">
+                        <button
+                          class="t3-btn ghost sm icon"
+                          type="button"
+                          aria-label="Attach files"
+                        >
+                          <svg><use href="#i-paperclip" /></svg>
+                        </button>
+                        <button
+                          class="t3-btn ghost sm icon err"
+                          type="button"
+                          aria-label="Start voice call"
+                        >
+                          <svg><use href="#i-phone" /></svg>
+                        </button>
+                        <span class="spacer"></span
+                        ><button
+                          class="t3-btn primary sm icon vc-send"
+                          type="button"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg><use href="#i-arrow-up" /></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="t3-card">
+                  <div class="head">
+                    blocked — “Microphone access is required to start a voice call” / “A voice call
+                    is already active for this session”
+                  </div>
+                  <div class="body">
+                    <div class="vc-composer">
+                      <textarea
+                        rows="1"
+                        placeholder="Send a message to Claude Code…"
+                        aria-label="Message"
+                      ></textarea>
+                      <div
+                        class="vc-bar err"
+                        role="alert"
+                        style="background: var(--warning-surface); color: var(--warning-foreground)"
+                      >
+                        <span class="state"
+                          ><svg width="14" height="14"><use href="#i-mic-off" /></svg>Microphone
+                          access is required to start a voice call</span
+                        ><span class="spacer"></span
+                        ><button class="t3-btn ghost sm" type="button">Open system settings</button>
+                      </div>
+                      <div class="vc-actions">
+                        <button
+                          class="t3-btn ghost sm icon"
+                          type="button"
+                          aria-label="Attach files"
+                        >
+                          <svg><use href="#i-paperclip" /></svg>
+                        </button>
+                        <span class="t3-has-tip"
+                          ><button
+                            class="t3-btn ghost sm icon"
+                            type="button"
+                            aria-label="Start voice call"
+                            disabled
+                          >
+                            <svg><use href="#i-phone" /></svg></button
+                          ><span class="t3-tooltip" style="opacity: 1"
+                            >A voice call is already active for this session</span
+                          ></span
+                        >
+                        <span class="spacer"></span
+                        ><button
+                          class="t3-btn primary sm icon vc-send"
+                          type="button"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg><use href="#i-arrow-up" /></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- RIGHT SLOT — call details -->
+          <aside class="t3-details" aria-label="Voice call details">
+            <div class="sec">
+              <h2>Voice call</h2>
+              <dl>
+                <dt>State</dt>
+                <dd>
+                  <span class="t3-badge running"><span class="t3-dot running"></span>Live</span>
+                </dd>
+                <dt>Started</dt>
+                <dd>14:02 · 6m 12s</dd>
+                <dt>Input</dt>
+                <dd>MacBook Pro Microphone</dd>
+                <dt>Output</dt>
+                <dd>Speakers</dd>
+                <dt>Mode</dt>
+                <dd>Push-to-talk (space)</dd>
+                <dt>Turns</dt>
+                <dd>3 voice · 1 typed</dd>
+              </dl>
+            </div>
+            <div class="sec">
+              <h2>Client states</h2>
+              <ul>
+                <li><strong>idle</strong> → button “Start voice call”</li>
+                <li><strong>connecting</strong> → “Calling...”, “Cancel call”</li>
+                <li><strong>live</strong> → “Listening” / “Muted”, meter, transcript</li>
+                <li><strong>reconnecting</strong> → backoff min(500·2ⁿ, 5000) ms, 8 tries</li>
+                <li>
+                  <strong>error</strong> → “Voice model error”, “Call connection closed ({{code}})”,
+                  Retry
+                </li>
+                <li><strong>ended</strong> → timeline row “Voice call has ended”</li>
+              </ul>
+            </div>
+            <div class="sec">
+              <h2>Timeline events</h2>
+              <ul>
+                <li><code>voice_call_started</code> system row</li>
+                <li>
+                  <code>voice_message</code> → user turn tagged “via voice”, optimistic until
+                  confirmed
+                </li>
+                <li><code>voice_call_ended</code> system row with duration</li>
+              </ul>
+            </div>
+            <div class="sec">
+              <h2>Other surfaces</h2>
+              <ul>
+                <li>Sidebar: “Return to call” pill (left, above footer)</li>
+                <li>Top bar: presence pill “You are on a call” · End call</li>
+                <li>Command palette: Start / End voice call</li>
+                <li>
+                  Keybinding: hold <span class="t3-kbd">space</span> to talk when composer is empty
+                </li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Theme toggle: light ⇄ dark via the `.dark` class on <html> (t3-tokens.css mechanism). Default light.
+      (function () {
+        var html = document.documentElement,
+          btn = document.getElementById("theme-toggle");
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+          var dark = html.classList.toggle("dark");
+          html.classList.toggle("light", !dark);
+        });
+      })();
+    </script>
+  </body>
+</html>
