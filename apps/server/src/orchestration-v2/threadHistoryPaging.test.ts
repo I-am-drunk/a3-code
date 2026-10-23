@@ -31,6 +31,7 @@ const NOW = DateTime.makeUnsafe("2026-06-20T00:00:00.000Z");
 const THREAD = ThreadId.make("thread-1");
 const RUN = RunId.make("run-interrupt-1");
 const NODE = NodeId.make("node-interrupt-1");
+const TURN_CEILING_POLICY = { ...THREAD_HISTORY_PAGE_POLICY, maxItems: 1_000 };
 
 function makeRow(
   index: number,
@@ -194,7 +195,11 @@ describe("threadHistoryPaging", () => {
       };
       return [prompt, makeRow(turn * 2 + 1)];
     }).flat();
-    const first = selectRecentTimelineWindow({ items, snapshotSequence: 1 });
+    const first = selectRecentTimelineWindow({
+      items,
+      snapshotSequence: 1,
+      policy: TURN_CEILING_POLICY,
+    });
     expect(first.items).toHaveLength(300);
     expect(first.items[0]?.sourceItemId).toBe("item-22");
     const older = selectHistoryPageFromCursor({
@@ -246,7 +251,11 @@ describe("threadHistoryPaging", () => {
       inRun(run * 4 + 2, run, notification(`Steer ${run}`)),
       inRun(run * 4 + 3, run),
     ]).flat();
-    const first = selectRecentTimelineWindow({ items, snapshotSequence: 1 });
+    const first = selectRecentTimelineWindow({
+      items,
+      snapshotSequence: 1,
+      policy: TURN_CEILING_POLICY,
+    });
     // 150 runs from the start of run 11. Its earlier row goes to the older page.
     expect(first.items).toHaveLength(150 * 4 - 1);
     expect(first.items[0]?.sourceItemId).toBe(`item-${11 * 4 + 1}`);
@@ -260,7 +269,7 @@ describe("threadHistoryPaging", () => {
     );
   });
 
-  it("pages agent-only child transcripts instead of dropping their earlier activity", () => {
+  it.each(["agent", "user"] as const)("bounds long %s transcripts", (createdBy) => {
     const commandRows = Array.from({ length: 90 }, (_, index) => makeRow(index + 1));
     const first = makeRow(0);
     const prompt = {
@@ -268,7 +277,7 @@ describe("threadHistoryPaging", () => {
       item: {
         ...first.item,
         type: "user_message" as const,
-        createdBy: "agent" as const,
+        createdBy,
         creationSource: "provider" as const,
         inputIntent: "turn_start" as const,
         messageId: MessageId.make("child-prompt"),
@@ -288,6 +297,44 @@ describe("threadHistoryPaging", () => {
     });
     expect(older.items[0]?.item.type).toBe("user_message");
     expect([...older.items, ...recent.items]).toHaveLength(items.length);
+  });
+
+  it("enforces the byte budget inside a human turn without losing earlier items", () => {
+    const first = makeRow(0);
+    const prompt = {
+      ...first,
+      item: {
+        ...first.item,
+        type: "user_message",
+        createdBy: "user",
+        creationSource: "web",
+        inputIntent: "turn_start",
+        messageId: MessageId.make("large-turn-prompt"),
+        text: "Inspect",
+        attachments: [],
+      },
+    } as OrchestrationV2ProjectedTurnItem;
+    const items = [prompt, makeRow(1, { outputBytes: 2_048 }), makeRow(2, { outputBytes: 2_048 })];
+    const policy = {
+      ...THREAD_HISTORY_PAGE_POLICY,
+      maxEncodedBytes: projectedRowEncodedBytes(items[2]!),
+    };
+    const recent = selectRecentTimelineWindow({ items, snapshotSequence: 1, policy });
+    expect(recent.items.map((row) => row.sourceItemId)).toEqual([items[2]!.sourceItemId]);
+    const loaded = [...recent.items];
+    let cursor = recent.nextCursor;
+    for (let pages = 0; cursor !== null; pages += 1) {
+      expect(pages).toBeLessThan(items.length);
+      const page = selectHistoryPageFromCursor({ items, cursor, snapshotSequence: 1, policy });
+      expect(
+        page.items.reduce((size, row) => size + projectedRowEncodedBytes(row), 0),
+      ).toBeLessThanOrEqual(policy.maxEncodedBytes);
+      loaded.unshift(...page.items);
+      cursor = page.nextCursor;
+    }
+    expect(loaded.map((row) => ({ ...row, position: 0 }))).toEqual(
+      items.map((row) => ({ ...row, position: 0 })),
+    );
   });
 
   it("encodes opaque cursors with stable source identity", () => {

@@ -38,6 +38,7 @@ import * as ProjectionStore from "./ProjectionStore.ts";
 import {
   buildBoundedThreadProjection,
   decodeThreadHistoryCursor,
+  projectedRowEncodedBytes,
   selectHistoryPageFromCursor,
   THREAD_HISTORY_PAGE_POLICY,
 } from "./threadHistoryPaging.ts";
@@ -863,7 +864,7 @@ it.layer(layerTest)("ProjectionStoreV2", (it) => {
     }),
   );
 
-  it.effect("pages complete user turns through SQL regardless of tool count or payload size", () =>
+  it.effect("bounds SQL history inside long user turns and recovers every item through paging", () =>
     Effect.gen(function* () {
       const projectionStore = yield* ProjectionStore.ProjectionStoreV2;
       const sql = yield* SqlClient.SqlClient;
@@ -1007,18 +1008,18 @@ it.layer(layerTest)("ProjectionStoreV2", (it) => {
         nodePlan.map((row) => row.detail),
         "SEARCH orchestration_v2_projection_nodes USING INDEX orchestration_v2_projection_nodes_live_idx (thread_id=?)",
       );
-      // Only the selected turn cohort and two lookahead anchors are decoded.
-      assert.lengthOf(initial.projection.turnItems, 12 * 102);
+      // Human turns must not bypass the SQL row limit before payload decoding.
+      assert.lengthOf(initial.projection.turnItems, 77);
       const bounded = buildBoundedThreadProjection({
         projection: initial.projection,
         snapshotSequence: 0,
       });
-      assert.lengthOf(bounded.projection.visibleTurnItems, 10 * 102);
-      assert.strictEqual(bounded.projection.visibleTurnItems[0]?.sourceItemId, allIds[35 * 102]);
+      assert.lengthOf(bounded.projection.visibleTurnItems, THREAD_HISTORY_PAGE_POLICY.maxItems);
+      assert.strictEqual(bounded.projection.visibleTurnItems[0]?.sourceItemId, allIds.at(-75));
       const loaded = bounded.projection.visibleTurnItems.map((row) => String(row.sourceItemId));
       let cursor = bounded.historyCursor;
-      for (const turns of [20, 15]) {
-        assert.isNotNull(cursor);
+      for (let pages = 0; cursor !== null; pages += 1) {
+        assert.isBelow(pages, allIds.length);
         const anchor = decodeThreadHistoryCursor(cursor!);
         const snapshot = yield* projectionStore.getThreadSnapshotWindow(threadId, {
           rowLimit: 77,
@@ -1031,17 +1032,42 @@ it.layer(layerTest)("ProjectionStoreV2", (it) => {
           cursor: cursor!,
           snapshotSequence: 0,
         });
-        assert.lengthOf(page.items, turns * 102);
+        assert.isAtMost(snapshot.projection.turnItems.length, 77);
+        assert.isAbove(page.items.length, 0);
+        assert.isAtMost(page.items.length, THREAD_HISTORY_PAGE_POLICY.maxItems);
         loaded.unshift(...page.items.map((row) => String(row.sourceItemId)));
         cursor = page.nextCursor;
       }
       assert.isNull(cursor);
       assert.deepEqual(loaded, allIds);
+      // Exercise the production history service after wire projection as well.
+      yield* sql`UPDATE orchestration_v2_projection_turn_items
+        SET payload_json = json_set(payload_json, '$.output', ${"x".repeat(32_000)})
+        WHERE thread_id = ${threadId} AND type = 'command_execution'
+          AND ordinal > ${allIds.length - 150} AND ordinal <= ${allIds.length - 75}`;
+      const recovered: string[] = [];
+      let historyCursor = bounded.historyCursor;
+      for (let pages = 0; recovered.length < 75; pages += 1) {
+        assert.isBelow(pages, 75);
+        assert.isNotNull(historyCursor);
+        const page = yield* projectionStore.getThreadHistoryPage(threadId, historyCursor!);
+        assert.isAbove(page.items.length, 0);
+        assert.isAtMost(page.items.length, THREAD_HISTORY_PAGE_POLICY.maxItems);
+        assert.isAtMost(
+          page.items.reduce((size, row) => size + projectedRowEncodedBytes(row), 0),
+          THREAD_HISTORY_PAGE_POLICY.maxEncodedBytes,
+        );
+        if (pages === 0) assert.isBelow(page.items.length, 75);
+        recovered.unshift(...page.items.map((row) => String(row.sourceItemId)));
+        historyCursor = page.nextCursor;
+      }
+      assert.deepEqual(recovered, allIds.slice(-75 - recovered.length, -75));
     }),
   );
 
   it.effect("caps a SQL window by runs that a notification started", () =>
     Effect.gen(function* () {
+      const policy = { ...THREAD_HISTORY_PAGE_POLICY, maxItems: 1_000 };
       // A thread woken by PR watches: 12 user turns, then 400 runs that a
       // notification started, with a user turn every 50 runs. The user-turn
       // window reached back to the 12th-newest user turn and read almost every row.
@@ -1183,7 +1209,7 @@ it.layer(layerTest)("ProjectionStoreV2", (it) => {
 
       const { statements, tracer } = traceSqlStatements();
       const initial = yield* projectionStore
-        .getThreadSnapshotWindow(threadId, { rowLimit: 77, userTurnLimit: 10 })
+        .getThreadSnapshotWindow(threadId, { rowLimit: 1_000, userTurnLimit: 10 })
         .pipe(Effect.withTracer(tracer));
       // The 152 newest turns are the 152 newest started runs, 261 to 412. Only
       // three of them are user turns, short of the 12 the user-turn window needs.
@@ -1210,6 +1236,7 @@ it.layer(layerTest)("ProjectionStoreV2", (it) => {
       const bounded = buildBoundedThreadProjection({
         projection: initial.projection,
         snapshotSequence: 0,
+        policy,
       });
       assert.strictEqual(bounded.projection.visibleTurnItems[0]?.sourceItemId, startIds[262]);
       const loaded = bounded.projection.visibleTurnItems.map((row) => String(row.sourceItemId));
@@ -1218,7 +1245,7 @@ it.layer(layerTest)("ProjectionStoreV2", (it) => {
         assert.isBelow(pages, 5);
         const anchor = decodeThreadHistoryCursor(cursor);
         const snapshot = yield* projectionStore.getThreadSnapshotWindow(threadId, {
-          rowLimit: 77,
+          rowLimit: 1_000,
           userTurnLimit: 20,
           anchorItemId: TurnItemId.make(anchor.si),
           anchorThreadId: ThreadId.make(anchor.st),
@@ -1229,6 +1256,7 @@ it.layer(layerTest)("ProjectionStoreV2", (it) => {
           items: snapshot.projection.visibleTurnItems,
           cursor,
           snapshotSequence: 0,
+          policy,
         });
         loaded.unshift(...page.items.map((row) => String(row.sourceItemId)));
         cursor = page.nextCursor;
