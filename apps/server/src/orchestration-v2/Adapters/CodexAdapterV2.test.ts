@@ -5574,6 +5574,66 @@ describe("CodexAdapterV2 post-settle continuation", () => {
         event.type === "provider_thread.updated" ? [event.providerThread.goal?.status ?? null] : [],
       );
 
+    it.effect("resumes a goal with nonempty input and preserves its accounting", () =>
+      Effect.gen(function* () {
+        const transcript = makeCodexReplayTranscript({
+          scenario: "goal-resume",
+          entries: [
+            ...sessionStart,
+            ...request(
+              3,
+              "thread/goal/get",
+              { threadId: nativeThreadId },
+              { goal: codexGoal("paused", 1200) },
+            ),
+            ...withReplayRequestId(
+              codexReplayPreamble({
+                nativeThreadId,
+                nativeTurnId: "goal-resumed-turn",
+                prompt: "Resume the existing goal from the current progress.",
+              }).slice(5),
+              4,
+            ),
+            ...request(
+              5,
+              "thread/goal/set",
+              { threadId: nativeThreadId, status: "active" },
+              { goal: codexGoal("active", 1200) },
+            ),
+            notification("goal completed", "thread/goal/updated", {
+              threadId: nativeThreadId,
+              turnId: "goal-resumed-turn",
+              goal: codexGoal("complete", 1300),
+            }),
+            notification("resumed turn completed", "turn/completed", {
+              threadId: nativeThreadId,
+              turn: makeCodexReplayTurn({ id: "goal-resumed-turn", status: "completed" }),
+            }),
+          ],
+        });
+        const harness = yield* makeCodexReplayHarness(transcript);
+        yield* harness.runtime.startTurn(yield* goalTurnInput(harness, "/goal resume"));
+        yield* harness.firstTerminal;
+        assert.deepEqual(
+          harness.terminalEvents().map((event) => event.status),
+          ["completed"],
+        );
+        const goals = harness.events.flatMap((event) =>
+          event.type === "provider_thread.updated" && event.providerThread.goal
+            ? [event.providerThread.goal]
+            : [],
+        );
+        assert.equal(goals.at(-1)?.objective, objective);
+        assert.equal(goals.at(-1)?.tokensUsed, 1300);
+        assert.isTrue(goals.every((goal) => (goal.tokensUsed ?? 0) >= 1200));
+      }).pipe(
+        Effect.scoped,
+        Effect.provide(
+          Layer.mergeAll(IdAllocator.layer, McpProviderSessions.layer, NodeServices.layer),
+        ),
+      ),
+    );
+
     it.effect("keeps a /goal run open across the turns Codex continues on its own", () =>
       Effect.gen(function* () {
         const transcript = makeCodexReplayTranscript({

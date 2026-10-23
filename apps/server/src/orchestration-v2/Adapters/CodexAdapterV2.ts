@@ -6465,14 +6465,19 @@ export const makeCodexAdapterV2 = Effect.fn("makeCodexAdapterV2")(function* (
             const activation = { stopped: false };
             goalActivations.set(threadId, activation);
             yield* Effect.gen(function* () {
+              // Codex requires input even when resuming an existing goal.
               yield* startNativeTurn(
                 turnInput,
-                command.type === "set"
-                  ? yield* toCodexInput({
-                      ...turnInput,
-                      message: { ...turnInput.message, text: command.objective },
-                    })
-                  : [],
+                yield* toCodexInput({
+                  ...turnInput,
+                  message: {
+                    ...turnInput.message,
+                    text:
+                      command.type === "set"
+                        ? command.objective
+                        : "Resume the existing goal from the current progress.",
+                  },
+                }),
               );
               if (activation.stopped) return;
               const { goal } = yield* client.request("thread/goal/set", {
