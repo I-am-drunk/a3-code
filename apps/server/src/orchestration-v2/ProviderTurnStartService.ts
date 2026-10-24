@@ -751,7 +751,8 @@ export const layer: Layer.Layer<
                   threadId: projection.thread.id,
                   providerThreadId: providerThread.id,
                   runId,
-                  cause: "Uncertain native history injection",
+                  cause:
+                    "Historical context delivery is uncertain; the existing native session is preserved. Recovery is required before retrying.",
                 }),
               )
             : session.resumeThread({
@@ -763,6 +764,18 @@ export const layer: Layer.Layer<
         );
         if (resumed._tag === "Success") {
           return resumed.success;
+        }
+
+        // A portable transcript cannot carry native goals or their accounting.
+        // An ambiguous handoff is not proof that the native session was lost.
+        if (uncertainDelivery || providerThread.goal != null) {
+          yield* Effect.logWarning("Provider resume failed; retaining native session", {
+            driver: session.driver,
+            providerThreadId: providerThread.id,
+            runId,
+            reason: uncertainDelivery ? "uncertain_history_delivery" : "native_goal",
+          });
+          return yield* loadFromProvider(Effect.fail(resumed.failure));
         }
 
         yield* Effect.logWarning("Provider resume failed; attempting a fresh native session", {

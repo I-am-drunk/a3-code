@@ -3,6 +3,7 @@ import { expect, it, vi } from "vite-plus/test";
 import { it as effectIt } from "@effect/vitest";
 import {
   CheckpointScopeId,
+  ContextHandoffId,
   MessageId,
   NodeId,
   ProviderSessionId,
@@ -268,6 +269,8 @@ function makeLocalCommandHarness(input: {
   readonly openFailure?: unknown;
   readonly ensureThreadFailure?: unknown;
   readonly historyReadFailureAfterFallback?: unknown;
+  readonly uncertainHistory?: boolean;
+  readonly nativeGoal?: boolean;
   readonly interruptOpen?: boolean;
   readonly interruptRunBeforeOpenFailure?: boolean;
   readonly writeFailure?: unknown;
@@ -452,7 +455,7 @@ function makeLocalCommandHarness(input: {
     checkpoints: [],
     updatedAt: now,
   };
-  if ("historyReadFailureAfterFallback" in input) {
+  if ("historyReadFailureAfterFallback" in input || input.uncertainHistory || input.nativeGoal) {
     const nativeThreadRef = {
       driver: providerThread.driver,
       nativeId: "native-resume-thread",
@@ -461,8 +464,37 @@ function makeLocalCommandHarness(input: {
     projection = {
       ...projection,
       providerThreads: projection.providerThreads.map((candidate) =>
-        candidate.id === providerThreadId ? { ...candidate, nativeThreadRef } : candidate,
+        candidate.id === providerThreadId
+          ? {
+              ...candidate,
+              nativeThreadRef,
+              goal: input.nativeGoal
+                ? { objective: "Keep the original goal", status: "active", tokensUsed: 1234 }
+                : null,
+            }
+          : candidate,
       ),
+    };
+  }
+  if (input.uncertainHistory) {
+    projection = {
+      ...projection,
+      contextHandoffs: [{
+        id: ContextHandoffId.make("uncertain-handoff"),
+        threadId,
+        targetRunId: runId,
+        fromProviderThreadIds: [providerThreadId],
+        toProviderThreadId: providerThreadId,
+        coveredRunOrdinals: { from: 1, to: 1 },
+        strategy: "full_thread_summary",
+        status: "ready",
+        summaryMessageId: null,
+        summaryText: "Prior history",
+        delivery: { nativeThreadId: "native-resume-thread", status: "pending", itemIds: [] },
+        createdByProviderInstanceId: newInstanceId,
+        createdAt: now,
+        updatedAt: now,
+      }],
     };
   }
   const previousTurnId = ProviderTurnId.make("previous-provider-turn");
@@ -561,7 +593,7 @@ function makeLocalCommandHarness(input: {
   );
   const resumeFallbackSession = {
     driver: providerThread.driver,
-    resumeThread: () =>
+    resumeThread: vi.fn(() =>
       Effect.fail(
         new ProviderAdapter.ProviderAdapterEventStreamError({
           driver: providerThread.driver,
@@ -569,12 +601,13 @@ function makeLocalCommandHarness(input: {
           cause: "native thread is gone",
         }),
       ),
-    ensureThread: () => Effect.succeed(providerThread),
+    ),
+    ensureThread: vi.fn(() => Effect.succeed(providerThread)),
   };
   const open = vi.fn(() =>
     input.interruptOpen === true
       ? Effect.interrupt
-      : "historyReadFailureAfterFallback" in input
+      : "historyReadFailureAfterFallback" in input || input.uncertainHistory || input.nativeGoal
         ? Effect.succeed(resumeFallbackSession as never)
         : "ensureThreadFailure" in input
           ? Effect.succeed({ driver: providerThread.driver, ensureThread } as never)
@@ -754,6 +787,7 @@ function makeLocalCommandHarness(input: {
     open,
     writeIfRunCurrent,
     startRootRun,
+    resumeFallbackSession,
     interruptTurn,
     tryHandlePromptCommand,
     events,
@@ -1115,6 +1149,26 @@ effectIt.effect("terminalizes a starting run when its provider session cannot op
   }),
 );
 
+for (const input of [
+  { label: "ambiguous goal history", uncertainHistory: true, nativeGoal: true, resumes: 0 },
+  { label: "ambiguous history without cached goal", uncertainHistory: true, resumes: 0 },
+  { label: "failed goal resume", nativeGoal: true, resumes: 1 },
+]) {
+  effectIt.effect(`preserves native identity after ${input.label}`, () =>
+    Effect.gen(function* () {
+      const harness = makeLocalCommandHarness({ text: "Continue", ...input });
+      const original = harness.projection().providerThreads[0];
+      yield* harness.start;
+      expect(harness.resumeFallbackSession.resumeThread).toHaveBeenCalledTimes(input.resumes);
+      expect(harness.resumeFallbackSession.ensureThread).not.toHaveBeenCalled();
+      expect(harness.startRootRun).not.toHaveBeenCalled();
+      expect(harness.projection().providerThreads[0]).toEqual(original);
+      expect(harness.projection().runs.at(-1)?.status).toBe("failed");
+      expect(harness.events.some((event) => event.type === "context-transfer.updated")).toBe(false);
+    }),
+  );
+}
+
 effectIt.effect("leaves the run starting when a session-open failure will be retried", () =>
   Effect.gen(function* () {
     const harness = makeLocalCommandHarness({
@@ -1125,6 +1179,23 @@ effectIt.effect("leaves the run starting when a session-open failure will be ret
     const error = yield* harness.startWithRetry.pipe(Effect.flip);
 
     expect(error._tag).toBe("ProviderTurnStartError");
+    expect(harness.writeIfRunCurrent).not.toHaveBeenCalled();
+    expect(harness.projection().runs.at(-1)?.status).toBe("starting");
+  }),
+);
+
+effectIt.effect("retains an ambiguous native binding across a retryable start failure", () =>
+  Effect.gen(function* () {
+    const harness = makeLocalCommandHarness({
+      text: "Continue",
+      uncertainHistory: true,
+      nativeGoal: true,
+    });
+    const original = harness.projection().providerThreads[0];
+    const error = yield* harness.startWithRetry.pipe(Effect.flip);
+    expect(error._tag).toBe("ProviderTurnStartError");
+    expect(harness.projection().providerThreads[0]).toEqual(original);
+    expect(harness.resumeFallbackSession.ensureThread).not.toHaveBeenCalled();
     expect(harness.writeIfRunCurrent).not.toHaveBeenCalled();
     expect(harness.projection().runs.at(-1)?.status).toBe("starting");
   }),
